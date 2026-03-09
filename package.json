@@ -1,0 +1,22 @@
+{
+  "name": "antojitos-desktop",
+  "version": "0.1.0",
+  "description": "Antojitos Santa Lucía - POS Desktop",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.5.0",
+    "@tauri-apps/plugin-dialog": "^2.6.0",
+    "@tauri-apps/plugin-fs": "^2.4.5",
+    "@tauri-apps/plugin-shell": "^2.3.0",
+    "@tauri-apps/plugin-sql": "^2.3.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.10.1",
+    "vite": "^6.4.1"
+  }
+}

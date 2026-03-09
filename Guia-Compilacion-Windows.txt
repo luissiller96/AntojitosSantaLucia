@@ -1,0 +1,61 @@
+====================================================
+GUIA DE COMPILACIÓN - ANTOJITOS SANTA LUCIA (WINDOWS)
+====================================================
+Esta guía es para compilar tu instalador (.msi / .exe) 
+en una computadora física de Windows (Intel o AMD).
+
+---------- PASO 1: PASAR TU CÓDIGO ----------
+1. Copia toda tu carpeta del proyecto (AntojitosDesktop)
+   desde tu Mac a una memoria USB (o súbela a la nube).
+2. En tu computadora con Windows físico, pega la carpeta
+   preferentemente en los Documentos (Ej: C:\Users\TuUsuario\Documents\AntojitosDesktop).
+
+---------- PASO 2: INSTALAR HERRAMIENTAS VITALES ----------
+Descarga e instala estas 3 herramientas en el Windows:
+
+1. Node.js (Versión LTS): 
+   Enlace: https://nodejs.org/
+   -> Descarga el instalador de Windows (.msi) y dale "Siguiente" a todo.
+
+2. Rust (Para Windows):
+   Enlace: https://rustup.rs/
+   -> Descarga 'rustup-init.exe'.
+   -> Ábrelo y presiona el número '1' para hacer la instalación por defecto.
+
+3. Microsoft C++ Build Tools:
+   Enlace: https://visualstudio.microsoft.com/es/visual-cpp-build-tools/
+   -> Descarga y abre el instalador.
+   -> Marca OBLIGATORIAMENTE la casilla (carga de trabajo) que dice:
+      [x] "Desarrollo para el escritorio con C++" (Desktop development with C++)
+   -> Dale clic a Instalar. Acepta que descargue los GBs que necesite.
+
+---------- PASO 3: ABRIR LA CONSOLA ESPECIAL ----------
+NO uses PowerShell normal. La instalación del Paso 2.3 te dejó
+una consola especial que ya tiene todos los motores gráficos ligados:
+
+1. Presiona la tecla Windows (Inicio).
+2. Escribe y abre: "Developer Command Prompt" (o Developer PowerShell for VS).
+
+---------- PASO 4: COMPILAR EL INSTALADOR ----------
+Dentro de esa consola especial recién abierta:
+
+1. Entra a tu carpeta del proyecto:
+   Comando -> cd C:\Users\TuUsuario\Documents\AntojitosDesktop
+   (Ajusta la ruta real de tu máquina).
+
+2. Instala los paquetes web (solo se hace una vez):
+   Comando -> npm install
+
+3. Inicia la magia de Tauri para compilar el ".exe":
+   Comando -> npm run tauri build
+
+* Nota: La primera vez que compiles Windows, tardará de 5 a 10 minutos
+  porque descargará librerías de WebView2 y SQLite de Crate.io.
+
+---------- PASO 5: DISFRUTAR ----------
+Cuando diga "Build Completed", busca tu nuevo instalador en:
+C:\...\AntojitosDesktop\src-tauri\target\release\bundle\msi\
+
+¡Ahí encontrarás el archivo listo para instalar la app
+a todos tus cajeros y usuarios! 🍔🍟🚀
+====================================================

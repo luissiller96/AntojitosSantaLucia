@@ -1,0 +1,489 @@
+/* ===================================
+   CIERRE DE CAJA - ESTILOS MODERNOS
+   =================================== */
+
+:root {
+    --primary: #4a90e2;
+    --success: #28a745;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #17a2b8;
+    --dark: #212529;
+    --light: #f8f9fa;
+    --white: #ffffff;
+    --gray: #6c757d;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f0f2f5;
+    color: var(--dark);
+}
+
+/* Container principal */
+.cierre-caja-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 2rem 0;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.page-title i {
+    color: var(--primary);
+    margin-right: 0.5rem;
+}
+
+.page-subtitle {
+    color: var(--gray);
+    font-size: 1rem;
+}
+
+/* Estado de Caja Card */
+.estado-caja-card {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.caja-status-indicator {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    position: relative;
+}
+
+.caja-status-indicator::after {
+    content: '';
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px dashed;
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.caja-status-indicator.open {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.caja-status-indicator.open::after {
+    border-color: rgba(40, 167, 69, 0.3);
+}
+
+.caja-status-indicator.closed {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.caja-status-indicator.closed::after {
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+.status-text {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.apertura-time {
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+/* Botones principales */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-action {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-abrir {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+}
+
+.btn-cerrar {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.btn-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* KPIs Grid */
+.kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.kpi-card.ventas::before {
+    background: var(--success);
+}
+
+.kpi-card.efectivo::before {
+    background: var(--primary);
+}
+
+.kpi-card.tarjeta::before {
+    background: var(--info);
+}
+
+.kpi-card.gastos::before {
+    background: var(--danger);
+}
+
+.kpi-card.diferencia::before {
+    background: var(--warning);
+}
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.kpi-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.kpi-icon {
+    width: 55px;
+    height: 55px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.kpi-icon.ventas {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.kpi-icon.efectivo {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+}
+
+.kpi-icon.tarjeta {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.kpi-icon.gastos {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+.kpi-icon.diferencia {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+}
+
+.kpi-info {
+    flex: 1;
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+.kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* Sección de resumen */
+.resumen-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    margin-bottom: 30px;
+}
+
+.resumen-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resumen-title i {
+    color: var(--primary);
+}
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.resumen-item {
+    padding: 15px;
+    background: var(--light);
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.resumen-item-label {
+    font-weight: 600;
+    color: var(--gray);
+}
+
+.resumen-item-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark);
+}
+
+/* Modales */
+.modal-content {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    border-radius: 16px 16px 0 0;
+    padding: 1.5rem;
+    border: none;
+}
+
+.modal-header.modal-cerrar {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+}
+
+/* Teclado numérico */
+.numpad-container {
+    max-width: 300px;
+    /* Un poco más angosto para que no se vea tan tosco */
+    margin: 0 auto;
+}
+
+.display {
+    background: var(--light);
+    border-radius: 12px;
+    padding: 10px 15px;
+    /* Reducido para ahorrar espacio vertical */
+    text-align: center;
+    margin-bottom: 15px;
+    /* Reducido */
+    border: 2px solid var(--primary);
+}
+
+.display-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 5px;
+    /* Reducido */
+    font-weight: 600;
+}
+
+.display-value {
+    font-size: 2rem;
+    /* Reducido un poco */
+    font-weight: 700;
+    color: var(--primary);
+    font-family: 'Courier New', monospace;
+}
+
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    /* Reducido el espacio entre botones */
+}
+
+.btn-num {
+    padding: 12px;
+    /* Reducido drásticamente de 20px */
+    font-size: 1.25rem;
+    /* Reducido de 1.5rem */
+    font-weight: 600;
+    border: 2px solid var(--light);
+    background: white;
+    border-radius: 8px;
+    /* Radio un poco más sutil */
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-num:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.btn-num:active {
+    transform: scale(0.95);
+}
+
+#btn-borrar,
+#btn-borrar-cierre {
+    grid-column: span 3;
+    padding: 12px;
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
+#btn-borrar:hover,
+#btn-borrar-cierre:hover {
+    background: #c82333;
+}
+
+/* Mensaje final */
+.alert-final {
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .kpis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn-action {
+        width: 100%;
+    }
+
+    .resumen-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.kpi-card,
+.estado-caja-card,
+.resumen-section {
+    animation: fadeIn 0.5s ease;
+}

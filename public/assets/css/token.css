@@ -1,0 +1,141 @@
+/* ============================================
+   TOKEN - ESTILOS
+   ============================================ */
+
+.tk-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px);
+    padding: 20px;
+}
+
+.tk-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.tk-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #343a40;
+    margin: 0;
+}
+
+.tk-subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-top: 8px;
+}
+
+.tk-card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.tk-muted {
+    color: #868e96;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.tk-display-box {
+    background-color: #f1f8ff;
+    border-radius: 12px;
+    padding: 30px 20px;
+    margin-bottom: 30px;
+    min-height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #bcdcff;
+}
+
+.tk-number {
+    font-size: 4.5rem;
+    font-weight: 800;
+    letter-spacing: 16px;
+    color: #007bff;
+    margin-left: 16px;
+    /* Balance by the wide letter spacing */
+}
+
+.tk-loader {
+    color: #007bff;
+    font-weight: 600;
+    font-size: 1.2rem;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.tk-btn {
+    background: white;
+    color: #495057;
+    border: 1px solid #ced4da;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tk-btn:hover {
+    background: #f8f9fa;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+/* Dark Mode (optional override via body class) */
+body.dark-mode .tk-card {
+    background-color: #2b3035;
+    border-color: #343a40;
+}
+
+body.dark-mode .tk-title {
+    color: #f8f9fa;
+}
+
+body.dark-mode .tk-display-box {
+    background-color: #1a1d20;
+    border-color: #2b3035;
+}
+
+body.dark-mode .tk-number {
+    color: #58a6ff;
+}
+
+body.dark-mode .tk-btn {
+    background-color: #1a1d20;
+    border-color: #495057;
+    color: #f8f9fa;
+}
+
+body.dark-mode .tk-btn:hover {
+    border-color: #58a6ff;
+    color: #58a6ff;
+}

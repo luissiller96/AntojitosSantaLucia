@@ -1,0 +1,86 @@
+/* Estilos para el módulo de devoluciones */
+
+.card-search,
+.card-details {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: none;
+    background-color: #ffffff;
+}
+
+.card-title-section {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #1a1a1a;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+/* Placeholder para cuando no hay ticket seleccionado */
+.placeholder-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 300px;
+    text-align: center;
+    color: #adb5bd;
+}
+
+.placeholder-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.placeholder-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Grid para la información del ticket */
+.ticket-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.ticket-info-grid div {
+    font-size: 1rem;
+}
+
+.ticket-info-grid .total-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+
+/* Lista de productos en el ticket */
+#ticket-items-list .list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#ticket-items-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.item-info .item-name {
+    font-weight: 600;
+}
+
+.item-info .item-qty {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.item-price {
+    font-weight: bold;
+}

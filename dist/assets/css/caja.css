@@ -1,0 +1,697 @@
+/* Generalidades */
+.section-heading h2.card-title {
+  /* Título del menú principal y carrito */
+  font-size: clamp(24px, 2vw, 32px);
+  /* Mínimo 24px, ideal 2% del ancho, máximo 32px */
+  font-weight: 700;
+  color: #333;
+}
+
+html.no-scroll,
+body.no-scroll {
+  /* Hacemos que el body sea el 'marco' de referencia para el posicionamiento */
+  position: relative;
+  overflow: hidden;
+  height: 100dvh;
+  /* Usa la altura DINÁMICA del viewport, más robusto en móviles/tablets */
+}
+
+.scroll-container {
+  /* 1. Posicionamiento absoluto para controlar las dimensiones */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* 2. Se ancla a la parte inferior, dejando espacio para la barra de navegación Y la 'safe area' del iPad/iPhone */
+  bottom: calc(var(--bottom-nav-height, 50px) + env(safe-area-inset-bottom, 0px));
+
+  /* 3. El scroll ahora se gestiona dentro de las columnas, no aquí */
+  overflow: hidden;
+
+  /* 4. Añadimos un padding para que el contenido no pegue a los bordes */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/*--------------------------------------*/
+/* -------ATRIBUTOS DE PRODUCTOS------------ */
+/*--------------------------------------*/
+.producto-card .item .thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(15px, 1vw, 20px);
+  /* ANTES: 0.8vw (le damos límites) */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+
+
+.producto-card .item .thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.producto-card .producto-imagen img {
+  display: block;
+  width: 100%;
+  height: clamp(80px, 10vh, 120px);
+  /* ANTES: 100px. Ahora escala con la altura de la ventana */
+  object-fit: cover;
+  border-radius: clamp(15px, 1vw, 20px) clamp(15px, 1vw, 20px) 0 0;
+}
+
+
+.producto-card .producto-nombre {
+  position: absolute;
+  top: 33%;
+  /* Ajustado de 50% para subir el texto y dar más espacio a nombres largos */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: clamp(12px, 1vw, 15px);
+  /* Reducido para que se vea más pequeño */
+  font-weight: 600;
+  /* Un poco menos grueso que bold, como un h4/h5 típico */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  max-width: 90%;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+  padding: 0 5px;
+}
+
+.thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(15px, 1vw, 20px);
+  /* ANTES: 15px */
+}
+
+
+.precio {
+  text-align: center;
+  bottom: 1px;
+  background-color: #ee626b;
+  font-size: clamp(14px, 1.1vw, 18px);
+  /* ANTES: 16px */
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #fff;
+  padding: clamp(4px, 0.5vw, 6px) clamp(8px, 0.8vw, 12px);
+  /* ANTES: 5px 10px */
+}
+
+.trending-box .item {
+  background-color: #eeeeee;
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(20px, 1.5vw, 30px);
+  /* ANTES: 25px */
+  margin-bottom: clamp(20px, 2vh, 30px);
+  /* ANTES: 30px */
+}
+
+
+
+/*--------------------------------------*/
+/* -------ATRIBUTOS DE CATEGORÍA------- */
+/*--------------------------------------*/
+
+
+/* 🔹 Categorías (filtros de producto) */
+.categorias-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.categorias-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+
+.trending-filter {
+  display: flex;
+  gap: clamp(8px, 0.6vw, 12px);
+  /* ANTES: 8px */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.trending-filter li {
+  flex-shrink: 0;
+}
+
+.trending-filter a {
+  display: inline-block;
+  padding: clamp(8px, 0.8vh, 12px) clamp(14px, 1.2vw, 22px);
+  /* ANTES: 10px 18px */
+  background-color: #e9ecef;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #555;
+  font-weight: 480;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: clamp(14px, 1vw, 16px);
+}
+
+
+/* AQUI ESTA EL SCROLL HORIZONTAL DE LA CAJA*/
+
+.trending-filter a.is_active {
+  background-color: #ee626b;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
+}
+
+.trending-filter a:hover:not(.is_active) {
+  background-color: #d0d0d0;
+}
+
+
+
+/*--------------------------------------*/
+/* -------ATRIBUTOS DE PAGO------- */
+/*--------------------------------------*/
+
+/* 🔹 Métodos de Pago (Tiles) */
+.payment-methods {
+  margin-top: clamp(15px, 2vh, 25px);
+  /* ANTES: 20px */
+  margin-bottom: clamp(15px, 2vh, 25px);
+  /* ANTES: 20px */
+  justify-content: center;
+  gap: clamp(10px, 1.5vw, 20px);
+  /* ANTES: 15px */
+}
+
+.payment-methods .item {
+  padding: clamp(10px, 1.2vw, 18px);
+  /* ANTES: 15px */
+  border-radius: clamp(12px, 1vw, 18px);
+  /* ANTES: 15px */
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+  width: clamp(100px, 8vw, 140px);
+  /* ANTES: 120px */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+}
+
+.payment-methods .item:hover,
+.payment-methods .tile-pago.active {
+  background: #e9ecef;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.payment-methods .image {
+  margin-bottom: clamp(6px, 0.8vh, 10px);
+  /* ANTES: 8px */
+}
+
+.payment-methods .image i {
+  font-size: clamp(2rem, 3vw, 3.5rem);
+  /* Hace el icono escalable */
+}
+
+
+.payment-methods h5 {
+  font-size: clamp(14px, 1vw, 16px);
+  /* ANTES: 1rem */
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.tile-pago.active {
+  background-color: #e0f2f7;
+  border: 2px solid #007aff;
+  transform: scale(1.05);
+  box-shadow: 0 0 0 0.25rem rgba(0, 122, 255, 0.25);
+}
+
+/*--------------------------------------*/
+/* -------CARRITO                ------- */
+/*--------------------------------------*/
+
+/* 🔹 Carrito de Compras */
+#carrito {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fcfcfc;
+}
+
+.carrito-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: clamp(8px, 1vh, 12px) clamp(12px, 1vw, 18px);
+  /* ANTES: 10px 15px */
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  font-size: clamp(14px, 0.9vw, 16px);
+  /* ANTES: 1rem */
+}
+
+.carrito-item strong {
+  color: #007aff;
+}
+
+.carrito-item small {
+  font-size: 0.85em;
+  /* Tamaño de opciones/observaciones */
+}
+
+.carrito-item:active {
+  transform: scale(0.98);
+}
+
+/* Estilos para deslizar y eliminar (sin cambios) */
+.carrito-item .eliminar {
+  position: absolute;
+  right: -60px;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  background-color: #ff3b30;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: right 0.3s ease-in-out;
+}
+
+.carrito-item.deslizar {
+  transform: translateX(-60px);
+}
+
+.carrito-item.deslizar .eliminar {
+  right: 0;
+}
+
+
+
+/*--------------------------------------*/
+/* -------CARD BODY PRINCIPA     ------- */
+/*--------------------------------------*/
+
+/* Hacemos que los contenedores base ocupen toda la altura disponible */
+.container-fluid,
+.row,
+.col-md-7,
+.col-md-5 {
+  height: 100%;
+}
+
+
+/* Hacemos que las tarjetas dentro de las columnas se estiren */
+.col-md-7 .card,
+.col-md-5 .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* El cuerpo de la tarjeta usará flexbox para distribuir el espacio */
+.col-md-7 .card-body,
+.col-md-5 .card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  /* Permite que este elemento crezca y ocupe el espacio */
+  overflow: hidden;
+  /* Ocultamos el scroll aquí para controlarlo en los hijos */
+}
+
+
+/* El título y filtros no deben estirarse, solo ocupar su espacio natural */
+.col-md-7 .section-heading,
+.col-md-7 .categorias-scroll {
+  flex-shrink: 0;
+}
+
+/* La lista de productos es la que se estirará y tendrá scroll */
+.col-md-7 .productos-scroll {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+
+/* Para ocultar el scrollbar en productos-scroll (si lo deseas, como habíamos discutido) */
+.productos-scroll::-webkit-scrollbar {
+  display: none;
+  /* Oculta el scrollbar en navegadores basados en WebKit (Chrome, Safari, Edge) */
+  width: 0px;
+  /* Asegura que no ocupe espacio */
+}
+
+.productos-scroll {
+  -ms-overflow-style: none;
+  /* Oculta el scrollbar en Internet Explorer y Edge */
+  scrollbar-width: none;
+  /* Oculta el scrollbar en Firefox */
+}
+
+/* Ajustes para el contenedor del título y el botón de vaciar */
+.col-md-5 .card-body .d-flex.justify-content-between.align-items-center.mb-3 {
+  margin-bottom: 10px !important;
+  /* ✅ Asegurar un margen inferior más pequeño */
+}
+
+/* Hacer la barra de vendedores más compacta */
+.col-md-5 .categorias-scroll {
+  /* Asegúrate de que no tenga un padding excesivo aquí */
+  margin-bottom: 10px !important;
+  /* ✅ Reducir margen inferior */
+}
+
+.col-md-5 .categorias-scroll .trending-filter a {
+  padding: 8px 12px;
+  /* ✅ Reducir padding de los botones de vendedor (ej. de 10px 18px a 8px 12px) */
+  font-size: 0.85rem;
+  /* ✅ Opcional: reducir tamaño de fuente */
+  border-radius: 20px;
+  /* Mantener la forma de pastilla */
+}
+
+/* Ajustar margen superior del párrafo "Haz clic en un producto..." */
+.col-md-5 .card-body p.text-muted.mt-3 {
+  margin-top: 5px !important;
+  /* ✅ Reducir margen superior */
+  margin-bottom: 10px !important;
+  /* ✅ Reducir margen inferior si es necesario */
+  font-size: 0.9rem;
+  /* ✅ Opcional: reducir tamaño de fuente */
+}
+
+/* Reducir espacio en los métodos de pago */
+.col-md-5 .payment-methods.mt-4 {
+  margin-top: 15px !important;
+  /* ✅ Reducir margen superior */
+  margin-bottom: 15px !important;
+  /* ✅ Reducir margen inferior */
+  gap: 10px;
+  /* ✅ Reducir el espacio entre los tiles de pago */
+}
+
+
+.col-md-5 .payment-methods .item {
+  padding: 10px;
+  /* ✅ Reducir padding de los tiles de pago */
+  width: 100px;
+  /* ✅ Reducir ancho fijo si es necesario */
+}
+
+.col-md-5 .payment-methods .image {
+  margin-bottom: 5px;
+  /* ✅ Reducir margen debajo del icono */
+}
+
+.col-md-5 .payment-methods .image i {
+  font-size: 2.5em;
+  /* ✅ Ajustar tamaño del icono si es necesario */
+}
+
+.col-md-5 .payment-methods h5 {
+  font-size: 0.9rem;
+  /* ✅ Reducir tamaño de fuente del texto "Tarjeta", "Efectivo" */
+}
+
+/* Reducir márgenes alrededor del Total y botón Pagar */
+.col-md-5 .d-flex.justify-content-between.align-items-center.mb-3 {
+  margin-bottom: 10px !important;
+  /* ✅ Reducir margen inferior */
+}
+
+.col-md-5 .card-body hr.my-4 {
+  margin-top: 15px !important;
+  /* ✅ Reducir márgenes de la línea divisoria */
+  margin-bottom: 15px !important;
+}
+
+.col-md-5 .card-body button#btnPagar.w-100.mt-2 {
+  margin-top: 10px !important;
+  /* ✅ Reducir margen superior del botón Pagar */
+}
+
+/* Si quieres que el carrito en sí tenga scroll interno */
+.col-md-5 #carrito {
+  max-height: 150px;
+  /* ✅ Puedes ajustar esta altura máxima para el contenido del carrito */
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 8px;
+  /* ✅ Reducir padding interno del carrito */
+  background-color: #fcfcfc;
+  flex-grow: 1;
+  /* Permite que el carrito crezca y ocupe espacio si hay muchos items */
+}
+
+/* Asegurarse de que el scrollbar en #carrito se oculte si aún lo quieres */
+.col-md-5 #carrito::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+}
+
+.col-md-5 #carrito {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+/* Estilos para hacer las listas de ingredientes desplazables */
+#opcionesVerduras,
+#opcionesAderezos,
+#opcionesOtros {
+  max-height: 200px;
+  /* Altura máxima antes de que aparezca el scroll */
+  overflow-y: auto;
+  /* Muestra el scroll vertical SÓLO si es necesario */
+  padding: 10px;
+  /* Espacio interno para que no se vea apretado */
+  border: 1px solid #f0f0f0;
+  /* Un borde sutil para delimitar el área */
+  border-radius: 8px;
+  /* Esquinas redondeadas para un look moderno */
+}
+
+/*--------------------------------------*/
+/* ------- ESTILOS PARA CAJEROS ------- */
+/*--------------------------------------*/
+
+
+/* --- Colores para CAJEROS --- */
+
+/*--------------------------------------*/
+/* ------- ESTILOS PARA CAJEROS ------- */
+/*--------------------------------------*/
+
+/* Contenedor para el scroll horizontal de cajeros */
+.cajero-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.cajero-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Reglas para nuestra NUEVA clase .cajero-filter */
+.cajero-filter {
+  display: flex;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.cajero-filter li {
+  flex-shrink: 0;
+}
+
+/* Estilo general para cada botón <a> dentro de la nueva lista */
+.cajero-filter a.vendedor-selector {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.85rem;
+  border: 2px solid transparent;
+  font-weight: 500;
+}
+
+/* --- Colores específicos para cada cajero (AHORA SÍ FUNCIONARÁN) --- */
+.cajero-color-elizabeth {
+  background-color: #dcfce7;
+  /* Verde claro */
+  color: #15803d;
+}
+
+.cajero-color-lidia {
+  background-color: #ffedd5;
+  /* Naranja claro */
+  color: #c2410c;
+}
+
+.cajero-color-alejandra {
+  background-color: #ffd5e2;
+  /* Naranja claro */
+  color: #c20c46;
+}
+
+/* Puedes añadir más cajeros aquí */
+/* .cajero-color-nombre { ... } */
+
+/* Estilo para el cajero activo */
+.cajero-filter a.vendedor-selector.is_active {
+  background-color: #7daee2;
+  /* Tu color activo principal */
+  color: white !important;
+  border-color: #0056b3;
+  font-weight: bold;
+}
+
+/* ====== ESTILOS PARA STEPPERS DE LA ORDEN MIXTA ====== */
+.btn-stepper {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f1f5f9;
+  color: #334155;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  /* Mejorar touch target en móviles */
+  touch-action: manipulation;
+}
+
+.btn-stepper:active {
+  background-color: #e2e8f0;
+  transform: scale(0.95);
+}
+
+.btn-stepper-plus {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.btn-stepper-minus {
+  background-color: #f1f5f9;
+}
+
+.stepper-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
+  color: #0f172a;
+}
+
+/* Scroll para los ingredientes en el tab */
+.ingredientes-scroll {
+  max-height: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 5px;
+}
+
+/* Fix global para el bug de Bootstrap que desplaza el body al abrir el modal */
+body.modal-open {
+  padding-right: 0 !important;
+  overflow: hidden;
+}
+
+:root {
+  --bs-scrollbar-width: 0px !important;
+}
+
+/* ====== ESTILOS PARA TABS DE BOOTSTRAP ====== */
+/* Contenedor principal de las pestañas (fondo gris redondeado) */
+.nav-tabs {
+  border-bottom: none;
+  background-color: #f1f5f9;
+  /* Gris muy claro moderno */
+  border-radius: 0.75rem;
+  padding: 0.35rem;
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Estilo individual de cada pestaña (pill) */
+.nav-tabs .nav-link {
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  color: #64748b;
+  /* Gris texto moderno */
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #334155;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+}
+
+/* Pestaña activa (blanca con sombra sutil) */
+.nav-tabs .nav-link.active {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  /* Color oscuro por defecto, se sobreescribe con clases de utility si aplica */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+/* Mantener el color primary/success cuando está activa usando :not para no chocar con utilities */
+.nav-tabs .text-primary.active {
+  color: #2563eb !important;
+  /* Azul más vibrante moderno */
+}
+
+.nav-tabs .text-success.active {
+  color: #059669 !important;
+  /* Verde esmeralda moderno */
+}
+
+
+/* Contenedor del contenido (fondo blanco limpio sin bordes) */
+#comandaTabsContent {
+  background: #ffffff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0;
+  /* Quitamos el padding extra para que se vea más limpio */
+}

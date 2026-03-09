@@ -1,0 +1,1492 @@
+
+/* 🔹 Paginación estilo Bootstrap más compacta */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 2px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 14px;
+  border-radius: 3px;
+  /* 🔹 Bordes más suaves */
+  transition: all 0.2s ease-in-out;
+}
+
+/* 🔹 Mejor interacción al pasar el mouse */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* 🔹 Eliminar sombra y efecto de enfoque */
+.dataTables_wrapper .dataTables_paginate .paginate_button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+
+
+/* 🔹 Botón activo */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: #007bff;
+  color: white;
+}
+
+/* /Applications/ServBay/www/Framework7/gestorventas/css/styles.css */
+
+/* Estilos generales para el dashboard */
+.container.mt-4 {
+  max-width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Estilos para el cardview de "Total Vendido Hoy" */
+.subscribe {
+  background-color: #0071f8 !important;
+  /* Azul similar al template */
+  border-radius: 25px;
+  padding: 20px 30px !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  /* Sutil sombra */
+  text-align: center;
+}
+
+.subscribe .section-heading h4 {
+  color: #fff !important;
+  /* Texto blanco */
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.subscribe .section-heading span {
+  font-size: 30px;
+  /* Tamaño del total */
+  font-weight: 800 !important;
+}
+
+/* Estilos para los cards de las opciones */
+.card {
+  transition: all 0.3s;
+  border: none;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+
+.card h4 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 14px;
+  color: #666;
+}
+
+.card .btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+  border: none;
+}
+
+.card .btn:hover {
+  transform: translateY(-2px);
+}
+
+
+/* Estilos para el card de Ventas Semanales */
+.card canvas#ventasSemanalesChart {
+  background-color: #f7f7f7;
+  border-radius: 25px;
+  padding: 15px;
+}
+
+.card h4.mb-3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+/*Ajustes de la clase cta*/
+.cta {
+  margin-bottom: 30px !important;
+  margin-top: 0px !important;
+}
+
+.cta .shop {
+  padding: 30px !important;
+}
+
+/* Ajustes al header */
+.header-text {
+  margin-bottom: 20px;
+}
+
+
+/* /Applications/ServBay/www/Framework7/gestorventas/css/styles.css */
+
+/* Estilos generales para el dashboard */
+.container.mt-4 {
+  max-width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Estilos para el cardview de "Total Vendido Hoy" */
+.main-banner.banner-hoy {
+  background-image: url("../assets/images/banner-bg.jpg");
+  border-radius: 25px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.main-banner.banner-hoy .caption h6 {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 0px;
+}
+
+.main-banner.banner-hoy .caption h2 {
+  font-size: 36px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+
+
+.subscribe {
+  /*background-color: #0071f8 !important;  Azul similar al template */
+  border-radius: 25px;
+  padding: 20px 30px !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  /* Sutil sombra */
+  text-align: center;
+}
+
+.subscribe .section-heading h4 {
+  color: #fff !important;
+  /* Texto blanco */
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.subscribe .section-heading span {
+  font-size: 30px;
+  /* Tamaño del total */
+  font-weight: 800 !important;
+}
+
+/* Estilos para los cards de las opciones */
+.card {
+  transition: all 0.3s;
+  border: none;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+
+.card h4 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+
+.card p {
+  font-size: 14px;
+  color: #666;
+}
+
+.card .btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+  border: none;
+}
+
+.card .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Estilos para el card de Ventas Semanales */
+.card canvas#ventasSemanalesChart {
+  background-color: #f7f7f7;
+  border-radius: 25px;
+  padding: 15px;
+}
+
+.card h4.mb-3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+/*Ajustes de la clase cta*/
+.cta {
+  margin-bottom: 30px !important;
+  margin-top: 0px !important;
+}
+
+.cta .shop {
+  padding: 30px !important;
+}
+
+/* Ajustes al header */
+.header-text {
+  margin-bottom: 20px;
+}
+
+.ventas-fade {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.ventas-visible {
+  opacity: 1;
+}
+
+body.no-scroll {
+  overflow: hidden;
+  height: 100%;
+}
+
+
+/*
+body {
+  background-color: #f5f5f5;
+  padding-bottom: 2px;
+} */
+
+.header-area {
+  background-color: #007bff !important;
+}
+
+#inputPago {
+  font-size: 2.5rem;
+  height: 70px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  /* Borde gris suave */
+  border-radius: 10px;
+  outline: none;
+  /* Quitar el contorno azul del navegador */
+  box-shadow: none;
+  /* Quitar sombras al hacer foco */
+}
+
+#inputPago:focus {
+  border: 2px solid #007bff;
+  /* Solo un borde azul fino al enfocarse */
+  box-shadow: none;
+  /* Sin sombra adicional */
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  /* Espacio entre botones */
+}
+
+.keypad-grid .btn {
+  font-size: 1.5rem;
+  /* Texto grande en los botones */
+  padding: 20px;
+  /* Más área clicable */
+  border-radius: 12px;
+  /* Bordes redondeados */
+  background-color: #f0f0f0;
+  /* Fondo claro */
+  border: 1px solid #ccc;
+  /* Borde gris suave */
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+
+.keypad-grid .btn:active {
+  transform: scale(0.95);
+  /* Efecto de presión al hacer clic */
+}
+
+.btn-confirm {
+  background-color: #28a745;
+  /* Botón confirmar en verde */
+  color: white;
+}
+
+.btn-clear {
+  background-color: #dc3545;
+  /* Botón borrar en rojo */
+  color: white;
+}
+  
+
+/* ---------------------------------------------------- */
+/* Estilos Específicos para Productos.php (Estilo iOS/Táctil) */
+/* ---------------------------------------------------- */
+
+/* Estilos de Paginación de DataTables (ajustados para DataTables por defecto) */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 8px 15px; /* Más padding para tocar */
+  margin: 5px; /* Más margen */
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 16px; /* Letra más grande */
+  border-radius: 8px; /* Bordes más redondeados */
+  transition: all 0.2s ease-in-out;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Campos de Utilidad Readonly */
+#pr_utilidad,
+#edit_utilidad {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* 🔹 ESTILOS BASE PARA BOTONES ESTILO iOS/TÁCTIL */
+.btn-ios {
+  font-size: 1.1rem; /* Tamaño de texto base para botones */
+  padding: 0.8rem 1.5rem; /* Padding táctil */
+  border-radius: 12px; /* Bordes redondeados más grandes */
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+  border: none; /* Quitamos el borde por defecto de Bootstrap */
+}
+
+.btn-ios:active {
+  transform: translateY(1px); /* Pequeño efecto de "presión" al tocar */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Sombra más pequeña al presionar */
+}
+/* Asegura que los botones con iconos no se muevan al hacer clic en el icono */
+.btn-ios i {
+  pointer-events: none;
+}
+
+
+/* 🔹 Variantes de color para botones .btn-ios */
+.btn-ios.btn-primary {
+  background-color: #007aff; /* Azul primario fuerte */
+  color: white;
+}
+.btn-ios.btn-primary:hover {
+  background-color: #005bb5;
+  color: white;
+}
+.btn-ios.btn-success {
+  background-color: #34c759; /* Verde de éxito */
+  color: white;
+}
+
+.btn-ios.btn-danger {
+  background-color: #ff3b30; /* Rojo de peligro */
+  color: white;
+}
+.btn-ios.btn-danger:hover {
+  background-color: #d82b22;
+}
+.btn-ios.btn-secondary {
+  background-color: #8e8e93; /* Gris secundario */
+  color: white;
+}
+.btn-ios.btn-secondary:hover {
+  background-color: #7b7b80;
+}
+.btn-ios.btn-info {
+  background-color: #00a4bd; /* Azul claro de info */
+  color: white;
+}
+.btn-ios.btn-info:hover {
+  background-color: #007a8a;
+}
+
+/* 🔹 Botones de pestaña (toggle buttons) */
+.btn-toggle-group {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden; /* Aplica los bordes redondeados al grupo */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #e9ecef; /* Fondo general para la barra de tabs inactiva */
+}
+.btn-toggle-group .btn-ios {
+  flex-grow: 1; /* Para que los botones ocupen todo el espacio disponible */
+  border-radius: 0; /* Anula el border-radius individual para el grupo */
+  border: none; /* Anula el borde individual */
+  background-color: transparent; /* Solo el grupo tiene el color inactivo */
+  color: #555;
+  font-weight: normal;
+  padding: 0.7rem 1.2rem; /* Más compacto para las pestañas */
+  box-shadow: none; /* Sin sombra individual para las pestañas */
+}
+.btn-toggle-group .btn-ios.active {
+  background-color: #007aff; /* Color activo para el botón de pestaña */
+  color: white;
+  font-weight: 500;
+}
+.btn-toggle-group .btn-ios:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.btn-toggle-group .btn-ios:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+
+/* 🔹 Input y Select (estilo iOS) */
+.input-group-text {
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+  background-color: #e9ecef;
+  border-right: none;
+}
+.form-control, .form-select { /* Añadido .form-select para select */
+  border-radius: 12px !important; /* Más redondeado para inputs y selects */
+  padding: 0.8rem 1.2rem; /* Más padding para inputs */
+}
+.form-control:focus, .form-select:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+.form-check-input {
+  border-radius: 0.25em; /* Checkbox cuadrado */
+  width: 1.2em; /* Tamaño del checkbox */
+  height: 1.2em;
+  margin-top: 0.2em; /* Alineación vertical */
+  vertical-align: top;
+}
+.form-check-input:checked {
+  background-color: #007aff;
+  border-color: #007aff;
+}
+.form-check-label {
+    margin-left: 0.5em; /* Espacio entre checkbox y label */
+    font-size: 1.1rem; /* Tamaño de texto para label */
+}
+
+
+/* 🔹 Estilo para insumos utilizados (toggle buttons) */
+.insumo-toggle {
+  display: inline-block; /* Para comportarse como un botón */
+  font-size: 1.1rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  margin: 5px; /* Espacio entre ellos */
+  background-color: #e9ecef;
+  color: #555;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none; /* Asegura que no se vea como enlace */
+}
+.insumo-toggle.is_active {
+  background-color: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+/* Contenedor de scroll para insumos en el modal */
+.categorias-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+}
+.categorias-scroll ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.categorias-scroll li {
+  display: inline-block; /* Los insumos estarán en línea dentro del ul */
+}
+
+.tab-container {
+  margin: 0 auto; /* Centra horizontalmente */
+  padding: 20px;
+}
+
+/* 🔹 Soft backgrounds for stock warnings (usadas en tabla de insumos) */
+.bg-danger-soft { background-color: rgba(255, 59, 48, 0.2) !important; color: #ff3b30 !important; }
+.bg-warning-soft { background-color: rgba(255, 193, 7, 0.2) !important; color: #ffc107 !important; }
+
+
+/* ---------------------------------------------------- */
+/* Estilos Específicos para Caja.php (Punto de Venta)   */
+/* ---------------------------------------------------- */
+
+/* Generalidades */
+.section-heading h2.card-title {
+  /* Título del menú principal y carrito */
+  font-size: 1.8rem;
+  /* Tamaño más manejable */
+  font-weight: 700;
+  color: #333;
+
+}
+
+
+
+/* Nueva clase .kpis-scroll basada en .categorias-scroll */
+.kpis-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-bottom: 20px;
+  padding: 0 10px 5px 10px;
+}
+
+.kpis-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* 🔹 Teclado Numérico (Modales) */
+.keypad-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  /* Espacio entre botones */
+  width: 100%;
+  max-width: 360px;
+  /* Ancho máximo del teclado */
+}
+
+.keypad-grid .btn {
+  width: 100%;
+  height: 60px;
+  /* Altura de botón más pequeña */
+  font-size: 1.8rem;
+  /* Tamaño de texto */
+  border-radius: 12px;
+  /* Más redondeado */
+  background: #f0f0f0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, transform 0.1s;
+}
+
+
+.keypad-grid .btn:active {
+  transform: translateY(1px);
+}
+
+.keypad-grid .btn-clear {
+  background: #ff3b30;
+  color: white;
+}
+
+.keypad-grid .btn-clear:active {
+  background: #d82b22;
+}
+
+.keypad-grid .btn-confirm {
+  background: #34c759;
+  color: white;
+}
+
+.keypad-grid .btn-confirm:active {
+  background: #2da44a;
+}
+
+/* Input de pago en modal */
+#inputPago {
+  font-size: 2rem;
+  /* Tamaño de fuente */
+  height: 70px;
+  /* Altura */
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ccc;
+  box-shadow: none;
+  outline: none;
+  padding: 0 15px;
+}
+
+#inputPago:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 122, 255, 0.25);
+}
+
+/* Botones en footers de modales */
+.modal-footer .btn {
+  /* Estos son los btn-ios que ya definimos */
+  font-size: 1.0rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+}
+
+
+
+/* ---------------------------------------------------- */
+/* Estilos para la Barra de Búsqueda en Productos       */
+/* ---------------------------------------------------- */
+
+.search-input-container {
+  position: relative;
+  width: 300px; /* Ancho del campo de búsqueda */
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  pointer-events: none; /* Para que se pueda hacer clic en el input a través del icono */
+}
+
+.search-input {
+  padding-left: 40px !important; /* Espacio para el icono */
+  border-radius: 12px !important; /* Mismo borde que otros inputs */
+  height: 45px; /* Altura consistente */
+}
+
+.search-input:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+
+.scroll-container {
+
+    /* Ajustado para dejar espacio para la barra de navegación superior */
+    top: 20px;      
+    /* El resto de los límites se mantienen */
+    bottom: 80px;
+    left: 20px;
+    right: 20px;
+    overflow-y: auto;
+    border-radius: 15px; 
+}
+
+
+
+body.dark-mode .scroll-container {
+  background-color: #1a1a1a;
+  color: #f1f1f1;
+}
+
+
+/* Activar modo oscuro cuando body tiene la clase dark-mode */
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+
+
+body.dark-mode,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6,
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode label,
+body.dark-mode a,
+body.dark-mode li {
+  color: #f1f1f1 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .list-card,
+body.dark-mode .modal-content {
+  background-color: #2b2b2b;
+  color: #f1f1f1;
+  border-color: #444;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+  background-color: #2c2c2c;
+  color: #fff;
+  border-color: #555;
+}
+
+.dark-mode .table {
+  color: #f8f9fa;
+}
+
+.dark-mode .btn-ios.btn-primary {
+  background: linear-gradient(45deg, #0056b3, #007aff);
+}
+
+
+body.dark-mode .bottom-nav-bar {
+  background-color: #1c1c1e;
+  border-top: 1px solid #333;
+}
+
+body.dark-mode .bottom-nav-bar .nav-item,
+body.dark-mode .bottom-nav-bar a {
+  color: #f1f1f1;
+}
+
+body.dark-mode .bottom-nav-bar .nav-item.active {
+  color: #00bfff;
+}
+body.dark-mode .stat-card {
+  background-color: #2a2a2a;
+  border-color: #444;
+  color: #f1f1f1;
+}
+
+
+body.dark-mode .stat-card .value {
+  color: #ffffff;
+}
+
+body.dark-mode .list-card {
+  background-color: #252525;
+  color: #f1f1f1;
+  border-color: #444;
+}
+
+body.dark-mode #last-sales-list {
+  background-color: #2d2d2d;
+  border-radius: 12px;
+  padding: 15px;
+  color: #f1f1f1;
+}
+
+body.dark-mode .sale-ticket-card {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+body.dark-mode .ticket-header,
+body.dark-mode .ticket-info,
+body.dark-mode .ticket-amount,
+body.dark-mode .product-item,
+body.dark-mode .ticket-number,
+body.dark-mode .ticket-time {
+  color: #f1f1f1 !important;
+}
+body.dark-mode .trending-filter a {
+  background-color: #e0e0e0;
+  color: #111;
+}
+
+body.dark-mode .trending-filter a.is_active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+
+.bottom-nav-bar .nav-item span {
+  display: block;
+}
+
+body.dark-mode .bottom-nav-bar .nav-item span {
+  display: block;
+}
+
+
+
+
+p.copyright {
+  margin-top: 30px;
+  margin-bottom: 12px;
+    color: rgba(255, 255, 255, 0);
+
+}
+
+/* Estilo para los insumos seleccionados en el modal */
+#insumos-lista .insumo-toggle.active {
+    background-color: #0d6efd; /* Color azul primario de Bootstrap */
+    color: white;
+    border-color: #0d6efd;
+}
+
+/* Estilo para los insumos seleccionados en el modal */
+.insumo-toggle.is_active {
+    background-color: #0d6efd; /* Color azul primario de Bootstrap */
+    color: white !important;   /* Texto blanco para que contraste */
+    border-color: #0d6efd;
+    font-weight: bold;
+}
+
+
+/* style.css */
+
+.btn-reimprimir {
+  /* Ajusta el tamaño del botón y del ícono */
+  width: 35px;
+  height: 35px;
+  font-size: 1rem; /* Controla el tamaño del ícono */
+  line-height: 1; /* Ayuda a centrar el ícono verticalmente */
+}
+
+/* Efecto hover más pronunciado */
+.btn-reimprimir:hover {
+  background-color: #0d6efd; /* Un azul primario de Bootstrap */
+  color: white;
+}
+
+/* ===================================================
+   ESTILOS ESPECÍFICOS PARA CIERRE DE CAJA MEJORADO
+   Agrega estos estilos a tu sección <style> existente
+   ================================================= */
+
+/* Sección de filtros mejorada */
+.filter-section-mejorada {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+.date-input-group {
+  position: relative;
+}
+
+.date-input-group .form-control {
+  padding-left: 2.5rem;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.date-input-group .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.date-input-group .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  z-index: 10;
+}
+
+.btn-filter-mejorado {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.btn-filter-mejorado:hover {
+  background: linear-gradient(45deg, #0056b3, #004085);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  color: white;
+}
+
+/* Cards de resumen mejoradas */
+.summary-card-mejorada {
+  background: linear-gradient(145deg, #ffffff, #f8f9fa);
+  border-radius: 16px;
+  border: none;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+.summary-card-mejorada::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 0 2px 2px 0;
+}
+
+.summary-card-efectivo::before { 
+  background: linear-gradient(45deg, #28a745, #20c997); 
+}
+.summary-card-tarjeta::before { 
+  background: linear-gradient(45deg, #007bff, #6610f2); 
+}
+.summary-card-transferencia::before { 
+  background: linear-gradient(45deg, #17a2b8, #6f42c1); 
+}
+.summary-card-total::before { 
+  background: linear-gradient(45deg, #fd7e14, #e83e8c); 
+}
+.summary-card-diferencias::before { 
+  background: linear-gradient(45deg, #dc3545, #fd7e14); 
+}
+
+.summary-card-mejorada:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon-mejorada {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 1rem;
+}
+
+.card-icon-efectivo { 
+  background: rgba(40, 167, 69, 0.1); 
+  color: #28a745; 
+}
+.card-icon-tarjeta { 
+  background: rgba(0, 123, 255, 0.1); 
+  color: #007bff; 
+}
+.card-icon-transferencia { 
+  background: rgba(23, 162, 184, 0.1); 
+  color: #17a2b8; 
+}
+.card-icon-total { 
+  background: rgba(253, 126, 20, 0.1); 
+  color: #fd7e14; 
+}
+.card-icon-diferencias { 
+  background: rgba(220, 53, 69, 0.1); 
+  color: #dc3545; 
+}
+
+.card-title-mejorada {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.card-amount-mejorada {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #212529;
+  margin-bottom: 0.25rem;
+}
+
+.card-subtitle-mejorada {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* Información adicional */
+.info-bar {
+  margin: 1.5rem 0;
+}
+
+.info-bar .alert-info {
+  border-radius: 8px;
+  border-left: 4px solid #17a2b8;
+}
+
+.badge-info-cierre {
+  background: linear-gradient(45deg, #17a2b8, #20c997);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* Contenedor de tabla mejorado */
+.table-container-mejorada {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+}
+
+/* Badges de estatus para la tabla */
+.badge-cerrada-mejorado {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-activa-mejorado {
+  background: linear-gradient(45deg, #ffc107, #fd7e14);
+  color: #212529;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Clases para diferencias */
+.diferencia-positiva-mejorada {
+  color: #28a745;
+  font-weight: 700;
+  background: rgba(40, 167, 69, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.diferencia-negativa-mejorada {
+  color: #dc3545;
+  font-weight: 700;
+  background: rgba(220, 53, 69, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.diferencia-cero-mejorada {
+  color: #6c757d;
+  font-weight: 600;
+  background: rgba(108, 117, 125, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+/* Loading state mejorado */
+.loading-state-cierre {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.loading-spinner-cierre {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Badges para métodos de pago en la tabla */
+.badge-pago-efectivo-tabla {
+  background: rgba(40, 167, 69, 0.1);
+  color: #28a745;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-pago-tarjeta-tabla {
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.badge-pago-transferencia-tabla {
+  background: rgba(23, 162, 184, 0.1);
+  color: #17a2b8;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .summary-card-mejorada {
+    margin-bottom: 1rem;
+  }
+  
+  .card-amount-mejorada {
+    font-size: 1.5rem;
+  }
+  
+  .filter-section-mejorada {
+    padding: 1rem;
+  }
+  
+  .table-container-mejorada {
+    padding: 1rem;
+  }
+}
+
+/* Animaciones suaves para actualización de valores */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-amount-mejorada.updating {
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+
+
+/* Contenedor de tabla mejorado */
+.table-container-clean {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.table-header-clean {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.25rem 1.5rem;
+    border-bottom: 2px solid #dee2e6;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+}
+
+.table-header-clean h5 {
+    margin: 0;
+    color: #495057;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.table-header-clean .btn-group-clean {
+    gap: 0.5rem;
+}
+
+/* DataTable styling limpio */
+.dataTables_wrapper.dt-bootstrap5 {
+    padding: 0;
+}
+
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin: 1rem 1.5rem 0;
+}
+
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_paginate {
+    margin: 1rem 1.5rem;
+}
+
+.table-clean {
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-clean thead th {
+    background: #f8f9fa;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table-clean tbody td {
+    padding: 1rem 1.5rem;
+    border: none;
+    border-bottom: 1px solid #f8f9fa;
+    vertical-align: middle;
+    font-size: 0.9rem;
+}
+
+.table-clean tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table-clean tbody tr:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Badges mejorados */
+.badge-clean {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.badge-clean-platillo {
+    background: linear-gradient(135deg, #17a2b8, #20c997);
+    color: white;
+}
+
+.badge-clean-producto {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+}
+
+.badge-clean-stock-alto {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+}
+
+.badge-clean-stock-medio {
+    background: linear-gradient(135deg, #ffc107, #fd7e14);
+    color: white;
+}
+
+.badge-clean-stock-bajo {
+    background: linear-gradient(135deg, #dc3545, #e74c3c);
+    color: white;
+}
+
+.badge-clean-infinito {
+    background: linear-gradient(135deg, #6f42c1, #e83e8c);
+    color: white;
+}
+
+/* Botones de acción limpios */
+.btn-action-clean {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin: 0 0.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-action-clean::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.3s;
+}
+
+.btn-action-clean:hover::before {
+    left: 100%;
+}
+
+.btn-action-clean:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-edit-clean {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+}
+
+.btn-delete-clean {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.btn-view-clean {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+}
+
+.btn-map-clean {
+    background: linear-gradient(135deg, #17a2b8, #117a8b);
+    color: white;
+}
+
+/* Cards de estadísticas limpias */
+.stat-card-clean {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card-clean::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107, #dc3545);
+}
+
+.stat-card-clean:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card-clean .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.stat-card-clean .stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Filtros mejorados */
+.filter-bar-clean {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.filter-bar-clean .form-control,
+.filter-bar-clean .form-select {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.filter-bar-clean .form-control:focus,
+.filter-bar-clean .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Loading state */
+.loading-overlay-clean {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 12px;
+}
+
+.loading-spinner-clean {
+    width: 3rem;
+    height: 3rem;
+    border: 0.3rem solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 0.3rem solid #007bff;
+    animation: spin-clean 1s linear infinite;
+}
+
+@keyframes spin-clean {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-header-clean {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .table-clean thead th,
+    .table-clean tbody td {
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn-action-clean {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .stat-card-clean .stat-number {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,1163 @@
+/* Contenedor scrolleable verticalmente */
+.productos-scroll {
+  max-height: calc(100vh - 300px);
+  /* Resta espacio según lo que necesites */
+  /* Ajusta según el tamaño que prefieras */
+  overflow-y: auto;
+  /* Permite desplazamiento vertical */
+  overflow-x: hidden;
+  /* Evita desplazamiento horizontal */
+  padding-right: 10px;
+  padding-left: 10px;
+
+  /* Espacio para evitar que el scroll tape contenido */
+  scrollbar-width: none;
+  /* Oculta el scrollbar en Firefox */
+  -ms-overflow-style: none;
+  /* Oculta el scrollbar en Edge */
+}
+
+.productos-scroll::-webkit-scrollbar {
+  display: none;
+  /* Oculta el scrollbar en Chrome y Safari */
+  width: 6px;
+}
+
+.productos-scroll::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 10px;
+}
+
+.productos-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.producto {
+  position: relative;
+  width: 100%;
+  /* Ajusta según el tamaño del contenedor */
+}
+
+.producto-imagen {
+  background-color: transparent;
+  padding: 0;
+}
+
+.producto-imagen img {
+  display: block;
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.producto-nombre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: clamp(10px, 5vw, 16px);
+  /* Tamaño dinámico entre 10px y 16px */
+  border-radius: 8px;
+  max-width: 90%;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.categorias-scroll {
+  overflow-x: auto;
+  /* Habilita el desplazamiento horizontal */
+  white-space: nowrap;
+  /* Evita que los elementos se vayan a la siguiente línea */
+  -webkit-overflow-scrolling: touch;
+  /* Suaviza el desplazamiento en móviles */
+  scrollbar-width: none;
+  /* Oculta el scrollbar en Firefox */
+}
+
+.categorias-scroll::-webkit-scrollbar {
+  display: none;
+  /* Oculta el scrollbar en Chrome, Safari, Edge */
+}
+
+.trending-filter {
+  display: flex;
+  /* Asegura que las categorías se alineen horizontalmente */
+  gap: 1px;
+  /* Espaciado entre los botones */
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.trending-filter li {
+  flex-shrink: 0;
+  /* Evita que los elementos se reduzcan */
+  margin-left: 0 !important;
+}
+
+.trending-filter a {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.trending-filter a.is_active {
+  background-color: #007bff;
+  color: white;
+}
+
+.payment-methods .item {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  width: 120px;
+  /* Ajustar según el diseño */
+}
+
+.payment-methods .item:hover,
+.payment-methods .tile-pago.active {
+  background: #e9ecef;
+}
+
+.payment-methods .image {
+  margin-bottom: 8px;
+}
+
+.carrito-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  transition: transform 0.3s ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.carrito-item .eliminar {
+  position: absolute;
+  right: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: right 0.3s ease-in-out;
+}
+
+.carrito-item.deslizar {
+  transform: translateX(-60px);
+}
+
+.carrito-item.deslizar .eliminar {
+  right: 10px;
+}
+
+/* 📌 Contenedor de la imagen */
+.thumb {
+  position: relative;
+  overflow: hidden;
+  /* Evita que el precio se salga */
+  border-radius: 15px;
+  /* Mantiene bordes redondeados */
+}
+
+.precio {
+  text-align: center;
+  bottom: 1px;
+  background-color: #ee626b;
+
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #fff;
+  padding: 5px 10px 5px 5px;
+}
+
+/* Contenedor del teclado */
+.keypad-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+/* Grid para los botones */
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+}
+
+/* Botón base */
+.btn-num,
+.btn-clear,
+.btn-confirm {
+  width: 100%;
+  height: 70px;
+  font-size: 24px;
+  border-radius: 10px;
+
+  background: #f4f4f4;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Botón de borrar (C) */
+.btn-clear {
+  background: #ffdddd;
+  color: #d9534f;
+}
+
+.btn-clear:active {
+  background: #ffb3b3;
+}
+
+/* Botón de confirmar (✔) */
+.btn-confirm {
+  background: #d4edda;
+  color: #155724;
+}
+
+.btn-confirm:active {
+  background: #b7e4c7;
+}
+
+.tile-pago {
+  padding: 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.tile-pago.active {
+  background-color: rgba(0, 123, 255, 0.2);
+  /* Resalta con un fondo suave */
+  border: 2px solid #007bff;
+  transform: scale(1.05);
+}
+
+html,
+body {
+  touch-action: manipulation;
+}
+
+/* 🔹 Evita que la lista de productos se expanda demasiado */
+
+/* 🔹 Evita el desplazamiento horizontal en la sección de productos */
+.col-md-7 {
+  overflow-x: hidden;
+  /* Evita scroll horizontal */
+  max-width: 100%;
+  /* Asegura que no se pase del ancho disponible */
+}
+
+.trending-items {
+  width: 100%;
+}
+
+/* 🔹 Paginación estilo Bootstrap más compacta */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 2px;
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 14px;
+  border-radius: 3px;
+  /* 🔹 Bordes más suaves */
+  transition: all 0.2s ease-in-out;
+}
+
+/* 🔹 Mejor interacción al pasar el mouse */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* 🔹 Eliminar sombra y efecto de enfoque */
+.dataTables_wrapper .dataTables_paginate .paginate_button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* 🔹 Botón activo */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: #007bff;
+  color: white;
+}
+
+/* /Applications/ServBay/www/Framework7/gestorventas/css/styles.css */
+
+/* Estilos generales para el dashboard */
+.container.mt-4 {
+  max-width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Estilos para el cardview de "Total Vendido Hoy" */
+.subscribe {
+  background-color: #0071f8 !important;
+  /* Azul similar al template */
+  border-radius: 25px;
+  padding: 20px 30px !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  /* Sutil sombra */
+  text-align: center;
+}
+
+.subscribe .section-heading h4 {
+  color: #fff !important;
+  /* Texto blanco */
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.subscribe .section-heading span {
+  font-size: 30px;
+  /* Tamaño del total */
+  font-weight: 800 !important;
+}
+
+/* Estilos para los cards de las opciones */
+.card {
+  transition: all 0.3s;
+  border: none;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+
+.card h4 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 14px;
+  color: #666;
+}
+
+.card .btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+  border: none;
+}
+
+.card .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Estilos para el card de Ventas Semanales */
+.card canvas#ventasSemanalesChart {
+  background-color: #f7f7f7;
+  border-radius: 25px;
+  padding: 15px;
+}
+
+.card h4.mb-3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+/*Ajustes de la clase cta*/
+.cta {
+  margin-bottom: 30px !important;
+  margin-top: 0px !important;
+}
+
+.cta .shop {
+  padding: 30px !important;
+}
+
+/* Ajustes al header */
+.header-text {
+  margin-bottom: 20px;
+}
+
+/* /Applications/ServBay/www/Framework7/gestorventas/css/styles.css */
+
+/* Estilos generales para el dashboard */
+.container.mt-4 {
+  max-width: 100% !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Estilos para el cardview de "Total Vendido Hoy" */
+.main-banner.banner-hoy {
+  background-image: url("../assets/images/banner-bg.jpg");
+  border-radius: 25px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px !important;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.main-banner.banner-hoy .caption h6 {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 0px;
+}
+
+.main-banner.banner-hoy .caption h2 {
+  font-size: 36px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+.subscribe {
+  /*background-color: #0071f8 !important;  Azul similar al template */
+  border-radius: 25px;
+  padding: 20px 30px !important;
+  margin-bottom: 20px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  /* Sutil sombra */
+  text-align: center;
+}
+
+.subscribe .section-heading h4 {
+  color: #fff !important;
+  /* Texto blanco */
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin-bottom: 0;
+  text-transform: uppercase;
+}
+
+.subscribe .section-heading span {
+  font-size: 30px;
+  /* Tamaño del total */
+  font-weight: 800 !important;
+}
+
+/* Estilos para los cards de las opciones */
+.card {
+  transition: all 0.3s;
+  border: none;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 25px;
+}
+
+.card h4 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card p {
+  font-size: 14px;
+  color: #666;
+}
+
+.card .btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 10px 20px;
+  font-size: 14px;
+  transition: all 0.3s;
+  border: none;
+}
+
+.card .btn:hover {
+  transform: translateY(-2px);
+}
+
+/* Estilos para el card de Ventas Semanales */
+.card canvas#ventasSemanalesChart {
+  background-color: #f7f7f7;
+  border-radius: 25px;
+  padding: 15px;
+}
+
+.card h4.mb-3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+/*Ajustes de la clase cta*/
+.cta {
+  margin-bottom: 30px !important;
+  margin-top: 0px !important;
+}
+
+.cta .shop {
+  padding: 30px !important;
+}
+
+/* Ajustes al header */
+.header-text {
+  margin-bottom: 20px;
+}
+
+.ventas-fade {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.ventas-visible {
+  opacity: 1;
+}
+
+body.no-scroll {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  background-color: #f5f5f5;
+  padding-bottom: 2px;
+}
+
+.header-area {
+  background-color: #007bff !important;
+}
+
+#inputPago {
+  font-size: 2.5rem;
+  height: 70px;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  /* Borde gris suave */
+  border-radius: 10px;
+  outline: none;
+  /* Quitar el contorno azul del navegador */
+  box-shadow: none;
+  /* Quitar sombras al hacer foco */
+}
+
+#inputPago:focus {
+  border: 2px solid #007bff;
+  /* Solo un borde azul fino al enfocarse */
+  box-shadow: none;
+  /* Sin sombra adicional */
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  /* Espacio entre botones */
+}
+
+.keypad-grid .btn {
+  font-size: 1.5rem;
+  /* Texto grande en los botones */
+  padding: 20px;
+  /* Más área clicable */
+  border-radius: 12px;
+  /* Bordes redondeados */
+  background-color: #f0f0f0;
+  /* Fondo claro */
+  border: 1px solid #ccc;
+  /* Borde gris suave */
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.keypad-grid .btn:hover {
+  background-color: #007bff;
+  /* Azul al pasar el mouse */
+  color: white;
+  transform: scale(1.05);
+  /* Un ligero zoom al pasar */
+}
+
+.keypad-grid .btn:active {
+  transform: scale(0.95);
+  /* Efecto de presión al hacer clic */
+}
+
+.btn-confirm {
+  background-color: #28a745;
+  /* Botón confirmar en verde */
+  color: white;
+}
+
+.btn-clear {
+  background-color: #dc3545;
+  /* Botón borrar en rojo */
+  color: white;
+}
+
+.btn-servicio-express {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border: 2px solid #007bff;
+  background-color: white;
+  color: #007bff;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-servicio-express:hover {
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  padding: 10px;
+}
+
+.responsive-padding {
+  padding: min(32px, 5vw);
+}
+
+
+/* ---------------------------------------------------- */
+/* Estilos Específicos para Productos.php (Estilo iOS/Táctil) */
+/* ---------------------------------------------------- */
+
+/* Estilos de Paginación de DataTables (ajustados para DataTables por defecto) */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 8px 15px; /* Más padding para tocar */
+  margin: 5px; /* Más margen */
+  border: 1px solid #ddd;
+  background-color: #f8f9fa;
+  color: #333;
+  font-size: 16px; /* Letra más grande */
+  border-radius: 8px; /* Bordes más redondeados */
+  transition: all 0.2s ease-in-out;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Campos de Utilidad Readonly */
+#pr_utilidad,
+#edit_utilidad {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* 🔹 ESTILOS BASE PARA BOTONES ESTILO iOS/TÁCTIL */
+.btn-ios {
+  font-size: 1.1rem; /* Tamaño de texto base para botones */
+  padding: 0.8rem 1.5rem; /* Padding táctil */
+  border-radius: 12px; /* Bordes redondeados más grandes */
+  font-weight: 500;
+  transition: background-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil */
+  border: none; /* Quitamos el borde por defecto de Bootstrap */
+}
+
+.btn-ios:active {
+  transform: translateY(1px); /* Pequeño efecto de "presión" al tocar */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Sombra más pequeña al presionar */
+}
+/* Asegura que los botones con iconos no se muevan al hacer clic en el icono */
+.btn-ios i {
+  pointer-events: none;
+}
+
+/* 🔹 Variantes de color para botones .btn-ios */
+.btn-ios.btn-primary {
+  background-color: #007aff; /* Azul primario fuerte */
+  color: white;
+}
+.btn-ios.btn-primary:hover {
+  background-color: #005bb5;
+  color: white;
+}
+.btn-ios.btn-success {
+  background-color: #34c759; /* Verde de éxito */
+  color: white;
+}
+.btn-ios.btn-success:hover {
+  background-color: #2da44a;
+}
+.btn-ios.btn-danger {
+  background-color: #ff3b30; /* Rojo de peligro */
+  color: white;
+}
+.btn-ios.btn-danger:hover {
+  background-color: #d82b22;
+}
+.btn-ios.btn-secondary {
+  background-color: #8e8e93; /* Gris secundario */
+  color: white;
+}
+.btn-ios.btn-secondary:hover {
+  background-color: #7b7b80;
+}
+.btn-ios.btn-info {
+  background-color: #00a4bd; /* Azul claro de info */
+  color: white;
+}
+.btn-ios.btn-info:hover {
+  background-color: #007a8a;
+}
+
+/* 🔹 Botones de pestaña (toggle buttons) */
+.btn-toggle-group {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden; /* Aplica los bordes redondeados al grupo */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #e9ecef; /* Fondo general para la barra de tabs inactiva */
+}
+.btn-toggle-group .btn-ios {
+  flex-grow: 1; /* Para que los botones ocupen todo el espacio disponible */
+  border-radius: 0; /* Anula el border-radius individual para el grupo */
+  border: none; /* Anula el borde individual */
+  background-color: transparent; /* Solo el grupo tiene el color inactivo */
+  color: #555;
+  font-weight: normal;
+  padding: 0.7rem 1.2rem; /* Más compacto para las pestañas */
+  box-shadow: none; /* Sin sombra individual para las pestañas */
+}
+.btn-toggle-group .btn-ios.active {
+  background-color: #007aff; /* Color activo para el botón de pestaña */
+  color: white;
+  font-weight: 500;
+}
+.btn-toggle-group .btn-ios:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.btn-toggle-group .btn-ios:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* 🔹 Input y Select (estilo iOS) */
+.input-group-text {
+  border-top-left-radius: 12px !important;
+  border-bottom-left-radius: 12px !important;
+  background-color: #e9ecef;
+  border-right: none;
+}
+.form-control, .form-select { /* Añadido .form-select para select */
+  border-radius: 12px !important; /* Más redondeado para inputs y selects */
+  padding: 0.8rem 1.2rem; /* Más padding para inputs */
+}
+.form-control:focus, .form-select:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+}
+.form-check-input {
+  border-radius: 0.25em; /* Checkbox cuadrado */
+  width: 1.2em; /* Tamaño del checkbox */
+  height: 1.2em;
+  margin-top: 0.2em; /* Alineación vertical */
+  vertical-align: top;
+}
+.form-check-input:checked {
+  background-color: #007aff;
+  border-color: #007aff;
+}
+.form-check-label {
+    margin-left: 0.5em; /* Espacio entre checkbox y label */
+    font-size: 1.1rem; /* Tamaño de texto para label */
+}
+
+/* 🔹 Estilo para insumos utilizados (toggle buttons) */
+.insumo-toggle {
+  display: inline-block; /* Para comportarse como un botón */
+  font-size: 1.1rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+  margin: 5px; /* Espacio entre ellos */
+  background-color: #e9ecef;
+  color: #555;
+  border: 1px solid #ddd;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none; /* Asegura que no se vea como enlace */
+}
+.insumo-toggle.is_active {
+  background-color: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+/* Contenedor de scroll para insumos en el modal */
+.categorias-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 10px;
+}
+.categorias-scroll ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.categorias-scroll li {
+  display: inline-block; /* Los insumos estarán en línea dentro del ul */
+}
+
+/* 🔹 Soft backgrounds for stock warnings (usadas en tabla de insumos) */
+.bg-danger-soft { background-color: rgba(255, 59, 48, 0.2) !important; color: #ff3b30 !important; }
+.bg-warning-soft { background-color: rgba(255, 193, 7, 0.2) !important; color: #ffc107 !important; }
+
+
+/* ---------------------------------------------------- */
+/* Estilos Específicos para Caja.php (Punto de Venta)   */
+/* ---------------------------------------------------- */
+
+/* Generalidades */
+.section-heading h2.card-title {
+  /* Título del menú principal y carrito */
+  font-size: 1.8rem;
+  /* Tamaño más manejable */
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* 🔹 Categorías (filtros de producto) */
+.categorias-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* Oculta el scrollbar en Firefox */
+}
+
+.categorias-scroll::-webkit-scrollbar {
+  display: none;
+  /* Oculta el scrollbar en Chrome y Safari */
+}
+
+.trending-filter {
+  display: flex;
+  gap: 8px;
+  /* Espacio entre los botones de categoría */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  /* Quitar viñetas */
+}
+
+.trending-filter li {
+  flex-shrink: 0;
+  /* Evita que los elementos se reduzcan */
+}
+
+.trending-filter a {
+  display: inline-block;
+  padding: 10px 18px;
+  /* Más padding para tocar */
+  background-color: #e9ecef;
+  /* Fondo gris claro */
+  border-radius: 25px;
+  /* Más redondeado (pastilla) */
+  text-decoration: none;
+  color: #555;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+}
+
+.trending-filter a.is_active {
+  background-color: #007aff;
+  /* Azul activo */
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.25);
+}
+
+.trending-filter a:hover:not(.is_active) {
+  background-color: #d0d0d0;
+}
+
+/* 🔹 Tarjetas de Producto Individual */
+.producto-card .item .thumb {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  /* Bordes redondeados para la tarjeta de producto */
+  /* CAMBIO AQUI: COLOR DE FONDO PARA EL THUMB DEL PRODUCTO */
+  background-color: #4CAF50; /* Un verde vibrante, puedes ajustarlo */
+  /* Si prefieres un degradado o combinación, podemos usarlo aquí.
+     Por ejemplo, un degradado de fucsia a azul:
+     background: linear-gradient(45deg, #FF00FF, #007aff);
+  */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+  transition: all 0.2s ease-in-out;
+}
+
+.producto-card .item .thumb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.producto-card .producto-imagen img {
+  display: block;
+  width: 100%;
+  height: 100px;
+  /* Altura fija para la imagen del producto */
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+  /* Solo bordes superiores redondeados */
+}
+
+.producto-card .producto-nombre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+  /* Más pequeño para nombres largos */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  max-width: 90%;
+  text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+  padding: 0 5px;
+  /* Pequeño padding si el texto es largo */
+}
+
+
+/* 🔹 Carrito de Compras */
+#carrito {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #fcfcfc;
+}
+
+.carrito-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  font-size: 1rem;
+  /* Tamaño más pequeño */
+}
+
+.carrito-item strong {
+  color: #007aff;
+}
+
+.carrito-item small {
+  font-size: 0.85em;
+  /* Tamaño de opciones/observaciones */
+}
+
+.carrito-item:active {
+  transform: scale(0.98);
+}
+
+/* Estilos para deslizar y eliminar (sin cambios) */
+.carrito-item .eliminar {
+  position: absolute;
+  right: -60px;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  background-color: #ff3b30;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: right 0.3s ease-in-out;
+}
+
+.carrito-item.deslizar {
+  transform: translateX(-60px);
+}
+
+.carrito-item.deslizar .eliminar {
+  right: 0;
+}
+
+/* 🔹 Métodos de Pago (Tiles) */
+.payment-methods {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  justify-content: center;
+  gap: 15px;
+  /* Espacio entre los tiles */
+}
+
+.payment-methods .item {
+  padding: 15px;
+  border-radius: 15px;
+  background: #f8f9fa;
+  transition: all 0.2s ease;
+  width: 120px;
+  /* Ancho fijo para que no se vean gigantes */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  cursor: pointer;
+}
+
+.payment-methods .item:hover,
+.payment-methods .tile-pago.active {
+  background: #e9ecef;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.payment-methods .item:active {
+  transform: scale(0.98);
+}
+
+.payment-methods .image {
+  margin-bottom: 8px;
+  /* Espacio debajo del icono */
+
+}
+
+.payment-methods h5 {
+  font-size: 1rem;
+  /* Tamaño del texto "Tarjeta", "Efectivo" */
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.tile-pago.active {
+  background-color: #e0f2f7;
+  /* Fondo suave para activo */
+  border: 2px solid #007aff;
+  /* Borde más visible */
+  transform: scale(1.05);
+  /* Ligeramente más grande */
+  box-shadow: 0 0 0 0.25rem rgba(0, 122, 255, 0.25);
+  /* Anillo de enfoque suave */
+}
+
+/* 🔹 Teclado Numérico (Modales) */
+.keypad-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  /* Espacio entre botones */
+  width: 100%;
+  max-width: 360px;
+  /* Ancho máximo del teclado */
+}
+
+.keypad-grid .btn {
+  width: 100%;
+  height: 60px;
+  /* Altura de botón más pequeña */
+  font-size: 1.8rem;
+  /* Tamaño de texto */
+  border-radius: 12px;
+  /* Más redondeado */
+  background: #f0f0f0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.keypad-grid .btn:active {
+  transform: translateY(1px);
+}
+
+.keypad-grid .btn-clear {
+  background: #ff3b30;
+  color: white;
+}
+
+.keypad-grid .btn-clear:active {
+  background: #d82b22;
+}
+
+.keypad-grid .btn-confirm {
+  background: #34c759;
+  color: white;
+}
+
+.keypad-grid .btn-confirm:active {
+  background: #2da44a;
+}
+
+/* Input de pago en modal */
+#inputPago {
+  font-size: 2rem;
+  /* Tamaño de fuente */
+  height: 70px;
+  /* Altura */
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ccc;
+  box-shadow: none;
+  outline: none;
+  padding: 0 15px;
+}
+
+#inputPago:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 0.25rem rgba(0, 122, 255, 0.25);
+}
+
+/* Botones en footers de modales */
+.modal-footer .btn {
+  /* Estos son los btn-ios que ya definimos */
+  font-size: 1.0rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 10px;
+}
+

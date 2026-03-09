@@ -1,0 +1,346 @@
+/* --- Variables principales --- */
+:root {
+  --bottom-nav-height: 50px;
+  --bottom-nav-bg: #ffffff;
+  --bottom-nav-text: #8e8e93;
+  --bottom-nav-active-color: #007aff;
+  --drawer-bg: #f0f2f5;
+  --drawer-card-bg: #ffffff;
+  --drawer-text: #1c1e21;
+  --drawer-secondary-text: #6c757d;
+  --transition-speed: 0.3s;
+}
+
+/* --- Barra de navegación inferior --- */
+.bottom-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* La altura ahora considera la 'safe area' de los dispositivos (ej. barra de inicio del iPhone/iPad) */
+  height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  background-color: var(--bottom-nav-bg);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Añade padding para que los iconos no queden muy abajo */
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+  transition: background-color var(--transition-speed);
+}
+
+.main-content-wrapper-bottom-nav {
+  padding-bottom: var(--bottom-nav-height);
+}
+
+.bottom-nav-bar .nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--bottom-nav-text);
+  font-size: 12px;
+  font-weight: 500;
+  transition: color var(--transition-speed), transform var(--transition-speed);
+}
+
+.bottom-nav-bar .nav-item svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.bottom-nav-bar .nav-item.active {
+  color: var(--bottom-nav-active-color);
+}
+
+.bottom-nav-bar .nav-item:hover {
+  transform: scale(1.05);
+}
+
+/* --- Drawer lateral (menú "Más") --- */
+.settings-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 400px;
+  height: 100%;
+  background-color: var(--drawer-bg);
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  transition: right var(--transition-speed);
+}
+
+.settings-drawer.is-open {
+  right: 0;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-speed);
+}
+
+.drawer-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+.drawer-header h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
+.close-drawer-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--drawer-secondary-text);
+}
+
+/* Contenedor del contenido para activar el scroll */
+.drawer-content {
+  flex-grow: 1;
+  /* Ocupa el espacio disponible */
+  overflow-y: auto;
+  /* Activa el scroll vertical cuando es necesario */
+  -webkit-overflow-scrolling: touch;
+  /* Scroll suave en iOS */
+}
+
+/* --- Tarjetas del drawer --- */
+.drawer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 20px;
+}
+
+.drawer-card {
+  background-color: var(--drawer-card-bg);
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--drawer-text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-speed);
+}
+
+.drawer-card:hover {
+  transform: translateY(-3px);
+}
+
+.drawer-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+
+/* Degradados existentes */
+.icon-comanda {
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+}
+
+.icon-productos {
+  background: linear-gradient(45deg, #48dbfb, #1dd1a1);
+}
+
+.icon-clientes {
+  background: linear-gradient(45deg, #5f27cd, #9b59b6);
+}
+
+.icon-caja {
+  background: linear-gradient(45deg, #1e90ff, #00d2d3);
+}
+
+.icon-token {
+  background: linear-gradient(45deg, #fd79a8, #a29bfe);
+}
+
+.icon-empleados {
+  background: linear-gradient(45deg, #00b85c, #55efc4);
+}
+
+.icon-devoluciones {
+  background: linear-gradient(45deg, #ff7675, #d63031);
+}
+
+.icon-sync {
+  background: linear-gradient(45deg, #0984e3, #74b9ff);
+}
+
+/* Íconos de gastos */
+.icon-gastos-fijos {
+  background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+}
+
+.icon-gastos-operativos {
+  background: linear-gradient(45deg, #fd79a8, #fdcb6e);
+}
+
+.icon-gastos-movil {
+  background: linear-gradient(45deg, #00b894, #00cec9);
+}
+
+
+/* Nuevo icono para el módulo de compras */
+.icon-salida {
+  background: linear-gradient(45deg, #ff9f43, #ffc93c);
+}
+
+/* --- Lista de enlaces del drawer --- */
+.drawer-divider {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 0 20px;
+}
+
+.drawer-list {
+  list-style: none;
+  padding: 10px 20px;
+  margin: 0;
+}
+
+.drawer-list li a {
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+  text-decoration: none;
+  color: var(--drawer-text);
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background-color var(--transition-speed);
+}
+
+.drawer-list li a:hover {
+  background-color: #e4e6e9;
+}
+
+.drawer-list .list-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #e4e6e9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  color: var(--drawer-text);
+}
+
+.drawer-list .arrow-icon {
+  margin-left: auto;
+  color: var(--drawer-secondary-text);
+}
+
+/* --- Perfil de usuario --- */
+.drawer-user-profile {
+  margin-top: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+}
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-info .user-name {
+  font-weight: 700;
+  display: block;
+}
+
+.user-info .user-email {
+  font-size: 0.85em;
+  color: var(--drawer-secondary-text);
+}
+
+/* --- Modo oscuro --- */
+body.dark-mode {
+  --bottom-nav-bg: #1e1e1e;
+  --bottom-nav-text: #cccccc;
+  --bottom-nav-active-color: #4dabf7;
+  --drawer-bg: #121212;
+  --drawer-card-bg: #1e1e1e;
+  --drawer-text: #f0f0f0;
+  --drawer-secondary-text: #bbbbbb;
+}
+
+body.dark-mode .drawer-list li a:hover {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .drawer-list .list-icon {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+}
+
+body.dark-mode .bottom-nav-bar .nav-item.active {
+  color: var(--bottom-nav-active-color);
+}
+
+/* --- Estructura general con grid --- */
+body {
+  display: grid;
+  min-height: 100dvh;
+  grid-template-rows: auto 1fr var(--bottom-nav-height);
+  margin: 0;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .drawer-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .drawer-card {
+    font-size: 1rem;
+    padding: 16px;
+  }
+
+  .bottom-nav-bar .nav-item span {
+    font-size: 10px;
+  }
+
+  .drawer-header h3 {
+    font-size: 1.2rem;
+  }
+}

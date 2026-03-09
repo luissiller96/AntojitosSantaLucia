@@ -1,0 +1,478 @@
+/* ===================================
+   PRODUCTOS - ESTILOS PRINCIPALES
+   =================================== */
+
+/* Variables de color */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --background: #f0f2f5;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --hover-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Reset y estilos base */
+body {
+    background-color: var(--background);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--dark-color);
+    overflow-x: hidden; /* Evitar scroll horizontal en la página */
+}
+
+.container-fluid {
+    overflow-x: hidden;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Header Section */
+.header-section {
+    padding: 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background: white;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.page-title i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+/* Botones principales */
+.btn-action {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: var(--card-shadow);
+}
+
+
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #4b6ca2 100%);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+.btn-outline-success.btn-action {
+    border: 2px solid var(--success-color);
+    color: var(--success-color);
+    background: #ffffff;
+}
+
+.btn-outline-success.btn-action:hover,
+.btn-outline-success.btn-action:focus {
+    color: #ffffff;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: var(--hover-shadow);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    background: white;
+    transition: all 0.3s ease;
+}
+
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Filter Section */
+.filter-section {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.filter-section .input-group-text {
+    background: var(--light-color);
+    border: 1px solid #dee2e6;
+    color: var(--primary-color);
+}
+
+.filter-section .form-control,
+.filter-section .form-select {
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.filter-section .form-control:focus,
+.filter-section .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.15);
+}
+
+/* Tabla mejorada */
+.table {
+    font-size: 1rem;
+}
+
+.table thead th {
+    background: var(--light-color);
+    border-bottom: 2px solid #dee2e6;
+    color: var(--dark-color);
+    font-weight: 600;
+    padding: 1rem;
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    display: block;
+    /* Se eliminó border y background repetitivo */
+}
+
+#tabla-productos {
+    min-width: 900px;
+    width: 100%;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.25);
+    border-radius: 4px;
+}
+
+/* Badges mejorados */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.badge.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%) !important;
+    color: white !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+}
+
+/* Botones de acción en tabla */
+.btn-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    margin: 0 0.25rem;
+    transition: all 0.2s ease;
+}
+
+
+.btn-info {
+    background: var(--info-color);
+    border: none;
+    color: white;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    border: none;
+    color: white;
+}
+
+/* Modales mejorados */
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #4b6ca2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 1.5rem;
+}
+
+.modal-header-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    color: #ffffff;
+}
+
+.modal-insumo .form-control,
+.modal-insumo .form-select,
+.modal-insumo textarea {
+    border-radius: 8px;
+}
+
+.modal-insumo .form-label {
+    font-weight: 600;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-body {
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Formularios en modales */
+.modal .form-label {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.modal .form-control,
+.modal .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.modal .form-control:focus,
+.modal .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.15);
+}
+
+.modal .form-control-lg,
+.modal .form-select-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+}
+
+/* Input group mejorado */
+.input-group-text {
+    background: var(--light-color);
+    border: 2px solid #e9ecef;
+    padding: 0.75rem 1rem;
+}
+
+.input-group-text .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+/* Alert personalizado */
+.alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: none;
+    border-radius: 8px;
+    color: #0d47a1;
+    font-weight: 500;
+}
+
+/* Animación para favoritos */
+.fa-star {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Estados de stock */
+.table tr.stock-bajo {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.table tr.stock-medio {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+/* Responsive para tablets */
+@media (max-width: 1200px) {
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #tabla-productos {
+        min-width: 900px; /* Ajusta este valor según sea necesario */
+    }
+
+    .modal-dialog {
+        max-width: 95%;
+        margin: 1rem auto;
+    }
+    
+    .filter-section .row > div {
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .btn-action {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .table {
+        font-size: 0.9rem;
+    }
+    
+    .btn-sm {
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #4b6ca2 100%);
+    border-radius: 10px;
+}
+
+
+/* Loading spinner */
+.spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2rem;
+}
+
+/* DataTables personalización */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 1rem;
+}
+
+.page-link {
+    color: var(--primary-color);
+    border-radius: 6px;
+    margin: 0 0.25rem;
+}
+
+.page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #4b6ca2 100%);
+    border: none;
+}
+
+
+/* Estilos para cards de insumos */
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15) !important;
+}
+
+#contenedor-insumos-nuevo::-webkit-scrollbar,
+#contenedor-insumos-edit::-webkit-scrollbar {
+    width: 8px;
+}
+
+#contenedor-insumos-nuevo::-webkit-scrollbar-track,
+#contenedor-insumos-edit::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+#contenedor-insumos-nuevo::-webkit-scrollbar-thumb,
+#contenedor-insumos-edit::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+#grid-insumos-disponibles .card {
+    border: 2px solid transparent;
+}
+
+#grid-insumos-disponibles .card:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}

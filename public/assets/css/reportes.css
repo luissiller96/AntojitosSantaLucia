@@ -1,0 +1,370 @@
+/* ============================================
+   REPORTES - ESTILOS
+   ============================================ */
+
+.rep-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 20px 100px;
+}
+
+/* Header */
+.rep-header {
+    margin-bottom: 20px;
+}
+
+.rep-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+}
+
+.rep-title i {
+    color: #4a90e2;
+}
+
+.rep-subtitle {
+    color: #6c757d;
+    margin: 4px 0 0;
+    font-size: .95rem;
+}
+
+/* ── KPI Cards ── */
+.rep-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.stats-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+    border-left: 4px solid #dee2e6;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card.success {
+    border-left-color: #28a745;
+}
+
+.stats-card.info {
+    border-left-color: #4a90e2;
+}
+
+.stats-card.warning {
+    border-left-color: #ffc107;
+}
+
+.stats-card.danger {
+    border-left-color: #dc3545;
+}
+
+.stats-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    opacity: .12;
+}
+
+.stats-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.stats-label {
+    font-size: .72rem;
+    font-weight: 700;
+    color: #6c757d;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    margin: 4px 0 0;
+}
+
+/* ── Tabs ── */
+.rep-tabs-wrap {
+    margin-bottom: 18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.rep-tabs-wrap::-webkit-scrollbar {
+    display: none;
+}
+
+.rep-tabs {
+    display: flex;
+    gap: 6px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0;
+    white-space: nowrap;
+}
+
+.rep-tab {
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    font-size: .9rem;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all .2s;
+    border-radius: 8px 8px 0 0;
+}
+
+.rep-tab:hover {
+    color: #4a90e2;
+    background: #f0f6ff;
+}
+
+.rep-tab.active {
+    color: #4a90e2;
+    border-bottom-color: #4a90e2;
+    background: #f0f6ff;
+}
+
+/* ── Panels ── */
+.rep-panel {
+    display: none;
+}
+
+.rep-panel.active {
+    display: block;
+}
+
+/* ── Filtros ── */
+.rep-filtros {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.rep-filtro-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.rep-filtro-group label {
+    font-size: .82rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.rep-input {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: .9rem;
+    outline: none;
+    transition: border-color .2s;
+}
+
+.rep-input:focus {
+    border-color: #4a90e2;
+}
+
+.rep-btn {
+    padding: 9px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: .9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.rep-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, .12);
+}
+
+.rep-btn-primary {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: #fff;
+}
+
+.rep-filtro-pagos {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.rep-btn-pago {
+    padding: 7px 14px;
+    border: 1px solid #dee2e6;
+    background: #fff;
+    border-radius: 20px;
+    font-size: .83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .2s;
+    color: #495057;
+}
+
+.rep-btn-pago.active {
+    background: #4a90e2;
+    color: #fff;
+    border-color: #4a90e2;
+}
+
+/* ── Cards ── */
+.rep-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .07);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.rep-card-header {
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: .95rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ── Tabla ── */
+.rep-table-wrap {
+    overflow-x: auto;
+}
+
+.rep-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+}
+
+.rep-table thead th {
+    padding: 11px 14px;
+    text-align: left;
+    font-weight: 700;
+    color: #495057;
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.rep-table tbody tr {
+    border-bottom: 1px solid #f4f4f4;
+    transition: background .15s;
+}
+
+.rep-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.rep-table tbody td {
+    padding: 10px 14px;
+    vertical-align: middle;
+}
+
+/* Badges */
+.rep-rank {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #4a90e2;
+    color: #fff;
+    font-weight: 700;
+    font-size: .82rem;
+    text-align: center;
+    line-height: 26px;
+}
+
+.rep-badge-cat {
+    background: #e8d5ff;
+    color: #5b21b6;
+    padding: 2px 9px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.rep-badge-pago {
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.badge-ef {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge-tj {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.badge-tr {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.rep-badge-activa {
+    background: #d4edda;
+    color: #155724;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.rep-badge-cerrada {
+    background: #e2e3e5;
+    color: #383d41;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+/* Loading / empty */
+.rep-loading {
+    text-align: center;
+    padding: 30px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.rep-empty {
+    text-align: center;
+    padding: 30px;
+    color: #adb5bd;
+}
+
+@media (max-width: 640px) {
+    .rep-filtros {
+        flex-direction: column;
+    }
+
+    .rep-kpis {
+        grid-template-columns: 1fr 1fr;
+    }
+}

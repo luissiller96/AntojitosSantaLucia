@@ -1,0 +1,638 @@
+/* ========================================
+   REPORTES REMASTERIZADOS - CSS MODERNO
+   COLORES NEUTROS Y PROFESIONALES
+   ======================================== */
+
+/* Variables CSS para consistencia */
+:root {
+  --primary-color: #7daee2;      /* Azul suave del caja.css */
+  --secondary-color: #6b7280;    /* Gris neutro */
+  --success-color: #10b981;      /* Verde suave */
+  --warning-color: #f59e0b;      /* Naranja suave */
+  --danger-color: #ee626b;       /* Rojo suave del caja.css */
+  --info-color: #06b6d4;         /* Cyan suave */
+  --dark-color: #333;             /* Gris oscuro del caja.css */
+  --light-color: #fcfcfc;         /* Blanco suave del caja.css */
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --border-radius: 10px;          /* Más suave como en caja.css */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 2px 5px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --transition: all 0.2s ease-in-out;
+}
+
+/* ========================================
+   LAYOUT PRINCIPAL
+   ======================================== */
+
+.reportes-container {
+  background-color: var(--gray-100);
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.reportes-header {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.reportes-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-color);
+}
+
+.reportes-title {
+  font-size: clamp(24px, 2vw, 32px);
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+  text-align: center;
+}
+
+.reportes-subtitle {
+  color: var(--gray-600);
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* ========================================
+   TABS MODERNOS - ESTILO NEUTRO
+   ======================================== */
+/* ========================================
+   TABS MODERNOS - ESTILO LÍNEA INFERIOR
+   ======================================== */
+
+.nav-tabs {
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid var(--gray-200);
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: 0;
+  color: var(--gray-600);
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+  margin: 0 0.5rem;
+  transition: var(--transition);
+  position: relative;
+  background-color: transparent;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(125, 174, 226, 0.05);
+  border-bottom-color: rgba(125, 174, 226, 0.3);
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--primary-color);
+  background-color: transparent;
+  border-bottom-color: var(--primary-color);
+  font-weight: 600;
+}
+
+.nav-tabs .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-color);
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { width: 0; left: 50%; }
+  to { width: 100%; left: 0; }
+}
+/* ========================================
+   CARDS MODERNOS - ESTILO MINIMALISTA
+   ======================================== */
+
+.modern-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+}
+
+.modern-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.modern-card .card-header {
+  background: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 1.5rem;
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+.modern-card .card-body {
+  padding: 1.5rem;
+  background-color: var(--light-color);
+}
+
+/* Stats Cards - Colores más suaves */
+.stats-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  border-left: 4px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  background: var(--gray-100);
+  border-radius: 50%;
+  transform: translate(20px, -20px);
+}
+
+.stats-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.stats-card.success {
+  border-left-color: var(--success-color);
+}
+
+.stats-card.warning {
+  border-left-color: var(--warning-color);
+}
+
+.stats-card.info {
+  border-left-color: var(--info-color);
+}
+
+.stats-card.danger {
+  border-left-color: var(--danger-color);
+}
+
+.stats-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.stats-label {
+  color: var(--gray-600);
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 480;
+}
+
+.stats-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  opacity: 0.3;
+}
+
+/* ========================================
+   FILTROS MODERNOS - ESTILO NEUTRO
+   ======================================== */
+
+.filtros-container {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 2rem;
+  border: 1px solid var(--gray-200);
+}
+
+.filtro-group {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  flex-wrap: wrap;
+}
+
+.filtro-item {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filtro-label {
+  font-weight: 500;
+  color: var(--dark-color);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-control {
+  border: 1px solid var(--gray-300);
+  border-radius: 8px;
+  padding: 0.75rem;
+  transition: var(--transition);
+  font-size: 0.9rem;
+  background-color: var(--light-color);
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(125, 174, 226, 0.25);
+  outline: none;
+}
+
+/* Botones de filtro - Estilo del caja.css */
+.filtro-ventas {
+  border-radius: 25px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 480;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  background-color: var(--gray-200);
+  color: #555;
+  box-shadow: var(--shadow-sm);
+}
+
+.filtro-ventas:hover:not(.active) {
+  background-color: #d0d0d0;
+}
+
+.filtro-ventas.active {
+  background-color: var(--danger-color);
+  color: white;
+  box-shadow: 0 2px 6px rgba(238, 98, 107, 0.25);
+}
+
+.btn-modern {
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: var(--transition);
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary-modern {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary-modern:hover {
+  background: #6b9dcc;
+}
+
+.btn-success-modern {
+  background: var(--success-color);
+  color: white;
+}
+
+/* ========================================
+   TABLAS MODERNAS - ESTILO MINIMALISTA
+   ======================================== */
+
+.tabla-container {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  border: 1px solid var(--gray-200);
+}
+
+.tabla-header {
+  background: var(--gray-100);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--gray-200);
+  font-weight: 600;
+  color: var(--dark-color);
+}
+
+/* Estilos para GridJS - Colores neutros */
+.gridjs-wrapper {
+  border: none;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.gridjs-head {
+  background: var(--gray-100);
+}
+
+.gridjs-th {
+  background: var(--gray-100);
+  color: var(--dark-color);
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.gridjs-td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--gray-100);
+  transition: var(--transition);
+  color: var(--gray-700);
+}
+
+.gridjs-tr:hover .gridjs-td {
+  background: var(--gray-50);
+}
+
+.gridjs-pagination {
+  border: none;
+  padding: 1rem;
+  background: var(--gray-100);
+}
+
+.gridjs-pages button {
+  border-radius: 6px;
+  border: 1px solid var(--gray-300);
+  margin: 0 2px;
+  transition: var(--transition);
+  background: white;
+  color: var(--gray-700);
+}
+
+.gridjs-pages button:hover {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* ========================================
+   BADGES Y ETIQUETAS - COLORES SUAVES
+   ======================================== */
+
+.badge-pago {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 480;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-pago-efectivo {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-pago-tarjeta {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-pago-transferencia {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+/* ========================================
+   GRÁFICAS MODERNAS
+   ======================================== */
+
+.chart-container {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  border: 1px solid var(--gray-200);
+}
+
+.chart-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.chart-subtitle {
+  color: var(--gray-600);
+  margin-top: 0.5rem;
+}
+
+/* ========================================
+   ANIMACIONES SUAVES
+   ======================================== */
+
+/* ========================================
+   ELEMENTOS ESPECÍFICOS - ESTILO NEUTRO
+   ======================================== */
+
+.icon-shape {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+  border-radius: 50%;
+}
+
+.avatar-sm {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-100);
+  border-radius: 50%;
+}
+
+#tablaRendimientoBarberos .gridjs-td,
+#tablaNominas .gridjs-td {
+  vertical-align: middle;
+}
+
+.productos-lista span {
+  display: inline-block;
+  margin: 2px;
+}
+
+/* Badge de Bootstrap personalizados */
+.badge.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--success-color) !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--danger-color) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--warning-color) !important;
+  color: var(--dark-color) !important;
+}
+
+.badge.bg-info {
+  background-color: var(--info-color) !important;
+}
+
+.badge.bg-dark {
+  background-color: var(--gray-700) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--gray-500) !important;
+}
+
+/* Botones de Bootstrap personalizados */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #6b9dcc;
+  border-color: #6b9dcc;
+}
+
+.btn-outline-primary {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .reportes-container {
+    padding: 1rem;
+  }
+
+  .reportes-title {
+    font-size: 1.75rem;
+  }
+
+  .filtro-group {
+    flex-direction: column;
+  }
+
+  .filtro-item {
+    min-width: 100%;
+  }
+
+  .nav-tabs {
+    flex-direction: column;
+  }
+
+  .nav-tabs .nav-link {
+    margin: 0.25rem 0;
+    text-align: center;
+  }
+}
+
+/* ========================================
+   LOADING STATES
+   ======================================== */
+
+.loading-skeleton {
+  background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-200) 50%, var(--gray-100) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ========================================
+   UTILIDADES
+   ======================================== */
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shadow-modern {
+  box-shadow: var(--shadow-md);
+}
+
+.border-modern {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius);
+}
+
+/* Scrollbar personalizado más sutil */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--gray-400);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500);
+}
