@@ -19,8 +19,7 @@
         "minHeight": 700,
         "resizable": true,
         "fullscreen": false,
-        "center": true,
-        "additionalBrowserArgs": "--kiosk-printing"
+        "center": true
       }
     ],
     "security": {
