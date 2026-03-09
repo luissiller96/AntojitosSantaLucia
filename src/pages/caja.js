@@ -739,84 +739,63 @@ const CajaApp = {
     }
 
     return `
-<!DOCTYPE html>
-<html lang='es'>
-<head>
-  <meta charset='UTF-8'>
-  <title>Ticket #${ticket_id}</title>
-  <style>
-    @page { margin: 0; size: 80mm auto; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 17px;
-      font-weight: bold;
-      width: 80mm;
-      padding: 10px;
-      color: #000;
-      line-height: 1.3;
-    }
-    .center { text-align: center; }
-    .right { text-align: right; }
-    .left { text-align: left; }
-    h1 { font-size: 26px; margin-bottom: 2px; }
-    h2 { font-size: 22px; margin-bottom: 10px; }
-    .sep { border: none; border-top: 2px dashed #000; margin: 8px 0; }
-    .info p { margin-bottom: 4px; }
-    table { width: 100%; border-collapse: collapse; margin: 0; }
-    th { font-size: 17px; font-weight: bold; padding: 4px 0; }
-    td { font-size: 17px; padding: 4px 0; vertical-align: top; }
-    .totales-container { margin-top: 8px; font-size: 17px; text-align: right; }
-    .totales-container p { margin-bottom: 4px; }
-    .total-final { font-size: 30px; font-weight: bold; margin-top: 15px; margin-bottom: 15px; text-align: center; }
-  </style>
-</head>
-<body>
-  <div class="center">
-    <h1>Ticket #${ticket_id}</h1>
-    <h2>Antojitos Santa Lucía</h2>
-  </div>
+  <div class="ticket-receipt" style="font-family: 'Courier New', Courier, monospace; font-size: 14px; font-weight: bold; width: 100%; max-width: 300px; margin: 0 auto; color: #000; line-height: 1.2;">
+    <style>
+      .ticket-receipt .center { text-align: center; }
+      .ticket-receipt .right { text-align: right; }
+      .ticket-receipt .left { text-align: left; }
+      .ticket-receipt h1 { font-size: 22px; margin-bottom: 2px; }
+      .ticket-receipt h2 { font-size: 18px; margin-bottom: 10px; }
+      .ticket-receipt .sep { border: none; border-top: 2px dashed #000; margin: 8px 0; }
+      .ticket-receipt .info p { margin-bottom: 4px; }
+      .ticket-receipt table { width: 100%; border-collapse: collapse; margin: 0; }
+      .ticket-receipt th { font-size: 14px; font-weight: bold; padding: 4px 0; text-align: left; }
+      .ticket-receipt td { font-size: 14px; padding: 4px 0; vertical-align: top; }
+      .ticket-receipt .total-final { font-size: 24px; font-weight: bold; margin-top: 15px; margin-bottom: 15px; text-align: center; }
+      .ticket-receipt td.right-align { text-align: right; }
+    </style>
+    
+    <div class="center">
+      <h1>Ticket #${ticket_id}</h1>
+      <h2>Antojitos Santa Lucía</h2>
+    </div>
 
-  <div class='info'>
-    <p>Fecha: ${fecha}</p>
-    <p>Vendedor: ${vendedor_nombre}</p>
-    <p>Cliente: ${cliente || 'Público General'}</p>
-    <p>Metodo Pago: ${tipo_pago}</p>
-  </div>
-  
-  <hr class='sep'>
-  
-  <table>
-    <thead>
-      <tr>
-        <th class="left" style='width:15%;'>Cant</th>
-        <th class="left" style='width:55%;'>Producto</th>
-        <th class="right" style='width:30%;'>Total</th>
-      </tr>
-    </thead>
-  </table>
-  
-  <hr class='sep' style='margin-top: 0;'>
-  
-  <table>
-    <tbody>${filas}</tbody>
-  </table>
-  
-  <hr class='sep'>
-  
-  <div class='totales-container'>
-    ${filasTotales}
-  </div>
-  
-  <div class='total-final'>
-    TOTAL: $${Number(total).toFixed(2)}
-  </div>
-  
-  <div class="center" style="font-size: 15px; margin-top: 20px;">
-    <p>¡Gracias por su preferencia!</p>
-  </div>
-</body>
-</html>`;
+    <div class='info left'>
+      <p>Fecha: ${fecha}</p>
+      <p>Vendedor: ${vendedor_nombre}</p>
+      <p>Cliente: ${cliente || 'Público General'}</p>
+      <p>Metodo: ${tipo_pago}</p>
+    </div>
+    
+    <hr class='sep'>
+    
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 15%;">Cant</th>
+          <th style="width: 55%;">Producto</th>
+          <th style="width: 30%; text-align: right;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filas}
+      </tbody>
+    </table>
+    
+    <hr class='sep'>
+    
+    <div class='right'>
+        ${filasTotales}
+    </div>
+    
+    <div class='total-final'>
+      TOTAL: $${Number(total).toFixed(2)}
+    </div>
+    
+    <div class="center" style="font-size: 12px; margin-top: 10px;">
+      <p>¡Gracias por su preferencia!</p>
+    </div>
+  </div>`;
   },
 
   // ─── Registrar Venta (reemplaza controller/ventas.php) ───────────────────
@@ -1237,39 +1216,40 @@ const CajaApp = {
 // Exponer globalmente para los onclick del HTML
 window.CajaApp = CajaApp;
 
-// Helper global de impresión (Compatible con WebView2 - Iframe method)
+// Helper global de impresión (Compatible con WebView2 - Print Media CSS)
 window.imprimirTicket = function (html) {
   if (!html) return;
-  // Remover iframe previo si existe
-  const oldFrame = document.getElementById('print-iframe');
-  if (oldFrame) { oldFrame.parentNode.removeChild(oldFrame); }
 
-  // Crear nuevo iframe oculto
-  const iframe = document.createElement('iframe');
-  iframe.id = 'print-iframe';
-  iframe.style.position = 'fixed';
-  iframe.style.right = '0';
-  iframe.style.bottom = '0';
-  iframe.style.width = '0';
-  iframe.style.height = '0';
-  iframe.style.border = '0';
-  document.body.appendChild(iframe);
+  let printArea = document.getElementById('print-area');
+  if (!printArea) {
+    printArea = document.createElement('div');
+    printArea.id = 'print-area';
+    document.body.appendChild(printArea);
 
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(html);
-  doc.close();
+    // Inyectar CSS global de impresión
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @media print {
+        body * { visibility: hidden !important; }
+        #print-area, #print-area * { visibility: visible !important; color: #000 !important; }
+        #print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
+        @page { margin: 0; }
+      }
+      @media screen {
+        #print-area { display: none; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
-  // Esperar a que renderice y mandar a imprimir
+  printArea.innerHTML = html;
+
+  // Esperar a que el DOM se actualice y mandar a imprimir la ventana principal
   setTimeout(() => {
-    iframe.contentWindow.focus();
-    iframe.contentWindow.print();
-    // Limpieza después de imprimir (opcional, dejamos el iframe para evitar fugas si print bloquea)
-    setTimeout(() => {
-      const frameToRemove = document.getElementById('print-iframe');
-      if (frameToRemove) frameToRemove.parentNode.removeChild(frameToRemove);
-    }, 5000); // 5 segundos de margen post-print
-  }, 400);
+    window.print();
+    // Limpiar área después de impresión
+    setTimeout(() => { printArea.innerHTML = ''; }, 1000);
+  }, 300);
 };
 
 // ─── Queries SQLite ───────────────────────────────────────────────────────────
