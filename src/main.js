@@ -57,11 +57,12 @@ async function navigate(path) {
       <div style="padding:40px;font-family:monospace;background:#1e293b;color:#f87171;min-height:100vh;">
         <h2 style="color:#fb923c;">❌ Error al cargar: ${path}</h2>
         <pre style="background:#0f172a;padding:20px;border-radius:8px;overflow:auto;color:#fca5a5;">${err?.stack || err?.message || String(err)}</pre>
-        <button onclick="window.navigateTo('/login')"
+        <button id="btn-err-login"
           style="margin-top:20px;padding:10px 24px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:16px;">
           ← Volver al Login
         </button>
       </div>`;
+    document.getElementById('btn-err-login')?.addEventListener('click', () => window.navigateTo('/login'));
   }
 }
 

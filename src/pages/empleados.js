@@ -152,6 +152,20 @@ const EmpleadosApp = {
 
     document.getElementById('form-empleado').addEventListener('submit', (e) => this.guardarEmpleado(e));
     document.getElementById('form-usuario').addEventListener('submit', (e) => this.crearUsuario(e));
+
+    // Delegación de eventos para las acciones de la tabla
+    const tbody = document.getElementById('emp-tbody');
+    if (tbody) {
+      tbody.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action]');
+        if (!btn) return;
+        const action = btn.dataset.action;
+        const id = Number(btn.dataset.id);
+        if (action === 'edit') this.editar(id);
+        else if (action === 'delete') this.eliminar(id);
+        else if (action === 'user') this.abrirCrearUsuario(id);
+      });
+    }
   },
 
   abrirModal(id) {
@@ -187,13 +201,13 @@ const EmpleadosApp = {
         const hasUser = r.usu_id ? true : false;
         const statusBadge = r.emp_estatus === 1 ? '<span class="emp-badge open">Activo</span>' : '<span class="emp-badge closed">Inactivo</span>';
 
-        // Acciones
+        // Acciones mediante dataset y event delegation
         let accionesHtml = `
-          <button class="emp-btn-icon edit" onclick="window.EmpleadosApp.editar(${r.emp_id})" title="Editar"><i class="fas fa-edit"></i></button>
-          <button class="emp-btn-icon delete" onclick="window.EmpleadosApp.eliminar(${r.emp_id})" title="Eliminar"><i class="fas fa-trash"></i></button>
+          <button class="emp-btn-icon edit" data-action="edit" data-id="${r.emp_id}" title="Editar"><i class="fas fa-edit"></i></button>
+          <button class="emp-btn-icon delete" data-action="delete" data-id="${r.emp_id}" title="Eliminar"><i class="fas fa-trash"></i></button>
         `;
         if (!hasUser) {
-          accionesHtml += `<button class="emp-btn-icon user" onclick="window.EmpleadosApp.abrirCrearUsuario(${r.emp_id})" title="Enlazar Usuario"><i class="fas fa-user-plus"></i></button>`;
+          accionesHtml += `<button class="emp-btn-icon user" data-action="user" data-id="${r.emp_id}" title="Enlazar Usuario"><i class="fas fa-user-plus"></i></button>`;
         }
 
         html += `

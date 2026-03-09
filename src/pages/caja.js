@@ -47,11 +47,11 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
         <!-- Filtro Categorías -->
         <div class="categorias-scroll">
           <ul class="trending-filter">
-            <li><a class="is_active" href="#" data-filter="*" onclick="return false;">Todos</a></li>
-            <li><a href="#" data-filter=".favorito" onclick="return false;"><i class="fa fa-star" style="color:#f59e0b;"></i></a></li>
+            <li><a class="is_active" href="#" data-filter="*">Todos</a></li>
+            <li><a href="#" data-filter=".favorito"><i class="fa fa-star" style="color:#f59e0b;"></i></a></li>
             ${categorias.map(cat => {
     const cls = slugify(cat);
-    return `<li><a href="#" data-filter=".${cls}" onclick="return false;">${cat}</a></li>`;
+    return `<li><a href="#" data-filter=".${cls}">${cat}</a></li>`;
   }).join('')}
           </ul>
         </div>
@@ -63,11 +63,12 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
     const cats = slugify(p.pr_categoria);
     const fav = p.pr_favorito == 1 ? 'favorito' : '';
     return `
-              <div class="producto-card ${cats} ${fav}"
+              <div class="producto-card btn-accion-agregar ${cats} ${fav}"
                    data-id="${p.ID}"
                    data-stock="${p.pr_stock ?? 'NULL'}"
                    data-favorito="${p.pr_favorito}"
-                   onclick="CajaApp.agregarAlCarrito(${p.ID}, '${escJs(p.pr_nombre)}', ${p.pr_precioventa})">
+                   data-nombre="${escJs(p.pr_nombre)}"
+                   data-precio="${p.pr_precioventa}">
                 <div class="producto-imagen">
                   <img src="/assets/images/fondoproducto.png" alt="" onerror="this.style.display='none'">
                   <h6 class="producto-nombre">${p.pr_nombre}</h6>
@@ -104,8 +105,7 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
     const cls = 'cajero-color-' + slugify(c.emp_nombre);
     const active = i === 0 ? 'is_active' : '';
     return `<li><a href="#" class="vendedor-selector ${active} ${cls}"
-                         data-cajero-id="${c.emp_id}"
-                         onclick="return false;">${c.emp_nombre}</a></li>`;
+                         data-cajero-id="${c.emp_id}">${c.emp_nombre}</a></li>`;
   }).join('')}
           </ul>
         </div>
@@ -350,6 +350,21 @@ const CajaApp = {
         this.actualizarVendedorSeleccionado();
       });
     });
+
+    // Delegación de eventos para agregar productos
+    const grid = document.getElementById('productos-lista');
+    if (grid) {
+      grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-accion-agregar');
+        if (btn) {
+          this.agregarAlCarrito(
+            Number(btn.dataset.id),
+            btn.dataset.nombre,
+            parseFloat(btn.dataset.precio)
+          );
+        }
+      });
+    }
 
     // Métodos de pago
     document.querySelectorAll('.tile-pago').forEach(t => {

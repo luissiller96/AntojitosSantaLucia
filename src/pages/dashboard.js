@@ -173,40 +173,40 @@ const DashboardApp = {
 
   updateUI(data) {
     this.hideLoader();
-    if (data.kpis)         this.updateKPIs(data.kpis);
+    if (data.kpis) this.updateKPIs(data.kpis);
     if (data.ventas_semana) this.renderChart(data.ventas_semana);
     if (data.ultimas_ventas) this.renderNovedades(data.ultimas_ventas);
   },
 
   updateKPIs(kpis) {
-    this.animateValue('kpi-ventas-dia',    0, kpis.ventas_dia,    1000, true);
+    this.animateValue('kpi-ventas-dia', 0, kpis.ventas_dia, 1000, true);
     this.animateValue('kpi-platillos-dia', 0, kpis.platillos_dia, 1000, false);
-    this.animateValue('kpi-ventas-mes',    0, kpis.ventas_mes,    1000, true);
-    this.animateValue('kpi-ordenes-cocina',0, kpis.ordenes_cocina,1000, false);
+    this.animateValue('kpi-ventas-mes', 0, kpis.ventas_mes, 1000, true);
+    this.animateValue('kpi-ordenes-cocina', 0, kpis.ordenes_cocina, 1000, false);
     this.updateEstadoCaja(kpis);
   },
 
   updateEstadoCaja(kpis) {
-    const estadoEl    = document.getElementById('kpi-caja-estado');
-    const horaEl      = document.getElementById('kpi-caja-hora');
-    const montoEl     = document.getElementById('kpi-caja-monto');
+    const estadoEl = document.getElementById('kpi-caja-estado');
+    const horaEl = document.getElementById('kpi-caja-hora');
+    const montoEl = document.getElementById('kpi-caja-monto');
     const indicadorEl = document.getElementById('caja-indicador');
 
     if (kpis.caja_estado === 'abierta') {
-      if (estadoEl)    estadoEl.textContent = 'Abierta';
+      if (estadoEl) estadoEl.textContent = 'Abierta';
       if (horaEl && kpis.caja_hora_apertura) {
         const fecha = new Date(kpis.caja_hora_apertura);
         horaEl.textContent = fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
       }
-      if (montoEl)     montoEl.textContent = this.formatCurrency(kpis.caja_monto_apertura);
+      if (montoEl) montoEl.textContent = this.formatCurrency(kpis.caja_monto_apertura);
       if (indicadorEl) {
         indicadorEl.classList.remove('caja-cerrada');
         indicadorEl.classList.add('caja-abierta');
       }
     } else {
-      if (estadoEl)    estadoEl.textContent = 'Cerrada';
-      if (horaEl)      horaEl.textContent = '--:--';
-      if (montoEl)     montoEl.textContent = '$0.00';
+      if (estadoEl) estadoEl.textContent = 'Cerrada';
+      if (horaEl) horaEl.textContent = '--:--';
+      if (montoEl) montoEl.textContent = '$0.00';
       if (indicadorEl) {
         indicadorEl.classList.remove('caja-abierta');
         indicadorEl.classList.add('caja-cerrada');
@@ -223,7 +223,7 @@ const DashboardApp = {
       return;
     }
     const startTime = Date.now();
-    const endTime   = startTime + duration;
+    const endTime = startTime + duration;
     const timer = setInterval(() => {
       const remaining = Math.max((endTime - Date.now()) / duration, 0);
       const value = Math.round(end - remaining * range);
@@ -362,11 +362,11 @@ const DashboardApp = {
   },
 
   hideLoader() {
-    const loader   = document.getElementById('dashboard-loader');
-    const kpis     = document.getElementById('kpis-section');
-    const content  = document.getElementById('content-section');
-    if (loader)  loader.style.display  = 'none';
-    if (kpis)  { kpis.style.display    = 'flex'; kpis.classList.add('animate-fadeInUp'); }
+    const loader = document.getElementById('dashboard-loader');
+    const kpis = document.getElementById('kpis-section');
+    const content = document.getElementById('content-section');
+    if (loader) loader.style.display = 'none';
+    if (kpis) { kpis.style.display = 'flex'; kpis.classList.add('animate-fadeInUp'); }
     if (content) { content.style.display = 'grid'; content.classList.add('animate-fadeInUp'); }
   },
 
@@ -379,7 +379,7 @@ const DashboardApp = {
         <div style="color:#ef4444;font-family:monospace;">
           <h3 style="color:#ef4444;margin-bottom:12px;">❌ Error al cargar datos</h3>
           <pre style="background:#1e293b;color:#f87171;padding:16px;border-radius:8px;font-size:12px;overflow:auto;text-align:left;">${err?.stack || err?.message || String(err)}</pre>
-          <button onclick="window.DashboardApp.loadData()" style="
+          <button id="btnRetryDashboard" style="
             margin-top:15px; padding:8px 20px; background:#d45c37ff;
             color:white; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
             Reintentar
@@ -398,6 +398,13 @@ const DashboardApp = {
         this.style.transform = 'scale(0.98)';
         setTimeout(() => { this.style.transform = ''; }, 150);
       });
+    });
+
+    // Delegación para botón de reintento (creado dinámicamente)
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#btnRetryDashboard')) {
+        this.loadData();
+      }
     });
   },
 };
@@ -458,7 +465,7 @@ async function getKpisCompletos() {
      WHERE estatus = 'activa' ORDER BY fecha_apertura DESC LIMIT 1`,
     []
   );
-  const caja_estado        = cajaRows.length > 0 ? 'abierta' : 'cerrada';
+  const caja_estado = cajaRows.length > 0 ? 'abierta' : 'cerrada';
   const caja_hora_apertura = cajaRows[0]?.fecha_apertura ?? null;
   const caja_monto_apertura = parseFloat(cajaRows[0]?.monto_apertura ?? 0);
 
@@ -514,11 +521,11 @@ async function getUltimasVentas() {
     );
     if (info) {
       ventas.push({
-        ticket:       t.ticket,
+        ticket: t.ticket,
         total_ticket: parseFloat(info.total_ticket),
-        metodo_pago:  info.metodo_pago,
-        hora_venta:   info.hora_venta,
-        estatus:      info.estatus,
+        metodo_pago: info.metodo_pago,
+        hora_venta: info.hora_venta,
+        estatus: info.estatus,
         productos,
       });
     }
