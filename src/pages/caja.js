@@ -1237,19 +1237,39 @@ const CajaApp = {
 // Exponer globalmente para los onclick del HTML
 window.CajaApp = CajaApp;
 
-// Helper global de impresión
+// Helper global de impresión (Compatible con WebView2 - Iframe method)
 window.imprimirTicket = function (html) {
   if (!html) return;
-  const ventana = window.open('', '_blank', 'width=420,height=650,scrollbars=yes');
-  if (ventana) {
-    ventana.document.write(html);
-    ventana.document.close();
-    setTimeout(function () {
-      ventana.focus();
-      ventana.print();
-      ventana.onafterprint = function () { ventana.close(); };
-    }, 400);
-  }
+  // Remover iframe previo si existe
+  const oldFrame = document.getElementById('print-iframe');
+  if (oldFrame) { oldFrame.parentNode.removeChild(oldFrame); }
+
+  // Crear nuevo iframe oculto
+  const iframe = document.createElement('iframe');
+  iframe.id = 'print-iframe';
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  document.body.appendChild(iframe);
+
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(html);
+  doc.close();
+
+  // Esperar a que renderice y mandar a imprimir
+  setTimeout(() => {
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    // Limpieza después de imprimir (opcional, dejamos el iframe para evitar fugas si print bloquea)
+    setTimeout(() => {
+      const frameToRemove = document.getElementById('print-iframe');
+      if (frameToRemove) frameToRemove.parentNode.removeChild(frameToRemove);
+    }, 5000); // 5 segundos de margen post-print
+  }, 400);
 };
 
 // ─── Queries SQLite ───────────────────────────────────────────────────────────
