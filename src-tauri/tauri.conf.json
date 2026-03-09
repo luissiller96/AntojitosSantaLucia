@@ -24,7 +24,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' asset: https://asset.localhost data: https://images.unsplash.com https://images.pexels.com blob:; connect-src ipc: http://ipc.localhost https://cdn.jsdelivr.net"
+      "csp": "default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' asset: https://asset.localhost data: https://images.unsplash.com https://images.pexels.com blob:; connect-src ipc: http://ipc.localhost https://cdn.jsdelivr.net https://antojitossantalucia.smartouch.me"
     }
   },
   "bundle": {

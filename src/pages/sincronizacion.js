@@ -260,14 +260,17 @@ async function initSyncPage() {
     // Verificar conexión al servidor usando GET
     let servidorDisponible = false;
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
         const pingRes = await fetch(SYNC_URL, {
             method: 'GET',
             mode: 'cors', // Permitir CORS
             headers: {
                 'Accept': 'application/json'
             },
-            signal: AbortSignal.timeout(5000)
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
         // Si el PHP devuelve un código HTTP (incluso 401 que pusimos), el servidor vive
         servidorDisponible = true;
     } catch (e) {
@@ -346,6 +349,9 @@ async function ejecutarSync() {
             rv_gastos: gastos
         };
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
         const response = await fetch(SYNC_URL, {
             method: 'POST',
             headers: {
@@ -353,8 +359,9 @@ async function ejecutarSync() {
                 'Authorization': `Bearer ${SYNC_TOKEN}`
             },
             body: JSON.stringify(payload),
-            signal: AbortSignal.timeout(30000)
+            signal: controller.signal
         });
+        clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`Error del servidor: ${response.status}`);
