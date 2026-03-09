@@ -38,27 +38,27 @@ export function renderLayout(container, currentPage, pageContent) {
 
     <!-- Bottom Navigation Bar -->
     <nav class="bottom-nav-bar" id="bottom-nav-bar">
-      <a href="#" class="nav-item ${currentPage === 'dashboard' ? 'active' : ''}" 
-        onclick="window.navigateTo('/dashboard'); return false;">
+      <div class="nav-item ${currentPage === 'dashboard' ? 'active' : ''}" style="cursor:pointer;"
+        onclick="window.navigateTo('/dashboard');">
         <i class="fas fa-home"></i>
         <span>Inicio</span>
-      </a>
+      </div>
       ${isCajero ? `
-      <a href="#" class="nav-item ${currentPage === 'caja' ? 'active' : ''}"
-        onclick="window.navigateTo('/caja'); return false;">
+      <div class="nav-item ${currentPage === 'caja' ? 'active' : ''}" style="cursor:pointer;"
+        onclick="window.navigateTo('/caja');">
         <i class="fas fa-cash-register"></i>
         <span>Caja</span>
-      </a>` : ''}
+      </div>` : ''}
       ${isAdmin ? `
-      <a href="#" class="nav-item ${currentPage === 'reportes' ? 'active' : ''}"
-        onclick="window.navigateTo('/reportes'); return false;">
+      <div class="nav-item ${currentPage === 'reportes' ? 'active' : ''}" style="cursor:pointer;"
+        onclick="window.navigateTo('/reportes');">
         <i class="fas fa-chart-line"></i>
         <span>Reportes</span>
-      </a>` : ''}
-      <a href="#" class="nav-item" id="settings-nav-item">
+      </div>` : ''}
+      <div class="nav-item" id="settings-nav-item" style="cursor:pointer;">
         <i class="fas fa-bars"></i>
         <span>Más</span>
-      </a>
+      </div>
     </nav>
 
     <!-- Drawer lateral -->
@@ -70,65 +70,65 @@ export function renderLayout(container, currentPage, pageContent) {
       <div class="drawer-content">
         <div class="drawer-grid">
           ${isCocinero ? `
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/comanda'); return false;">
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/comanda');">
             <div class="drawer-card-icon icon-comanda"><i class="fas fa-kitchen-set"></i></div>
             <span>Comanda</span>
-          </a>` : ''}
+          </div>` : ''}
           ${isCajero ? `
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/productos'); return false;">
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/productos');">
             <div class="drawer-card-icon icon-productos"><i class="fas fa-box-open"></i></div>
             <span>Productos</span>
-          </a>` : ''}
+          </div>` : ''}
           ${isCocinero ? `
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/display'); return false;">
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/display');">
             <div class="drawer-card-icon icon-clientes"><i class="fas fa-users"></i></div>
             <span>Clientes</span>
-          </a>` : ''}
+          </div>` : ''}
           ${isCajero ? `
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/cierre_caja'); return false;">
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/cierre_caja');">
             <div class="drawer-card-icon icon-caja"><i class="fas fa-store"></i></div>
             <span>Apertura/Cierre</span>
-          </a>
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/devoluciones'); return false;">
+          </div>
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/devoluciones');">
             <div class="drawer-card-icon icon-devoluciones"><i class="fas fa-undo"></i></div>
             <span>Devoluciones</span>
-          </a>` : ''}
+          </div>` : ''}
           ${isAdmin ? `
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/token'); return false;">
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/token');">
             <div class="drawer-card-icon icon-token"><i class="fas fa-key"></i></div>
             <span>Ver Token</span>
-          </a>
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/empleados'); return false;">
+          </div>
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/empleados');">
             <div class="drawer-card-icon icon-empleados"><i class="fas fa-user-cog"></i></div>
             <span>Empleados</span>
-          </a>
-          <a href="#" class="drawer-card" onclick="closeDrawer(); window.navigateTo('/sincronizacion'); return false;">
+          </div>
+          <div class="drawer-card" style="cursor:pointer;" onclick="closeDrawer(); window.navigateTo('/sincronizacion');">
             <div class="drawer-card-icon icon-sync"><i class="fas fa-cloud-upload-alt"></i></div>
             <span>Sincronización</span>
-          </a>` : ''}
+          </div>` : ''}
         </div>
         <hr class="drawer-divider">
         <ul class="drawer-list">
           <li>
-            <a href="#" id="toggleDarkMode">
+            <div id="toggleDarkMode" style="cursor:pointer; display:flex; align-items:center; width:100%; padding: 12px 0;">
               <div class="list-icon"><i class="fas fa-moon"></i></div>
               <span>Modo Oscuro</span>
-              <i class="fas fa-chevron-right arrow-icon"></i>
-            </a>
+              <i class="fas fa-chevron-right arrow-icon" style="margin-left:auto;"></i>
+            </div>
           </li>
           <li>
-            <a href="#" onclick="closeDrawer(); window.navigateTo('/ayuda'); return false;">
+            <div style="cursor:pointer; display:flex; align-items:center; width:100%; padding: 12px 0;" onclick="closeDrawer(); window.navigateTo('/ayuda');">
               <div class="list-icon"><i class="fas fa-question-circle"></i></div>
               <span>Ayuda y soporte técnico</span>
-              <i class="fas fa-chevron-right arrow-icon"></i>
-            </a>
+              <i class="fas fa-chevron-right arrow-icon" style="margin-left:auto;"></i>
+            </div>
           </li>
           <li>
-            <a href="#" onclick="closeDrawer(); window.navigateTo('/login'); return false;">
+            <div style="cursor:pointer; display:flex; align-items:center; width:100%; padding: 12px 0;" onclick="closeDrawer(); window.navigateTo('/login');">
               <div class="list-icon"><i class="fas fa-sign-out-alt"></i></div>
               <span>Cerrar Sesión</span>
-              <i class="fas fa-chevron-right arrow-icon"></i>
-            </a>
+              <i class="fas fa-chevron-right arrow-icon" style="margin-left:auto;"></i>
+            </div>
           </li>
         </ul>
       </div>
