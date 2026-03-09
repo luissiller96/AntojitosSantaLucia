@@ -19,7 +19,8 @@
         "minHeight": 700,
         "resizable": true,
         "fullscreen": false,
-        "center": true
+        "center": true,
+        "additionalBrowserArgs": "--kiosk-printing"
       }
     ],
     "security": {
@@ -39,7 +40,9 @@
   },
   "plugins": {
     "sql": {
-      "preload": ["sqlite:antojitos.db"]
+      "preload": [
+        "sqlite:antojitos.db"
+      ]
     }
   }
 }

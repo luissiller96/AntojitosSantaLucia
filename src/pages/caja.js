@@ -739,20 +739,23 @@ const CajaApp = {
     }
 
     return `
-  <div class="ticket-receipt" style="font-family: 'Courier New', Courier, monospace; font-size: 14px; font-weight: bold; width: 100%; max-width: 300px; margin: 0 auto; color: #000; line-height: 1.2;">
+  <div class="ticket-receipt" style="font-family: 'Courier New', Courier, monospace; font-size: 11px; font-weight: bold; width: 100%; max-width: 185px; margin: 0; padding: 0; color: #000; line-height: 1.1;">
     <style>
       .ticket-receipt .center { text-align: center; }
       .ticket-receipt .right { text-align: right; }
       .ticket-receipt .left { text-align: left; }
-      .ticket-receipt h1 { font-size: 22px; margin-bottom: 2px; }
-      .ticket-receipt h2 { font-size: 18px; margin-bottom: 10px; }
-      .ticket-receipt .sep { border: none; border-top: 2px dashed #000; margin: 8px 0; }
-      .ticket-receipt .info p { margin-bottom: 4px; }
-      .ticket-receipt table { width: 100%; border-collapse: collapse; margin: 0; }
-      .ticket-receipt th { font-size: 14px; font-weight: bold; padding: 4px 0; text-align: left; }
-      .ticket-receipt td { font-size: 14px; padding: 4px 0; vertical-align: top; }
-      .ticket-receipt .total-final { font-size: 24px; font-weight: bold; margin-top: 15px; margin-bottom: 15px; text-align: center; }
+      .ticket-receipt h1 { font-size: 18px; margin-bottom: 2px; }
+      .ticket-receipt h2 { font-size: 15px; margin-bottom: 8px; }
+      .ticket-receipt .sep { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+      .ticket-receipt .info p { margin-bottom: 3px; }
+      .ticket-receipt table { width: 100%; border-collapse: collapse; margin: 0; table-layout: fixed; }
+      .ticket-receipt th { font-size: 11px; font-weight: bold; padding: 3px 0; text-align: left; }
+      .ticket-receipt td { font-size: 11px; padding: 3px 0; vertical-align: top; }
+      .ticket-receipt .total-final { font-size: 18px; font-weight: bold; margin-top: 12px; margin-bottom: 12px; text-align: center; }
       .ticket-receipt td.right-align { text-align: right; }
+      .col-cant { width: 18%; }
+      .col-prod { width: 52%; word-wrap: break-word; }
+      .col-tot { width: 30%; text-align: right; }
     </style>
     
     <div class="center">
@@ -772,9 +775,9 @@ const CajaApp = {
     <table>
       <thead>
         <tr>
-          <th style="width: 15%;">Cant</th>
-          <th style="width: 55%;">Producto</th>
-          <th style="width: 30%; text-align: right;">Total</th>
+          <th class="col-cant">Cant</th>
+          <th class="col-prod">Producto</th>
+          <th class="col-tot">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -1232,8 +1235,8 @@ window.imprimirTicket = function (html) {
       @media print {
         body * { visibility: hidden !important; }
         #print-area, #print-area * { visibility: visible !important; color: #000 !important; }
-        #print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-        @page { margin: 0; }
+        #print-area { position: absolute; left: 0; top: 0; width: 185px; margin: 0; padding: 0; }
+        @page { size: 58mm auto; margin: 0; }
       }
       @media screen {
         #print-area { display: none; }
