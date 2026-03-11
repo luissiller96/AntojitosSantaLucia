@@ -10,11 +10,10 @@ import { renderLayout } from './layout.js';
 export async function renderCaja(container) {
   injectCSS('caja-css', '/assets/css/caja.css');
 
-  // Cargar productos, cajeros e ingredientes de SQLite
-  const [productos, cajeros, ingredientes, productosData] = await Promise.all([
+  // Cargar productos y cajeros de SQLite
+  const [productos, cajeros, productosData] = await Promise.all([
     getProductos(),
     getCajeros(),
-    getIngredientes(),
     getProductos(),
   ]);
 
@@ -22,7 +21,7 @@ export async function renderCaja(container) {
   const productosMixtos = productosData.filter(p => p.pr_nombre.includes('(Mixta)'));
 
   renderLayout(container, 'caja', getCajaHTML(productos, cajeros, productosMixtos));
-  CajaApp.init(productos, ingredientes);
+  CajaApp.init(productos);
 }
 
 function injectCSS(id, href) {
@@ -200,85 +199,90 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
     </div>
   </div>
 
-  <!-- ====== MODAL: COMANDA (Personalizar / Mixta) ====== -->
+  <!-- ====== MODAL: ORDEN MIXTA ====== -->
   <div class="cj-modal-overlay" id="modal-comanda">
-    <div class="cj-modal lg">
+    <div class="cj-modal lg" style="max-width: 900px; width: 95%;">
       <div class="cj-modal-header">
-        <h5>Personalizar: <span id="platilloPersonalizarNombre"></span></h5>
+        <h5>Crear <span id="platilloPersonalizarNombre"></span></h5>
         <button class="cj-modal-close" id="close-modal-comanda">&times;</button>
       </div>
-      <div class="cj-modal-body">
+      <div class="cj-modal-body" style="max-height: 70vh; overflow-y: auto;">
         <input type="hidden" id="platilloPersonalizarId">
 
-        <!-- Tabs -->
-        <div class="cj-tabs" id="comanda-tabs">
-          <button class="cj-tab-btn" id="tab-btn-mezcla" data-tab="tab-mezcla" style="display:none;">
-            <i class="fas fa-list-ol me-1"></i> Cantidades
-          </button>
-          <button class="cj-tab-btn active" id="tab-btn-ingredientes" data-tab="tab-ingredientes">
-            <i class="fas fa-edit me-1"></i> Ingredientes extras
-          </button>
-        </div>
-
-        <!-- Tab Mixta -->
-        <div class="cj-tab-panel" id="tab-mezcla">
-          ${productosMixtos.length > 0
-      ? productosMixtos.map(pm => {
+        <!-- Panel Mixta -->
+        <div id="tab-mezcla" style="padding: 10px 0;">
+          ${(() => {
+      if (productosMixtos.length === 0) {
+        return '<div style="text-align:center; color:#6c757d; padding:20px;">No hay productos mixtos configurados.</div>';
+      }
+      const grupos = {};
+      productosMixtos.forEach(pm => {
         const nombre = pm.pr_nombre.replace('(Mixta)', '').trim();
-        const precio = Number(pm.pr_precioventa).toFixed(0);
-        return `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #e9ecef;">
-                  <div>
-                    <div style="font-weight:600; font-size:1rem;">${nombre}</div>
-                    <div style="color:#6c757d; font-size:.85rem;">$${precio} c/u</div>
-                  </div>
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <button type="button" class="btn-stepper btn-stepper-minus" data-target="cantMixta_${pm.ID}">−</button>
-                    <span class="stepper-value" id="valMixta_${pm.ID}">0</span>
-                    <input type="hidden" id="cantMixta_${pm.ID}" class="cant-mixta"
-                           data-id="${pm.ID}" data-nombre="${escJs(nombre)}"
-                           data-precio="${pm.pr_precioventa}" value="0">
-                    <button type="button" class="btn-stepper btn-stepper-plus" data-target="cantMixta_${pm.ID}">+</button>
-                  </div>
-                </div>`;
-      }).join('')
-      : '<div style="text-align:center; color:#6c757d; padding:20px;">No hay productos mixtos configurados.</div>'
-    }
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#f8f9fa; border-radius:10px; margin-top:12px;">
-            <span style="color:#6c757d; font-weight:600;">Total Mixta:</span>
-            <span style="font-weight:700; font-size:1.2rem; color:#007aff;" id="totalOrdenMixta">$0.00</span>
-          </div>
-        </div>
+        const primeraPalabra = nombre.split(' ')[0];
+        if (!grupos[primeraPalabra]) grupos[primeraPalabra] = [];
+        grupos[primeraPalabra].push({ pm, nombre });
+      });
+      const gruposArreglo = Object.entries(grupos);
+      let htmlHTML = `
+              <div class="mixta-tabs-container" style="display: flex; gap: 20px; align-items: flex-start;">
+                
+                <!-- Menú Lateral de Categorías -->
+                <div class="mixta-sidebar" style="flex: 0 0 160px; display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                  `;
 
-        <!-- Tab Ingredientes -->
-        <div class="cj-tab-panel active" id="tab-ingredientes">
-          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px;">
-            <div>
-              <h6>Verduras 🥬</h6>
-              <div id="opcionesVerduras" class="ingredientes-scroll">
-                <div style="text-align:center; color:#6c757d; padding:8px;">Cargando...</div>
-              </div>
-            </div>
-            <div>
-              <h6>Aderezos 🥫</h6>
-              <div id="opcionesAderezos" class="ingredientes-scroll">
-                <div style="text-align:center; color:#6c757d; padding:8px;">Cargando...</div>
-              </div>
-            </div>
-            <div>
-              <h6>Otros ✨</h6>
-              <div id="opcionesOtros" class="ingredientes-scroll">
-                <div style="text-align:center; color:#6c757d; padding:8px;">Cargando...</div>
-              </div>
-              <div style="margin-top:8px;">
-                <label style="font-size:.85rem; font-weight:600;">Observaciones:</label>
-                <textarea id="observacionesTextarea" rows="2" style="width:100%; border:1px solid #dee2e6; border-radius:8px; padding:6px; font-size:.85rem; resize:none;" placeholder="Ej. Sin cebolla..."></textarea>
-              </div>
-            </div>
+      gruposArreglo.forEach(([grupo, items], index) => {
+        const isActive = index === 0 ? 'background:#007aff; color:#fff; font-weight:bold;' : 'background:#e9ecef; color:#495057;';
+        htmlHTML += `
+                  <button type="button" class="btn-mixta-tab" data-target="panel-${grupo}" style="width: 100%; text-align: left; padding: 12px 15px; border-radius: 8px; border: none; cursor: pointer; ${isActive} transition: all 0.2s; font-size: 1rem;">
+                    ${grupo}s (${items.length})
+                  </button>`;
+      });
+
+      htmlHTML += `
+                </div>
+                
+                <!-- Contenedor Principal de Artículos -->
+                <div class="mixta-content" style="flex: 1; border: 1px solid #e9ecef; border-radius: 10px; background: #fff; position: relative;">
+                  `;
+
+      gruposArreglo.forEach(([grupo, items], index) => {
+        const displayStyle = index === 0 ? 'block' : 'none';
+        htmlHTML += `
+                  <div class="mixta-panel" id="panel-${grupo}" style="display: ${displayStyle}; padding: 15px; max-height: 400px; overflow-y: auto;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">`;
+
+        items.forEach(({ pm, nombre }) => {
+          const precio = Number(pm.pr_precioventa).toFixed(0);
+          htmlHTML += `
+                      <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+                        <div>
+                          <div style="font-weight:600; font-size:1rem; color:#343a40;">${nombre}</div>
+                          <div style="color:#6c757d; font-size:.85rem;">$${precio} c/u</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; justify-content: flex-end;">
+                          <button type="button" class="btn-stepper btn-stepper-minus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#e9ecef; color:#495057; font-weight:bold; cursor:pointer; font-size:1.1rem;">−</button>
+                          <span class="stepper-value" id="valMixta_${pm.ID}" style="min-width:28px; text-align:center; font-weight:bold; font-size:1.1rem; color:#007aff;">0</span>
+                          <input type="hidden" id="cantMixta_${pm.ID}" class="cant-mixta"
+                                 data-id="${pm.ID}" data-nombre="${escJs(nombre)}"
+                                 data-precio="${pm.pr_precioventa}" value="0">
+                          <button type="button" class="btn-stepper btn-stepper-plus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#007aff; color:#fff; font-weight:bold; cursor:pointer; font-size:1.1rem;">+</button>
+                        </div>
+                      </div>`;
+        });
+        htmlHTML += `
+                    </div>
+                  </div>`;
+      });
+
+      htmlHTML += `
+                </div>
+              </div>`;
+      return htmlHTML;
+    })()}
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f8f9fa; border-radius:10px; margin-top:20px; border: 2px solid #e9ecef;">
+            <span style="color:#6c757d; font-weight:700; font-size:1.1rem;">Total Mixta:</span>
+            <span style="font-weight:800; font-size:1.5rem; color:#007aff;" id="totalOrdenMixta">$0.00</span>
           </div>
-          <p style="color:#6c757d; font-size:.8rem; margin-top:8px;">
-            Selecciona los ingredientes que deseas OMITIR o agregar como extra.
-          </p>
         </div>
       </div>
       <div class="cj-modal-footer">
@@ -318,15 +322,12 @@ const CajaApp = {
   metodoPago: '',
   vendedorSeleccionado: null,
   cambio: 0,
-  ingredientes: [],
   currentFilter: '*',
 
-  init(productos, ingredientes) {
-    this.ingredientes = ingredientes;
+  init(productos) {
     this.bindEvents();
     this.actualizarVendedorSeleccionado();
     this.actualizarEstadoCaja();
-    this.renderIngredientes(ingredientes);
   },
 
   // ─── Filtro Categorías ─────────────────────────────────────────────────────
@@ -418,15 +419,32 @@ const CajaApp = {
     // Añadir platillo personalizado (modal comanda)
     on('btnAgregarPlatilloPersonalizado', 'click', () => this.agregarPlatilloPersonalizado());
 
-    // Tabs comanda
-    document.querySelectorAll('.cj-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.cj-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.cj-tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(btn.dataset.tab)?.classList.add('active');
+    // Tabs comanda Mixta Nueva
+    const modalComanda = document.getElementById('modal-comanda');
+    if (modalComanda) {
+      modalComanda.addEventListener('click', (e) => {
+        const btnTab = e.target.closest('.btn-mixta-tab');
+        if (btnTab) {
+          // Remover clases activas de todos los botones
+          modalComanda.querySelectorAll('.btn-mixta-tab').forEach(b => {
+            b.style.background = '#e9ecef';
+            b.style.color = '#495057';
+            b.style.fontWeight = 'normal';
+          });
+          // Activar el clickeado
+          btnTab.style.background = '#007aff';
+          btnTab.style.color = '#fff';
+          btnTab.style.fontWeight = 'bold';
+
+          // Ocultar todos los paneles
+          modalComanda.querySelectorAll('.mixta-panel').forEach(p => p.style.display = 'none');
+
+          // Mostrar el destino
+          const target = document.getElementById(btnTab.dataset.target);
+          if (target) target.style.display = 'block';
+        }
       });
-    });
+    }
 
     // Steppers Mixta — limpiar listener previo para evitar doble disparo al navegar
     if (this._stepperHandler) {
@@ -491,31 +509,17 @@ const CajaApp = {
 
   // ─── Agregar al carrito ────────────────────────────────────────────────────
   agregarAlCarrito(id, nombre, precio) {
-    const card = document.querySelector(`.producto-card[data-id="${id}"]`);
-    const stock = card?.dataset.stock;
-    const sinStock = stock === null || stock === 'NULL' || stock === undefined || stock === '';
+    const isMixta = nombre.trim().toLowerCase() === 'orden mixta';
 
-    if (sinStock) {
-      // Abrir modal comanda
+    if (isMixta) {
+      // Abrir modal solo para Orden Mixta
       setText('platilloPersonalizarNombre', nombre);
       document.getElementById('platilloPersonalizarId').value = id;
-      document.getElementById('observacionesTextarea').value = '';
 
-      const isMixta = nombre.trim().toLowerCase() === 'orden mixta';
-      const tabMelza = document.getElementById('tab-btn-mezcla');
-      const tabIng = document.getElementById('tab-btn-ingredientes');
-
-      if (isMixta) {
-        tabMelza.style.display = '';
-        // Reset steppers
-        document.querySelectorAll('.cant-mixta').forEach(i => { i.value = 0; });
-        document.querySelectorAll('.stepper-value').forEach(s => { s.textContent = '0'; });
-        this.calcularTotalMixta();
-        this.activarTab('tab-btn-mezcla', 'tab-mezcla');
-      } else {
-        tabMelza.style.display = 'none';
-        this.activarTab('tab-btn-ingredientes', 'tab-ingredientes');
-      }
+      // Reset steppers
+      document.querySelectorAll('.cant-mixta').forEach(i => { i.value = 0; });
+      document.querySelectorAll('.stepper-value').forEach(s => { s.textContent = '0'; });
+      this.calcularTotalMixta();
 
       openModal('modal-comanda');
     } else {
@@ -527,10 +531,7 @@ const CajaApp = {
   },
 
   activarTab(btnId, panelId) {
-    document.querySelectorAll('.cj-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.cj-tab-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById(btnId)?.classList.add('active');
-    document.getElementById(panelId)?.classList.add('active');
+    // Deprecated
   },
 
   calcularTotalMixta() {
@@ -745,30 +746,34 @@ const CajaApp = {
   <meta charset='UTF-8'>
   <title>Ticket #${ticket_id}</title>
   <style>
-    @page { margin: 0; size: 80mm auto; }
+    @page { margin: 0; size: 58mm auto; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 17px;
+      font-size: 13px;
       font-weight: bold;
-      width: 80mm;
-      padding: 10px;
+      width: 58mm;
+      max-width: 58mm;
+      padding: 5px;
       color: #000;
-      line-height: 1.3;
+      line-height: 1.2;
     }
     .center { text-align: center; }
     .right { text-align: right; }
     .left { text-align: left; }
-    h1 { font-size: 26px; margin-bottom: 2px; }
-    h2 { font-size: 22px; margin-bottom: 10px; }
-    .sep { border: none; border-top: 2px dashed #000; margin: 8px 0; }
-    .info p { margin-bottom: 4px; }
-    table { width: 100%; border-collapse: collapse; margin: 0; }
-    th { font-size: 17px; font-weight: bold; padding: 4px 0; }
-    td { font-size: 17px; padding: 4px 0; vertical-align: top; }
-    .totales-container { margin-top: 8px; font-size: 17px; text-align: right; }
-    .totales-container p { margin-bottom: 4px; }
-    .total-final { font-size: 30px; font-weight: bold; margin-top: 15px; margin-bottom: 15px; text-align: center; }
+    h1 { font-size: 18px; margin-bottom: 2px; }
+    h2 { font-size: 15px; margin-bottom: 8px; }
+    .sep { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+    .info p { margin-bottom: 2px; }
+    table { width: 100%; border-collapse: collapse; margin: 0; table-layout: fixed; }
+    th { font-size: 13px; font-weight: bold; padding: 3px 0; }
+    td { font-size: 13px; padding: 3px 0; vertical-align: top; }
+    td:nth-child(1) { width: 15%; }
+    td:nth-child(2) { width: 55%; word-break: break-word; }
+    td:nth-child(3) { width: 30%; text-align: right; }
+    .totales-container { margin-top: 6px; font-size: 14px; text-align: right; }
+    .totales-container p { margin-bottom: 3px; }
+    .total-final { font-size: 20px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; text-align: center; }
   </style>
 </head>
 <body>
@@ -1020,15 +1025,8 @@ const CajaApp = {
 
   // ─── Platillo Personalizado ───────────────────────────────────────────────
   agregarPlatilloPersonalizado() {
-    const id = parseInt(document.getElementById('platilloPersonalizarId').value);
     const nombreBase = document.getElementById('platilloPersonalizarNombre').textContent;
     const isMixta = nombreBase.trim().toLowerCase() === 'orden mixta';
-    const obs = document.getElementById('observacionesTextarea')?.value.trim() || '';
-
-    const opcionesSeleccionadas = [];
-    document.querySelectorAll('#modal-comanda input[type="checkbox"]:checked').forEach(cb => {
-      opcionesSeleccionadas.push(cb.value);
-    });
 
     if (isMixta) {
       let agregados = 0;
@@ -1042,8 +1040,8 @@ const CajaApp = {
             nombre: input.dataset.nombre + ' (Mixta)',
             precio: parseFloat(input.dataset.precio),
             cantidad: cant,
-            opciones: opcionesSeleccionadas,
-            observaciones: obs,
+            opciones: [],
+            observaciones: '',
             grupo_mixta: grupoId,
           });
         }
@@ -1052,16 +1050,6 @@ const CajaApp = {
         this.showAlert('Atención', 'Debes seleccionar al menos un artículo para la Orden Mixta.', 'warning');
         return;
       }
-    } else {
-      const card = document.querySelector(`.producto-card[data-id="${id}"]`);
-      const precio = parseFloat(card?.querySelector('.producto-precio')?.textContent.replace('$', '')) || 0;
-      const existe = this.carrito.find(i =>
-        i.id === id &&
-        JSON.stringify(i.opciones) === JSON.stringify(opcionesSeleccionadas) &&
-        i.observaciones === obs
-      );
-      if (existe) { existe.cantidad++; }
-      else { this.carrito.push({ id, nombre: nombreBase, precio, cantidad: 1, opciones: opcionesSeleccionadas, observaciones: obs }); }
     }
 
     this.actualizarCarrito();
@@ -1070,39 +1058,11 @@ const CajaApp = {
 
   cerrarComanda() {
     closeModal('modal-comanda');
-    // Reset checkboxes
-    document.querySelectorAll('#modal-comanda input[type="checkbox"]').forEach(cb => cb.checked = false);
   },
 
-  renderIngredientes(ingredientes) {
-    const verd = document.getElementById('opcionesVerduras');
-    const adex = document.getElementById('opcionesAderezos');
-    const otrs = document.getElementById('opcionesOtros');
-    if (!verd) return;
+  // renderIngredientes removido
 
-    verd.innerHTML = '';
-    adex.innerHTML = '';
-    otrs.innerHTML = '';
 
-    if (ingredientes.length === 0) {
-      [verd, adex, otrs].forEach(el => el.innerHTML = '<div style="color:#6c757d; font-size:.85rem; padding:4px;">Sin opciones</div>');
-      return;
-    }
-
-    ingredientes.forEach(ing => {
-      const html = `
-      <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
-        <input type="checkbox" id="ing_${ing.ingrediente_id}" value="${ing.nombre_ingrediente}"
-          style="width:16px; height:16px; cursor:pointer; accent-color:#007aff;">
-          <label for="ing_${ing.ingrediente_id}" style="font-size:.88rem; cursor:pointer; margin:0;">
-            ${ing.nombre_ingrediente}
-          </label>
-      </div>`;
-      if (ing.categoria === 'Verduras') verd.insertAdjacentHTML('beforeend', html);
-      else if (ing.categoria === 'Aderezos') adex.insertAdjacentHTML('beforeend', html);
-      else otrs.insertAdjacentHTML('beforeend', html);
-    });
-  },
 
   // ─── Limpiar carrito ──────────────────────────────────────────────────────
   limpiarCarrito() {
