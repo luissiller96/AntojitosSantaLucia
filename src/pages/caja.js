@@ -11,17 +11,25 @@ export async function renderCaja(container) {
   injectCSS('caja-css', '/assets/css/caja.css');
 
   // Cargar productos y cajeros de SQLite
-  const [productos, cajeros, productosData] = await Promise.all([
+  const [productos, cajeros] = await Promise.all([
     getProductos(),
-    getCajeros(),
-    getProductos(),
+    getCajeros()
   ]);
 
-  // Usar el mismo products para productos mixtos
-  const productosMixtos = productosData.filter(p => p.pr_nombre.includes('(Mixta)'));
+  CajaApp.productosData = productos; // Store all products for dynamic UI
 
-  renderLayout(container, 'caja', getCajaHTML(productos, cajeros, productosMixtos));
+  // Generar los sufijos de los padres ($0)
+  const parents = productos.filter(p => Number(p.pr_precioventa) === 0);
+  const childSuffixes = parents.map(p => getSuffixForParent(p.pr_nombre));
+  const isChildProduct = (p) => childSuffixes.some(s => p.pr_nombre.includes(`(${s})`));
+
+  renderLayout(container, 'caja', getCajaHTML(productos, cajeros, isChildProduct));
   CajaApp.init(productos);
+}
+
+function getSuffixForParent(parentName) {
+  const name = parentName.trim();
+  return name.toLowerCase() === 'orden mixta' ? 'Mixta' : name;
 }
 
 function injectCSS(id, href) {
@@ -32,7 +40,7 @@ function injectCSS(id, href) {
 }
 
 // ─── HTML ────────────────────────────────────────────────────────────────────
-function getCajaHTML(productos, cajeros, productosMixtos) {
+function getCajaHTML(productos, cajeros, isChildProduct) {
   const categorias = [...new Set(productos.map(p => p.pr_categoria))];
 
   return `
@@ -58,7 +66,7 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
         <!-- Productos Grid -->
         <div class="productos-scroll">
           <div class="productos-grid" id="productos-lista">
-            ${productos.filter(p => !p.pr_nombre.includes('(Mixta)')).map(p => {
+            ${productos.filter(p => !isChildProduct(p)).map(p => {
     const cats = slugify(p.pr_categoria);
     const fav = p.pr_favorito == 1 ? 'favorito' : '';
     return `
@@ -206,83 +214,14 @@ function getCajaHTML(productos, cajeros, productosMixtos) {
         <h5>Crear <span id="platilloPersonalizarNombre"></span></h5>
         <button class="cj-modal-close" id="close-modal-comanda">&times;</button>
       </div>
-      <div class="cj-modal-body" style="max-height: 70vh; overflow-y: auto;">
+      <div class="cj-modal-body" style="padding: 15px;">
         <input type="hidden" id="platilloPersonalizarId">
 
         <!-- Panel Mixta -->
-        <div id="tab-mezcla" style="padding: 10px 0;">
-          ${(() => {
-      if (productosMixtos.length === 0) {
-        return '<div style="text-align:center; color:#6c757d; padding:20px;">No hay productos mixtos configurados.</div>';
-      }
-      const grupos = {};
-      productosMixtos.forEach(pm => {
-        const nombre = pm.pr_nombre.replace('(Mixta)', '').trim();
-        const primeraPalabra = nombre.split(' ')[0];
-        if (!grupos[primeraPalabra]) grupos[primeraPalabra] = [];
-        grupos[primeraPalabra].push({ pm, nombre });
-      });
-      const gruposArreglo = Object.entries(grupos);
-      let htmlHTML = `
-              <div class="mixta-tabs-container" style="display: flex; gap: 20px; align-items: flex-start;">
-                
-                <!-- Menú Lateral de Categorías -->
-                <div class="mixta-sidebar" style="flex: 0 0 160px; display: flex; flex-direction: column; gap: 8px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
-                  `;
-
-      gruposArreglo.forEach(([grupo, items], index) => {
-        const isActive = index === 0 ? 'background:#007aff; color:#fff; font-weight:bold;' : 'background:#e9ecef; color:#495057;';
-        htmlHTML += `
-                  <button type="button" class="btn-mixta-tab" data-target="panel-${grupo}" style="width: 100%; text-align: left; padding: 12px 15px; border-radius: 8px; border: none; cursor: pointer; ${isActive} transition: all 0.2s; font-size: 1rem;">
-                    ${grupo}s (${items.length})
-                  </button>`;
-      });
-
-      htmlHTML += `
-                </div>
-                
-                <!-- Contenedor Principal de Artículos -->
-                <div class="mixta-content" style="flex: 1; border: 1px solid #e9ecef; border-radius: 10px; background: #fff; position: relative;">
-                  `;
-
-      gruposArreglo.forEach(([grupo, items], index) => {
-        const displayStyle = index === 0 ? 'block' : 'none';
-        htmlHTML += `
-                  <div class="mixta-panel" id="panel-${grupo}" style="display: ${displayStyle}; padding: 15px; max-height: 400px; overflow-y: auto;">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">`;
-
-        items.forEach(({ pm, nombre }) => {
-          const precio = Number(pm.pr_precioventa).toFixed(0);
-          htmlHTML += `
-                      <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
-                        <div>
-                          <div style="font-weight:600; font-size:1rem; color:#343a40;">${nombre}</div>
-                          <div style="color:#6c757d; font-size:.85rem;">$${precio} c/u</div>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:8px; justify-content: flex-end;">
-                          <button type="button" class="btn-stepper btn-stepper-minus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#e9ecef; color:#495057; font-weight:bold; cursor:pointer; font-size:1.1rem;">−</button>
-                          <span class="stepper-value" id="valMixta_${pm.ID}" style="min-width:28px; text-align:center; font-weight:bold; font-size:1.1rem; color:#007aff;">0</span>
-                          <input type="hidden" id="cantMixta_${pm.ID}" class="cant-mixta"
-                                 data-id="${pm.ID}" data-nombre="${escJs(nombre)}"
-                                 data-precio="${pm.pr_precioventa}" value="0">
-                          <button type="button" class="btn-stepper btn-stepper-plus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#007aff; color:#fff; font-weight:bold; cursor:pointer; font-size:1.1rem;">+</button>
-                        </div>
-                      </div>`;
-        });
-        htmlHTML += `
-                    </div>
-                  </div>`;
-      });
-
-      htmlHTML += `
-                </div>
-              </div>`;
-      return htmlHTML;
-    })()}
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f8f9fa; border-radius:10px; margin-top:20px; border: 2px solid #e9ecef;">
-            <span style="color:#6c757d; font-weight:700; font-size:1.1rem;">Total Mixta:</span>
-            <span style="font-weight:800; font-size:1.5rem; color:#007aff;" id="totalOrdenMixta">$0.00</span>
-          </div>
+        <div id="tab-mezcla" style="padding: 10px 0;"></div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f8f9fa; border-radius:10px; margin-top:20px; border: 2px solid #e9ecef;">
+          <span style="color:#6c757d; font-weight:700; font-size:1.1rem;">Total:</span>
+          <span style="font-weight:800; font-size:1.5rem; color:#007aff;" id="totalOrdenMixta">$0.00</span>
         </div>
       </div>
       <div class="cj-modal-footer">
@@ -509,25 +448,95 @@ const CajaApp = {
 
   // ─── Agregar al carrito ────────────────────────────────────────────────────
   agregarAlCarrito(id, nombre, precio) {
-    const isMixta = nombre.trim().toLowerCase() === 'orden mixta';
+    const isParent = Number(precio) === 0;
 
-    if (isMixta) {
-      // Abrir modal solo para Orden Mixta
-      setText('platilloPersonalizarNombre', nombre);
-      document.getElementById('platilloPersonalizarId').value = id;
-
-      // Reset steppers
-      document.querySelectorAll('.cant-mixta').forEach(i => { i.value = 0; });
-      document.querySelectorAll('.stepper-value').forEach(s => { s.textContent = '0'; });
-      this.calcularTotalMixta();
-
-      openModal('modal-comanda');
+    if (isParent) {
+      this.abrirModalComandaGrupo(id, nombre);
     } else {
       let existe = this.carrito.find(i => i.id === id);
       if (existe) { existe.cantidad++; }
       else { this.carrito.push({ id, nombre, precio, cantidad: 1 }); }
       this.actualizarCarrito();
     }
+  },
+
+  abrirModalComandaGrupo(parentId, parentNombre) {
+    const suffix = getSuffixForParent(parentNombre);
+    const children = this.productosData.filter(p => p.pr_nombre.includes(`(${suffix})`));
+
+    setText('platilloPersonalizarNombre', parentNombre);
+    document.getElementById('platilloPersonalizarId').value = parentId;
+
+    const tabMezcla = document.getElementById('tab-mezcla');
+    
+    if (children.length === 0) {
+      tabMezcla.innerHTML = '<div style="text-align:center; color:#6c757d; padding:20px;">No hay productos configurados para esta categoría. Añade agregando el subfijo (' + suffix + ').</div>';
+    } else {
+      const grupos = {};
+      children.forEach(pm => {
+        const nombre = pm.pr_nombre.replace(`(${suffix})`, '').trim();
+        const primeraPalabra = nombre.split(' ')[0];
+        if (!grupos[primeraPalabra]) grupos[primeraPalabra] = [];
+        grupos[primeraPalabra].push({ pm, nombre });
+      });
+      const gruposArreglo = Object.entries(grupos);
+      let htmlHTML = `
+              <div class="mixta-tabs-container" style="display: flex; gap: 20px; align-items: stretch; max-height: 350px;">
+                <!-- Menú Lateral de Categorías -->
+                <div class="mixta-sidebar" style="flex: 0 0 160px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 5px;">
+                  `;
+
+      gruposArreglo.forEach(([grupo, items], index) => {
+        const isActive = index === 0 ? 'background:#007aff; color:#fff; font-weight:bold;' : 'background:#e9ecef; color:#495057;';
+        htmlHTML += `
+                  <button type="button" class="btn-mixta-tab" data-target="panel-${grupo}" style="width: 100%; text-align: left; padding: 12px 15px; border-radius: 8px; border: none; cursor: pointer; ${isActive} transition: all 0.2s; font-size: 1rem; flex-shrink: 0;">
+                    ${grupo}s (${items.length})
+                  </button>`;
+      });
+
+      htmlHTML += `
+                </div>
+                <!-- Contenedor Principal de Artículos -->
+                <div class="mixta-content" style="flex: 1; border: 1px solid #e9ecef; border-radius: 10px; background: #fff; position: relative; overflow-y: auto;">
+                  `;
+
+      gruposArreglo.forEach(([grupo, items], index) => {
+        const displayStyle = index === 0 ? 'block' : 'none';
+        htmlHTML += `
+                  <div class="mixta-panel" id="panel-${grupo}" style="display: ${displayStyle}; padding: 15px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;">`;
+
+        items.forEach(({ pm, nombre }) => {
+          const p = Number(pm.pr_precioventa).toFixed(0);
+          htmlHTML += `
+                      <div style="background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+                        <div>
+                          <div style="font-weight:600; font-size:1rem; color:#343a40;">${nombre}</div>
+                          <div style="color:#6c757d; font-size:.85rem;">$${p} c/u</div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px; justify-content: flex-end;">
+                          <button type="button" class="btn-stepper btn-stepper-minus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#e9ecef; color:#495057; font-weight:bold; cursor:pointer; font-size:1.1rem;">−</button>
+                          <span class="stepper-value" id="valMixta_${pm.ID}" style="min-width:28px; text-align:center; font-weight:bold; font-size:1.1rem; color:#007aff;">0</span>
+                          <input type="hidden" id="cantMixta_${pm.ID}" class="cant-mixta"
+                                 data-id="${pm.ID}" data-nombre="${escJs(nombre)}" data-suffix="${escJs(suffix)}"
+                                 data-precio="${pm.pr_precioventa}" value="0">
+                          <button type="button" class="btn-stepper btn-stepper-plus" data-target="cantMixta_${pm.ID}" style="width:32px; height:32px; border-radius:6px; border:none; background:#007aff; color:#fff; font-weight:bold; cursor:pointer; font-size:1.1rem;">+</button>
+                        </div>
+                      </div>`;
+        });
+        htmlHTML += `
+                    </div>
+                  </div>`;
+      });
+
+      htmlHTML += `
+                </div>
+              </div>`;
+      tabMezcla.innerHTML = htmlHTML;
+    }
+
+    this.calcularTotalMixta();
+    openModal('modal-comanda');
   },
 
   activarTab(btnId, panelId) {
@@ -564,9 +573,11 @@ const CajaApp = {
       if (item.grupo_mixta) {
         if (!gruposVistos[item.grupo_mixta]) {
           gruposVistos[item.grupo_mixta] = true;
-          html += `<div class="mixta-header">Mixta</div>`;
+          const label = item.parent_nombre || 'Mixta';
+          html += `<div class="mixta-header">${label}</div>`;
         }
-        const sub = item.nombre.replace(' (Mixta)', '');
+        const suffixMatch = item.nombre.match(/\((.*?)\)$/);
+        const sub = suffixMatch ? item.nombre.replace(` (${suffixMatch[1]})`, '') : item.nombre;
         html += `
           <div class="carrito-item" data-index="${idx}">
             <span style="color:#6c757d;">${item.cantidad}x ${sub}</span>
@@ -685,11 +696,13 @@ const CajaApp = {
         if (gruposRenderizados.includes(item.grupo_mixta)) continue;
         gruposRenderizados.push(item.grupo_mixta);
 
-        filas += `<tr><td colspan='3' style='padding-top:6px;padding-bottom:2px;font-weight:bold;'>Mixta</td></tr>`;
+        const groupLabel = item.parent_nombre || 'Mixta';
+        filas += `<tr><td colspan='3' style='padding-top:6px;padding-bottom:2px;font-weight:bold;'>${groupLabel}</td></tr>`;
 
         for (const subItem of productos) {
           if (subItem.grupo_mixta !== item.grupo_mixta) continue;
-          const subNombre = (subItem.nombre || '').replace(' (Mixta)', '');
+          const suffixMatch = (subItem.nombre || '').match(/\((.*?)\)$/);
+          const subNombre = suffixMatch ? subItem.nombre.replace(` (${suffixMatch[1]})`, '') : subItem.nombre;
           const subCantidad = parseInt(subItem.cantidad);
           const subPrecio = (subItem.precio * subCantidad).toFixed(2);
 
@@ -1025,29 +1038,36 @@ const CajaApp = {
 
   // ─── Platillo Personalizado ───────────────────────────────────────────────
   agregarPlatilloPersonalizado() {
-    const nombreBase = document.getElementById('platilloPersonalizarNombre').textContent;
-    const isMixta = nombreBase.trim().toLowerCase() === 'orden mixta';
+    const parentId = document.getElementById('platilloPersonalizarId').value;
+    const parentNombre = document.getElementById('platilloPersonalizarNombre').textContent;
+    const parentObj = this.productosData.find(p => p.ID == parentId);
+    if (!parentObj) return;
 
-    if (isMixta) {
+    const isParent = Number(parentObj.pr_precioventa) === 0;
+
+    if (isParent) {
       let agregados = 0;
       const grupoId = Date.now() + '-' + Math.random().toString(36).substr(2, 5);
+      const suffix = getSuffixForParent(parentNombre);
+
       document.querySelectorAll('.cant-mixta').forEach(input => {
         const cant = parseInt(input.value) || 0;
         if (cant > 0) {
           agregados++;
           this.carrito.push({
             id: parseInt(input.dataset.id),
-            nombre: input.dataset.nombre + ' (Mixta)',
+            nombre: input.dataset.nombre + ` (${suffix})`,
             precio: parseFloat(input.dataset.precio),
             cantidad: cant,
             opciones: [],
             observaciones: '',
             grupo_mixta: grupoId,
+            parent_nombre: parentNombre
           });
         }
       });
       if (agregados === 0) {
-        this.showAlert('Atención', 'Debes seleccionar al menos un artículo para la Orden Mixta.', 'warning');
+        this.showAlert('Atención', `Debes seleccionar al menos un artículo para ${parentNombre}.`, 'warning');
         return;
       }
     }
