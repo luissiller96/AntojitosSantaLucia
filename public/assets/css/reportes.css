@@ -327,6 +327,33 @@
     color: #856404;
 }
 
+.rep-badge-tipo {
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: .8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.badge-llevar    { background: #e8f4fd; color: #0056b3; }
+.badge-aqui      { background: #d4edda; color: #155724; }
+.badge-domicilio { background: #fff3e0; color: #7c4700; }
+
+.rep-btn-reimprimir {
+    background: none;
+    border: 1.5px solid #ced4da;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    color: #6c757d;
+    font-size: 13px;
+    transition: background .12s, color .12s, border-color .12s;
+}
+.rep-btn-reimprimir:hover {
+    background: #007aff;
+    border-color: #007aff;
+    color: #fff;
+}
+
 .rep-badge-activa {
     background: #d4edda;
     color: #155724;

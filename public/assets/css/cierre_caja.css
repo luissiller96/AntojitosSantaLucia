@@ -253,6 +253,11 @@
   font-weight: 700;
 }
 
+.cc-badge-salidas {
+  background: #ffe5df;
+  color: #e17055;
+}
+
 .cc-cortes-list {
   max-height: 250px;
   overflow-y: auto;

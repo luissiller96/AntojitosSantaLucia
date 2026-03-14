@@ -87,6 +87,26 @@ function getDashboardHTML() {
           </div>
         </div>
 
+        <div class="kpi-card salidas">
+          <div class="kpi-content">
+            <div class="kpi-icon salidas"><i class="fas fa-hand-holding-usd"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-label">Salidas Hoy</div>
+              <div class="kpi-value" id="kpi-salidas-dia">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-card salidas-mes">
+          <div class="kpi-content">
+            <div class="kpi-icon salidas-mes"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="kpi-info">
+              <div class="kpi-label">Salidas del Mes</div>
+              <div class="kpi-value" id="kpi-salidas-mes">$0.00</div>
+            </div>
+          </div>
+        </div>
+
         <div class="kpi-card caja">
           <div class="kpi-content">
             <div class="kpi-icon caja"><i class="fas fa-cash-register"></i></div>
@@ -183,6 +203,8 @@ const DashboardApp = {
     this.animateValue('kpi-platillos-dia', 0, kpis.platillos_dia, 1000, false);
     this.animateValue('kpi-ventas-mes', 0, kpis.ventas_mes, 1000, true);
     this.animateValue('kpi-ordenes-cocina', 0, kpis.ordenes_cocina, 1000, false);
+    this.animateValue('kpi-salidas-dia', 0, kpis.salidas_dia, 1000, true);
+    this.animateValue('kpi-salidas-mes', 0, kpis.salidas_mes, 1000, true);
     this.updateEstadoCaja(kpis);
   },
 
@@ -414,7 +436,12 @@ window.DashboardApp = DashboardApp;
 // ─── Queries SQLite (equivalentes a models/Dashboard.php) ────────────────────
 
 function today() {
-  return new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  // Usar fecha local (no UTC) para coincidir con cómo se guardan los registros
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`; // YYYY-MM-DD en hora local
 }
 
 function currentMonth() {
@@ -469,9 +496,27 @@ async function getKpisCompletos() {
   const caja_hora_apertura = cajaRows[0]?.fecha_apertura ?? null;
   const caja_monto_apertura = parseFloat(cajaRows[0]?.monto_apertura ?? 0);
 
+  // Salidas de efectivo del día
+  const [r5] = await dbSelect(
+    `SELECT COALESCE(SUM(precio_unitario), 0) as total FROM rv_gastos
+     WHERE tipo_gasto = 'Salida de Efectivo' AND DATE(fecha) = $1`,
+    [hoy]
+  );
+  const salidas_dia = parseFloat(r5.total);
+
+  // Salidas de efectivo del mes
+  const [r6] = await dbSelect(
+    `SELECT COALESCE(SUM(precio_unitario), 0) as total FROM rv_gastos
+     WHERE tipo_gasto = 'Salida de Efectivo'
+     AND strftime('%m', fecha) = $1 AND strftime('%Y', fecha) = $2`,
+    [String(mes).padStart(2, '0'), String(anio)]
+  );
+  const salidas_mes = parseFloat(r6.total);
+
   return {
     ventas_dia, platillos_dia, ventas_mes, ordenes_cocina,
     caja_estado, caja_hora_apertura, caja_monto_apertura,
+    salidas_dia, salidas_mes,
   };
 }
 

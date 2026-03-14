@@ -132,6 +132,10 @@ function getCierreCajaHTML() {
                 <span class="cc-resumen-item-label">Total Ventas</span>
                 <span class="cc-resumen-item-value" id="resumen-ventas-total">$0.00</span>
               </div>
+              <div class="cc-resumen-item">
+                <span class="cc-resumen-item-label">Salidas de Efectivo</span>
+                <span class="cc-resumen-item-value" style="color:#e17055;" id="resumen-salidas-efectivo">$0.00</span>
+              </div>
               <div class="cc-resumen-item highlight">
                 <span class="cc-resumen-item-label">Efectivo Esperado en Caja</span>
                 <span class="cc-resumen-item-value" id="resumen-esperado">$0.00</span>
@@ -139,7 +143,7 @@ function getCierreCajaHTML() {
             </div>
           </div>
 
-          <!-- Cortes Preventivos -->
+          <!-- Cortes y Salidas -->
           <div class="cc-resumen-section">
             <div class="cc-resumen-title">
               <span><i class="fas fa-cut"></i> Cortes Preventivos</span>
@@ -147,6 +151,14 @@ function getCierreCajaHTML() {
             </div>
             <div class="cc-cortes-list" id="lista-cortes-preventivos">
               <div style="text-align:center; color:#6c757d; padding:24px;">Cargando cortes...</div>
+            </div>
+
+            <div class="cc-resumen-title" style="margin-top:16px;">
+              <span><i class="fas fa-hand-holding-usd"></i> Salidas de Efectivo</span>
+              <span class="cc-badge cc-badge-salidas" id="badge-total-salidas">$0.00</span>
+            </div>
+            <div class="cc-cortes-list" id="lista-salidas-efectivo">
+              <div style="text-align:center; color:#6c757d; padding:24px;">Cargando salidas...</div>
             </div>
           </div>
         </div>
@@ -310,6 +322,10 @@ const CierreCajaApp = {
         this.montoAperturaCaja = parseFloat(data.monto_apertura) || 0;
         this.totalVentasSistema = parseFloat(data.total_ventas) || 0;
         this.efectivoEsperado = parseFloat(data.total_caja_esperado) || 0;
+        this._ventasEfectivo = parseFloat(data.ventas_efectivo) || 0;
+        this._ventasTarjeta = parseFloat(data.ventas_tarjeta) || 0;
+        this._ventasTransferencia = parseFloat(data.ventas_transferencia) || 0;
+        this._totalSalidas = parseFloat(data.total_salidas) || 0;
 
         // KPIs
         animateValue('kpi-ventas-total', 0, data.total_ventas, 1000, true);
@@ -324,6 +340,7 @@ const CierreCajaApp = {
         setText('resumen-ventas-tarjeta', formatCurrency(data.ventas_tarjeta));
         setText('resumen-ventas-transferencia', formatCurrency(data.ventas_transferencia || 0));
         setText('resumen-ventas-total', formatCurrency(data.total_ventas));
+        setText('resumen-salidas-efectivo', '-' + formatCurrency(data.total_salidas || 0));
         setText('resumen-esperado', formatCurrency(this.efectivoEsperado));
 
         // Cortes preventivos
@@ -345,6 +362,27 @@ const CierreCajaApp = {
                 }).join('');
             } else {
                 lista.innerHTML = '<div style="text-align:center; color:#6c757d; padding:24px; font-style:italic;">No hay cortes registrados.</div>';
+            }
+        }
+
+        // Salidas de efectivo
+        setText('badge-total-salidas', formatCurrency(data.total_salidas || 0));
+        const listaSalidas = document.getElementById('lista-salidas-efectivo');
+        if (listaSalidas) {
+            if (data.lista_salidas && data.lista_salidas.length > 0) {
+                listaSalidas.innerHTML = data.lista_salidas.map(s => {
+                    const t = new Date(s.fecha.replace(' ', 'T')).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+                    return `
+            <div class="cc-corte-item">
+              <div>
+                <div class="cc-corte-monto" style="color:#e17055;">${formatCurrency(s.monto)}</div>
+                <div class="cc-corte-hora"><i class="far fa-clock"></i> ${t}</div>
+              </div>
+              <div class="cc-corte-user" style="font-size:11px;max-width:120px;text-align:right;">${s.descripcion || '—'}</div>
+            </div>`;
+                }).join('');
+            } else {
+                listaSalidas.innerHTML = '<div style="text-align:center; color:#6c757d; padding:16px; font-style:italic;">No hay salidas registradas.</div>';
             }
         }
     },
@@ -495,7 +533,12 @@ const CierreCajaApp = {
         closeModal('modal-cierre');
         this.showConfirm('Confirmar Cierre de Caja', msg + '\n\n¿Deseas proceder con el cierre?', tipo, async () => {
             try {
-                await cerrarCaja(this.cajaActivaId, montoFisico, this.totalVentasSistema, diferencia);
+                await cerrarCaja(this.cajaActivaId, montoFisico, this.totalVentasSistema, diferencia, {
+                    ventas_efectivo: this._ventasEfectivo || 0,
+                    ventas_tarjeta: this._ventasTarjeta || 0,
+                    ventas_transferencia: this._ventasTransferencia || 0,
+                    gastos_efectivo: this._totalSalidas || 0,
+                });
                 await this.cargarEstadoCaja();
                 this.showAlert('¡Caja Cerrada!', 'El cierre se realizó correctamente.', 'success');
             } catch (err) {
@@ -582,12 +625,31 @@ async function verificarEstadoYResumen() {
     const idCaja = caja.id;
 
     // 2. KPIs de ventas desde que abrió la caja
+    // ventas_efectivo incluye pagos directos en efectivo + porción efectivo de pagos mixtos
     const [totales] = await dbSelect(
         `SELECT
-       COALESCE(SUM(total), 0)                                             AS total_ventas,
-       COALESCE(SUM(CASE WHEN LOWER(metodo_pago)='efectivo'      THEN total ELSE 0 END), 0) AS ventas_efectivo,
-       COALESCE(SUM(CASE WHEN LOWER(metodo_pago)='tarjeta'       THEN total ELSE 0 END), 0) AS ventas_tarjeta,
-       COALESCE(SUM(CASE WHEN LOWER(metodo_pago)='transferencia' THEN total ELSE 0 END), 0) AS ventas_transferencia
+       COALESCE(SUM(total_ticket), 0) AS total_ventas,
+       COALESCE(SUM(
+         CASE
+           WHEN LOWER(metodo_pago)='efectivo' THEN total
+           WHEN LOWER(metodo_pago)='mixto'    THEN monto_efectivo
+           ELSE 0
+         END
+       ), 0) AS ventas_efectivo,
+       COALESCE(SUM(
+         CASE
+           WHEN LOWER(metodo_pago)='tarjeta' THEN total
+           WHEN LOWER(metodo_pago)='mixto'   THEN monto_tarjeta
+           ELSE 0
+         END
+       ), 0) AS ventas_tarjeta,
+       COALESCE(SUM(
+         CASE
+           WHEN LOWER(metodo_pago)='transferencia' THEN total
+           WHEN LOWER(metodo_pago)='mixto'         THEN monto_transferencia
+           ELSE 0
+         END
+       ), 0) AS ventas_transferencia
      FROM rv_ventas
      WHERE estatus = 'completado'
        AND fecha >= $1`,
@@ -608,8 +670,20 @@ async function verificarEstadoYResumen() {
     );
     const totalCortes = cortesRows.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
 
-    // Efectivo esperado = apertura + ventas efectivo - cortes
-    const efectivoEsperado = mntoApertura + ventasEfectivo - totalCortes;
+    // 4. Salidas de efectivo (solo las pagadas en efectivo)
+    const salidasRows = await dbSelect(
+        `SELECT precio_unitario as monto, fecha, descripcion
+     FROM rv_gastos
+     WHERE tipo_gasto = 'Salida de Efectivo'
+       AND LOWER(metodo_pago) = 'efectivo'
+       AND fecha >= $1
+     ORDER BY fecha ASC`,
+        [caja.fecha_apertura]
+    );
+    const totalSalidas = salidasRows.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
+
+    // Efectivo esperado = apertura + ventas efectivo - cortes - salidas efectivo
+    const efectivoEsperado = mntoApertura + ventasEfectivo - totalCortes - totalSalidas;
 
     return {
         caja_activa: true,
@@ -623,6 +697,8 @@ async function verificarEstadoYResumen() {
         total_caja_esperado: efectivoEsperado,
         total_cortes: totalCortes,
         lista_cortes: cortesRows,
+        total_salidas: totalSalidas,
+        lista_salidas: salidasRows,
     };
 }
 
@@ -641,16 +717,22 @@ async function abrirCaja(montoApertura) {
     );
 }
 
-async function cerrarCaja(idCaja, montoCierre, totalVentas, diferencia) {
+async function cerrarCaja(idCaja, montoCierre, totalVentas, diferencia, extras = {}) {
     await dbExecute(
         `UPDATE rv_apertura_caja SET
        estatus              = 'cerrada',
        fecha_cierre         = datetime('now','localtime'),
        monto_cierre         = $1,
        total_ventas_sistema = $2,
-       diferencia_cierre    = $3
+       diferencia_cierre    = $3,
+       ventas_efectivo      = $5,
+       ventas_tarjeta       = $6,
+       ventas_transferencia = $7,
+       gastos_efectivo      = $8
      WHERE id = $4`,
-        [montoCierre, totalVentas, diferencia, idCaja]
+        [montoCierre, totalVentas, diferencia, idCaja,
+         extras.ventas_efectivo || 0, extras.ventas_tarjeta || 0,
+         extras.ventas_transferencia || 0, extras.gastos_efectivo || 0]
     );
 }
 

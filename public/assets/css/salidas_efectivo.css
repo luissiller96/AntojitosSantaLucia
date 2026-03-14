@@ -1,0 +1,273 @@
+/* ─── Salidas de Efectivo ─────────────────────────────────────────────────── */
+
+.sal-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+}
+
+.sal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.sal-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 4px;
+}
+
+.sal-subtitle {
+  font-size: 13px;
+  color: #6c757d;
+  margin: 0;
+}
+
+.sal-btn-nueva {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #e17055, #d63031);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 3px 10px rgba(214, 48, 49, .25);
+  transition: opacity .15s;
+  white-space: nowrap;
+}
+.sal-btn-nueva:hover { opacity: .88; }
+
+/* Table card */
+.sal-table-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+
+.sal-placeholder {
+  text-align: center;
+  color: #adb5bd;
+  padding: 40px 20px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.sal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sal-table thead tr {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.sal-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.sal-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background .1s;
+}
+
+.sal-table tbody tr:last-child { border-bottom: none; }
+.sal-table tbody tr:hover { background: #fdf5f3; }
+
+.sal-table td {
+  padding: 12px 16px;
+  color: #343a40;
+  vertical-align: middle;
+}
+
+.sal-td-fecha {
+  white-space: nowrap;
+  color: #6c757d !important;
+  font-size: 12px !important;
+}
+
+/* ─── Modal ──────────────────────────────────────────────────────────────── */
+.sal-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+}
+.sal-modal-overlay.active {
+  display: flex;
+}
+
+.sal-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 92%;
+  max-width: 360px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  animation: salSlideUp .22s ease;
+}
+
+@keyframes salSlideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.sal-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.sal-modal-header h5 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #343a40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sal-modal-close {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #adb5bd;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+.sal-modal-close:hover { color: #343a40; }
+
+.sal-modal-body {
+  padding: 16px 20px;
+}
+
+.sal-form-group {
+  margin-bottom: 14px;
+}
+
+.sal-form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+
+.sal-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ced4da;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .15s;
+  box-sizing: border-box;
+}
+.sal-input:focus { border-color: #e17055; }
+
+.sal-modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 16px;
+  justify-content: flex-end;
+}
+
+.sal-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: opacity .15s;
+}
+.sal-btn:hover { opacity: .85; }
+
+.sal-btn-cancel {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.sal-btn-confirm {
+  background: linear-gradient(135deg, #e17055, #d63031);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ─── Selector de método de pago ──────────────────────────────────────────── */
+.sal-metodo-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.sal-metodo-btn {
+  flex: 1;
+  padding: 9px 6px;
+  border: 1.5px solid #ced4da;
+  border-radius: 8px;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all .15s;
+}
+
+.sal-metodo-btn.active {
+  border-color: #e17055;
+  background: #fff3f0;
+  color: #e17055;
+}
+
+.sal-metodo-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: #6c757d;
+}
+
+/* ─── Badges de método en tabla ───────────────────────────────────────────── */
+.sal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sal-badge-efectivo     { background: #e8f5e9; color: #28a745; }
+.sal-badge-tarjeta      { background: #e3f0ff; color: #007aff; }
+.sal-badge-transferencia { background: #e0f7fa; color: #17a2b8; }

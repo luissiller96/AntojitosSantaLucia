@@ -92,7 +92,14 @@ function getCajaHTML(productos, cajeros, isChildProduct) {
 
         <!-- Top Bar -->
         <div class="carrito-top-bar">
-          <input type="text" id="clienteNombreInput" class="cliente-input" placeholder="👤 Nombre del Cliente">
+          <div class="tipo-orden-bar">
+            <button class="btn-tipo-orden active" data-tipo="llevar"><i class="fa fa-shopping-bag"></i> Llevar</button>
+            <button class="btn-tipo-orden" data-tipo="comer_aqui"><i class="fa fa-utensils"></i> Aquí</button>
+            <button class="btn-tipo-orden" data-tipo="domicilio"><i class="fa fa-motorcycle"></i> Domicilio</button>
+          </div>
+          <button class="btn-pendientes" id="btnOrdenesPendientes" title="Ver órdenes pendientes">
+            ⏳ <span id="badgePendientes"></span>
+          </button>
           <div id="cajaCompactPill" class="caja-pill" title="Efectivo en Caja">
             <i class="fa fa-wallet pill-icon"></i>
             <span id="cajaEfectivoStatus" style="font-weight:700;">$0</span>
@@ -103,6 +110,29 @@ function getCajaHTML(productos, cajeros, isChildProduct) {
           <button class="btn-vaciar" id="vaciarCarrito" title="Vaciar carrito">
             <i class="fa fa-trash"></i>
           </button>
+        </div>
+
+        <!-- Panel contextual tipo orden -->
+        <div id="panel-tipo-orden">
+          <div id="panel-llevar" class="orden-panel">
+            <input type="number" id="sensorInput" class="sensor-input"
+                   placeholder="# Sensor buscapersonas" min="1" max="9999">
+          </div>
+          <div id="panel-comer_aqui" class="orden-panel" style="display:none;"></div>
+          <div id="panel-domicilio" class="orden-panel" style="display:none;">
+            <div class="domicilio-fields">
+              <input type="text" id="domCalleInput" placeholder="Calle">
+              <input type="text" id="domNumInput" placeholder="Núm." style="max-width:70px;">
+              <input type="text" id="domColoniaInput" placeholder="Colonia">
+            </div>
+            <div class="envio-row">
+              <span>Envío:</span>
+              <button class="btn-envio-preset" data-monto="20">$20</button>
+              <button class="btn-envio-preset" data-monto="30">$30</button>
+              <button class="btn-envio-preset" data-monto="50">$50</button>
+              <input type="number" id="costoEnvioInput" placeholder="$0" min="0">
+            </div>
+          </div>
         </div>
 
         <!-- Vendedores / Cajeros -->
@@ -140,6 +170,31 @@ function getCajaHTML(productos, cajeros, isChildProduct) {
           <div class="tile-pago" data-tipo="transferencia">
             <i class="fa fa-exchange-alt" style="color:#17a2b8;"></i>
             <h5>Transf</h5>
+          </div>
+        </div>
+
+        <!-- Pago Mixto -->
+        <button class="btn-pago-mixto" id="btnPagoMixto">
+          <i class="fa fa-layer-group"></i> Pago Mixto
+        </button>
+        <div id="panel-pago-mixto" class="panel-pago-mixto" style="display:none;">
+          <div class="mixto-row">
+            <i class="fa fa-wallet" style="color:#28a745;"></i>
+            <span>Efectivo</span>
+            <input type="number" id="mixtoEfectivo" min="0" step="0.01" placeholder="$0.00">
+          </div>
+          <div class="mixto-row">
+            <i class="fa fa-credit-card" style="color:#007aff;"></i>
+            <span>Tarjeta</span>
+            <input type="number" id="mixtoTarjeta" min="0" step="0.01" placeholder="$0.00">
+          </div>
+          <div class="mixto-row">
+            <i class="fa fa-exchange-alt" style="color:#17a2b8;"></i>
+            <span>Transf</span>
+            <input type="number" id="mixtoTransferencia" min="0" step="0.01" placeholder="$0.00">
+          </div>
+          <div class="mixto-status">
+            <span id="mixtoFaltanteLabel">Faltante:</span> <strong id="mixtoFaltante">$0.00</strong>
           </div>
         </div>
 
@@ -246,6 +301,82 @@ function getCajaHTML(productos, cajeros, isChildProduct) {
     </div>
   </div>
 
+  <!-- ====== MODAL: ÓRDENES PENDIENTES ====== -->
+  <div class="cj-modal-overlay" id="modal-pendientes">
+    <div class="cj-modal" style="max-width:560px; width:95%;">
+      <div class="cj-modal-header" style="background:linear-gradient(135deg,#28a745,#1e7e34);">
+        <h5>🍽️ Órdenes Pendientes</h5>
+        <button class="cj-modal-close" id="close-modal-pendientes">&times;</button>
+      </div>
+      <div class="cj-modal-body" id="pendientes-lista" style="max-height:65vh; overflow-y:auto; padding:1rem;">
+        <p style="text-align:center; color:#6c757d;">Cargando...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MODAL: COBRAR ORDEN PENDIENTE ====== -->
+  <div class="cj-modal-overlay" id="modal-cobrar-pendiente">
+    <div class="cj-modal" style="max-width:420px; width:95%;">
+      <div class="cj-modal-header" style="background:linear-gradient(135deg,#28a745,#1e7e34);">
+        <h5 id="cobrar-pendiente-title">Cobrar Orden</h5>
+        <button class="cj-modal-close" id="close-modal-cobrar-pendiente">&times;</button>
+      </div>
+      <div class="cj-modal-body">
+        <div id="cobrar-pendiente-items" style="font-size:.9rem; color:#444; margin-bottom:8px; max-height:180px; overflow-y:auto;"></div>
+        <div style="text-align:right; font-size:1.5rem; font-weight:800; color:#333; margin-bottom:10px;" id="cobrar-pendiente-total"></div>
+        <div class="cobrar-pago-panel">
+          <div style="font-size:.85rem; font-weight:700; color:#555; margin-bottom:6px;">Selecciona método de pago:</div>
+          <div class="payment-methods" id="cobrar-pago-methods" style="margin:0 0 6px;">
+            <div class="tile-pago" data-tipo-cobro="tarjeta">
+              <i class="fa fa-credit-card" style="color:#007aff;"></i>
+              <h5>Tarjeta</h5>
+            </div>
+            <div class="tile-pago" data-tipo-cobro="efectivo">
+              <i class="fa fa-wallet" style="color:#28a745;"></i>
+              <h5>Efectivo</h5>
+            </div>
+            <div class="tile-pago" data-tipo-cobro="transferencia">
+              <i class="fa fa-exchange-alt" style="color:#17a2b8;"></i>
+              <h5>Transf</h5>
+            </div>
+          </div>
+          <div class="cobrar-efectivo-row" id="cobrar-efectivo-row" style="display:none;">
+            <label>Monto recibido:</label>
+            <input type="number" id="cobrar-efectivo-input" placeholder="$0" min="0">
+          </div>
+        </div>
+      </div>
+      <div class="cj-modal-footer">
+        <button class="cj-btn-secondary" id="cobrar-pendiente-cancelar">Cancelar</button>
+        <button class="cj-btn-success" id="cobrar-pendiente-confirmar" disabled>Cobrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MODAL: CORTE PREVENTIVO ====== -->
+  <div class="cj-modal-overlay" id="modal-corte">
+    <div class="cj-modal" style="max-width:360px; width:95%;">
+      <div class="cj-modal-header" style="background:linear-gradient(135deg,#ffc107,#ff9800);">
+        <h5><i class="fa fa-cut"></i> Corte Preventivo</h5>
+        <button class="cj-modal-close" id="close-modal-corte">&times;</button>
+      </div>
+      <div class="cj-modal-body">
+        <p id="corte-info-caja" style="font-size:13px;color:#6c757d;margin:0 0 12px;"></p>
+        <div class="sal-form-group">
+          <label style="display:block;font-size:12px;font-weight:600;color:#6c757d;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;">¿Cuánto deseas retirar? ($)</label>
+          <input type="number" id="corteMontoInput" min="0.01" step="0.01" placeholder="0.00"
+            style="width:100%;padding:10px 12px;border:1.5px solid #ced4da;border-radius:8px;font-size:15px;outline:none;box-sizing:border-box;">
+        </div>
+      </div>
+      <div class="cj-modal-footer">
+        <button class="btn-pago-mixto" id="corte-cancelar" style="background:#e9ecef;color:#495057;box-shadow:none;">Cancelar</button>
+        <button class="btn-pago-mixto" id="corte-confirmar" style="background:linear-gradient(135deg,#ffc107,#ff9800);color:#343a40;">
+          <i class="fa fa-check"></i> Retirar
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- LOADING -->
   <div class="cj-loading" id="cj-loading">
     <div class="cj-spinner"></div>
@@ -262,11 +393,22 @@ const CajaApp = {
   vendedorSeleccionado: null,
   cambio: 0,
   currentFilter: '*',
+  tipoOrden: 'llevar',
+  costoEnvio: 0,
+  pagoMixtoActivo: false,
+  montosMixtos: { efectivo: 0, tarjeta: 0, transferencia: 0 },
+  _cajaEfectivo: 0,
+  _cajaFondo: 0,
+  // Para el modal de cobrar pendiente
+  _cobrarTicket: null,
+  _cobrarMetodo: '',
+  _cobrarTotal: 0,
 
   init(productos) {
     this.bindEvents();
     this.actualizarVendedorSeleccionado();
     this.actualizarEstadoCaja();
+    this.actualizarBadgePendientes();
   },
 
   // ─── Filtro Categorías ─────────────────────────────────────────────────────
@@ -344,7 +486,7 @@ const CajaApp = {
     on('close-modal-comanda', 'click', () => this.cerrarComanda());
     on('cancelar-comanda', 'click', () => this.cerrarComanda());
     on('cancelar-transferencia', 'click', () => closeModal('modal-transferencia'));
-    on('confirmar-transferencia', 'click', () => { closeModal('modal-transferencia'); this.registrarVenta(); });
+    on('confirmar-transferencia', 'click', () => { closeModal('modal-transferencia'); this.registrarVenta(false); });
 
     // Overlay clicks
     ['modal-pago', 'modal-transferencia', 'modal-comanda'].forEach(id => {
@@ -418,7 +560,155 @@ const CajaApp = {
     });
 
     // Corte preventivo
-    on('btnCortePreventivo', 'click', () => this.realizarCortePreventivo());
+    on('btnCortePreventivo', 'click', () => this.abrirModalCorte());
+    on('close-modal-corte', 'click', () => closeModal('modal-corte'));
+    on('corte-cancelar', 'click', () => closeModal('modal-corte'));
+    on('corte-confirmar', 'click', () => this.confirmarCorte());
+    document.getElementById('modal-corte')?.addEventListener('click', e => {
+      if (e.target.id === 'modal-corte') closeModal('modal-corte');
+    });
+
+    // ─── Tipo de Orden ─────────────────────────────────────────────────────
+    document.querySelectorAll('.btn-tipo-orden').forEach(btn => {
+      btn.addEventListener('click', () => this.cambiarTipoOrden(btn.dataset.tipo));
+    });
+
+    // Sensor input: actualizar badge al escribir
+    document.getElementById('sensorInput')?.addEventListener('input', () => this.actualizarCarrito());
+
+    // Costo envío: presets
+    document.querySelectorAll('.btn-envio-preset').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const monto = parseFloat(btn.dataset.monto);
+        document.querySelectorAll('.btn-envio-preset').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('costoEnvioInput').value = monto;
+        this.costoEnvio = monto;
+        this.actualizarCarrito();
+      });
+    });
+
+    // Costo envío: input manual
+    document.getElementById('costoEnvioInput')?.addEventListener('input', (e) => {
+      document.querySelectorAll('.btn-envio-preset').forEach(b => b.classList.remove('active'));
+      this.costoEnvio = parseFloat(e.target.value) || 0;
+      this.actualizarCarrito();
+    });
+
+    // Órdenes Pendientes
+    on('btnOrdenesPendientes', 'click', () => this.abrirOrdenesPendientes());
+    on('close-modal-pendientes', 'click', () => closeModal('modal-pendientes'));
+    document.getElementById('modal-pendientes')?.addEventListener('click', e => {
+      if (e.target.id === 'modal-pendientes') closeModal('modal-pendientes');
+    });
+
+    // Modal Cobrar Pendiente
+    on('close-modal-cobrar-pendiente', 'click', () => closeModal('modal-cobrar-pendiente'));
+    on('cobrar-pendiente-cancelar', 'click', () => closeModal('modal-cobrar-pendiente'));
+    document.getElementById('modal-cobrar-pendiente')?.addEventListener('click', e => {
+      if (e.target.id === 'modal-cobrar-pendiente') closeModal('modal-cobrar-pendiente');
+    });
+    document.getElementById('cobrar-pago-methods')?.addEventListener('click', e => {
+      const tile = e.target.closest('.tile-pago[data-tipo-cobro]');
+      if (!tile) return;
+      document.querySelectorAll('#cobrar-pago-methods .tile-pago').forEach(t => t.classList.remove('active'));
+      tile.classList.add('active');
+      this._cobrarMetodo = tile.dataset.tipoCobro;
+      const efectivoRow = document.getElementById('cobrar-efectivo-row');
+      if (efectivoRow) efectivoRow.style.display = this._cobrarMetodo === 'efectivo' ? '' : 'none';
+      document.getElementById('cobrar-pendiente-confirmar').disabled = false;
+    });
+    on('cobrar-pendiente-confirmar', 'click', () => this.confirmarCobroPendiente());
+
+    // Pago Mixto
+    on('btnPagoMixto', 'click', () => this.cambiarPagoMixto());
+    ['mixtoEfectivo', 'mixtoTarjeta', 'mixtoTransferencia'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', () => this.actualizarMixtoFaltante());
+    });
+  },
+
+  cambiarTipoOrden(tipo) {
+    this.tipoOrden = tipo;
+    this.costoEnvio = 0;
+
+    // Botones activos
+    document.querySelectorAll('.btn-tipo-orden').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.btn-tipo-orden[data-tipo="${tipo}"]`)?.classList.add('active');
+
+    // Paneles contextuales
+    ['llevar', 'comer_aqui', 'domicilio'].forEach(t => {
+      const p = document.getElementById(`panel-${t}`);
+      if (p) p.style.display = t === tipo ? '' : 'none';
+    });
+
+    // Métodos de pago: ocultar si es "Comer Aquí"
+    const paymentDiv = document.querySelector('.payment-methods');
+    if (paymentDiv) {
+      paymentDiv.classList.toggle('oculto', tipo === 'comer_aqui');
+    }
+
+    // Reset método de pago si se cambia a comer_aqui
+    if (tipo === 'comer_aqui') {
+      this.metodoPago = '';
+      document.querySelectorAll('.tile-pago').forEach(t => t.classList.remove('active'));
+      // Desactivar pago mixto también
+      if (this.pagoMixtoActivo) this.cambiarPagoMixto();
+    }
+
+    // Reset envío
+    document.querySelectorAll('.btn-envio-preset').forEach(b => b.classList.remove('active'));
+    const envioInput = document.getElementById('costoEnvioInput');
+    if (envioInput) envioInput.value = '';
+
+    this.actualizarCarrito();
+  },
+
+  cambiarPagoMixto() {
+    this.pagoMixtoActivo = !this.pagoMixtoActivo;
+    const btn = document.getElementById('btnPagoMixto');
+    const panel = document.getElementById('panel-pago-mixto');
+    if (this.pagoMixtoActivo) {
+      btn?.classList.add('active');
+      if (panel) panel.style.display = '';
+      // Desactivar selección de tile-pago individual
+      document.querySelectorAll('.tile-pago').forEach(t => t.classList.remove('active'));
+      this.metodoPago = '';
+      this.actualizarMixtoFaltante();
+    } else {
+      btn?.classList.remove('active');
+      if (panel) panel.style.display = 'none';
+      this.montosMixtos = { efectivo: 0, tarjeta: 0, transferencia: 0 };
+      ['mixtoEfectivo', 'mixtoTarjeta', 'mixtoTransferencia'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+    }
+  },
+
+  actualizarMixtoFaltante() {
+    const ef = parseFloat(document.getElementById('mixtoEfectivo')?.value) || 0;
+    const ta = parseFloat(document.getElementById('mixtoTarjeta')?.value) || 0;
+    const tr = parseFloat(document.getElementById('mixtoTransferencia')?.value) || 0;
+    this.montosMixtos = { efectivo: ef, tarjeta: ta, transferencia: tr };
+    const suma = ef + ta + tr;
+    const faltante = this.totalCarrito - suma;
+    const el = document.getElementById('mixtoFaltante');
+    const label = document.getElementById('mixtoFaltanteLabel');
+    if (el) {
+      if (faltante > 0.009) {
+        if (label) label.textContent = 'Faltante:';
+        el.textContent = '$' + faltante.toFixed(2);
+        el.style.color = '#dc3545';
+      } else if (faltante < -0.009) {
+        if (label) label.textContent = 'Excede:';
+        el.textContent = '$' + Math.abs(faltante).toFixed(2);
+        el.style.color = '#fd7e14';
+      } else {
+        if (label) label.textContent = 'Faltante:';
+        el.textContent = '$0.00';
+        el.style.color = '#28a745';
+      }
+    }
   },
 
   filtrarProductos(filter) {
@@ -562,6 +852,27 @@ const CajaApp = {
     let html = '';
     const gruposVistos = {};
 
+    // Badge de sensor (Para llevar)
+    const sensorVal = (document.getElementById('sensorInput')?.value || '').trim();
+    if (this.tipoOrden === 'llevar' && sensorVal) {
+      html += `<div class="sensor-carrito-badge">
+        <span>Sensor:</span> #${escJs(sensorVal)}
+      </div>`;
+    }
+
+    // Badge de domicilio
+    if (this.tipoOrden === 'domicilio') {
+      const calle = document.getElementById('domCalleInput')?.value.trim() || '';
+      const num = document.getElementById('domNumInput')?.value.trim() || '';
+      const colonia = document.getElementById('domColoniaInput')?.value.trim() || '';
+      const dir = [calle, num, colonia].filter(Boolean).join(', ');
+      if (dir) {
+        html += `<div class="domicilio-carrito-badge">
+          🛵 <div><strong>Domicilio:</strong> ${escJs(dir)}</div>
+        </div>`;
+      }
+    }
+
     this.carrito.forEach((item, idx) => {
       total += item.precio * item.cantidad;
 
@@ -592,12 +903,23 @@ const CajaApp = {
       }
     });
 
-    lista.innerHTML = this.carrito.length
-      ? html
+    // Línea de envío en carrito
+    if (this.tipoOrden === 'domicilio' && this.costoEnvio > 0) {
+      html += `<div class="carrito-item" style="background:#fff3e0;">
+        <span style="color:#fd7e14;">🛵 Envío a domicilio</span>
+        <strong style="color:#fd7e14;">$${this.costoEnvio.toFixed(2)}</strong>
+      </div>`;
+      total += this.costoEnvio;
+    }
+
+    lista.innerHTML = (this.carrito.length || (this.tipoOrden === 'domicilio' && this.costoEnvio > 0))
+      ? (html || '<p class="carrito-vacio">Tu carrito está vacío.</p>')
       : '<p class="carrito-vacio">Tu carrito está vacío.</p>';
 
     setText('totalCarrito', '$' + total.toFixed(2));
     this.totalCarrito = total;
+
+    if (this.pagoMixtoActivo) this.actualizarMixtoFaltante();
 
     const instruccion = document.getElementById('instruccionCarrito');
     if (instruccion) instruccion.style.display = this.carrito.length ? '' : 'none';
@@ -612,10 +934,6 @@ const CajaApp = {
       this.showAlert('Carrito vacío', 'Añade productos antes de pagar.', 'warning');
       return;
     }
-    if (!this.metodoPago) {
-      this.showAlert('Falta método de pago', "Elige 'Tarjeta', 'Efectivo' o 'Transferencia'.", 'warning');
-      return;
-    }
 
     // Verificar caja activa
     const cajaActiva = await verificarCajaActiva();
@@ -624,9 +942,32 @@ const CajaApp = {
       return;
     }
 
+    // "Comer Aquí" → guardar como pendiente sin pedir método de pago
+    if (this.tipoOrden === 'comer_aqui') {
+      await this.registrarVenta(true);
+      return;
+    }
+
+    // Pago mixto
+    if (this.pagoMixtoActivo) {
+      const { efectivo, tarjeta, transferencia } = this.montosMixtos;
+      const suma = efectivo + tarjeta + transferencia;
+      if (Math.abs(suma - this.totalCarrito) > 0.01) {
+        this.showAlert('Montos incompletos', `La suma de los métodos ($${suma.toFixed(2)}) debe ser igual al total ($${this.totalCarrito.toFixed(2)}).`, 'warning');
+        return;
+      }
+      await this.registrarVenta(false, true);
+      return;
+    }
+
+    if (!this.metodoPago) {
+      this.showAlert('Falta método de pago', "Elige 'Tarjeta', 'Efectivo' o 'Transferencia'.", 'warning');
+      return;
+    }
+
     if (this.metodoPago === 'tarjeta') {
       await this.registrarVenta();
-      this.metodoPago = ''; // Reset
+      this.metodoPago = '';
     } else if (this.metodoPago === 'efectivo') {
       document.getElementById('inputPago').value = '';
       setText('inputPagoDisplay', '$');
@@ -677,16 +1018,16 @@ const CajaApp = {
       return;
     }
     this.cambio = pago - this.totalCarrito;
-    this.pagoEfectivoAmount = pago; // Guardar para el ticket
+    this.pagoEfectivoAmount = pago;
     closeModal('modal-pago');
-    await this.registrarVenta();
-    this.metodoPago = ''; // Reset
-    this.pagoEfectivoAmount = 0; // Reset
+    await this.registrarVenta(false);
+    this.metodoPago = '';
+    this.pagoEfectivoAmount = 0;
   },
 
   // ─── Generador de Ticket HTML ──────────────────────────────────────────────
   generarHTMLTicket(data) {
-    const { ticket_id, fecha, vendedor_nombre, cliente, tipo_pago, total, pago, cambio, productos } = data;
+    const { ticket_id, fecha, vendedor_nombre, tipo_pago, tipo_orden, sensor_num, direccion, costo_envio, total, pago, cambio, productos, montos_mixtos } = data;
 
     let filas = '';
     const gruposRenderizados = [];
@@ -743,8 +1084,25 @@ const CajaApp = {
       }
     }
 
+    // Fila de envío en tabla si aplica
+    if (Number(costo_envio) > 0) {
+      filas += `
+            <tr>
+                <td style='vertical-align:top;width:15%;'></td>
+                <td style='vertical-align:top;width:55%;word-break:break-word;font-style:italic;'>🛵 Envío a domicilio</td>
+                <td style='vertical-align:top;text-align:right;width:30%;'>$${Number(costo_envio).toFixed(2)}</td>
+            </tr>`;
+    }
+
     let filasTotales = '';
-    if (tipo_pago.toLowerCase() === 'efectivo') {
+    if (tipo_pago && tipo_pago.toLowerCase() === 'mixto' && montos_mixtos) {
+      const partes = [
+        montos_mixtos.efectivo > 0 ? `<p>Efectivo: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.efectivo).toFixed(2)}</span></p>` : '',
+        montos_mixtos.tarjeta > 0 ? `<p>Tarjeta: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.tarjeta).toFixed(2)}</span></p>` : '',
+        montos_mixtos.transferencia > 0 ? `<p>Transf: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.transferencia).toFixed(2)}</span></p>` : '',
+      ].filter(Boolean).join('');
+      filasTotales = partes;
+    } else if (tipo_pago && tipo_pago.toLowerCase() === 'efectivo') {
       filasTotales = `
             <p>Recibo: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(pago).toFixed(2)}</span></p>
             <p>Cambio: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(cambio).toFixed(2)}</span></p>`;
@@ -795,11 +1153,18 @@ const CajaApp = {
     <h2>Antojitos Santa Lucía</h2>
   </div>
 
+  ${sensor_num ? `
+  <div style='text-align:center; border: 2px solid #000; border-radius:6px; padding:6px 4px; margin:6px 0;'>
+    <div style='font-size:11px; font-weight:bold; letter-spacing:1px;'>SENSOR</div>
+    <div style='font-size:48px; font-weight:900; line-height:1;'>#${sensor_num}</div>
+  </div>` : ''}
+
   <div class='info'>
     <p>Fecha: ${fecha}</p>
     <p>Vendedor: ${vendedor_nombre}</p>
-    <p>Cliente: ${cliente || 'Público General'}</p>
-    <p>Metodo Pago: ${tipo_pago}</p>
+    <p>Tipo: ${tipo_orden === 'llevar' ? 'Para llevar' : tipo_orden === 'comer_aqui' ? 'Comer aquí' : 'Domicilio'}</p>
+    <p>Metodo Pago: ${tipo_pago ? tipo_pago.toUpperCase() : 'Pendiente'}</p>
+    ${direccion ? `<p>Dirección: ${direccion}</p>` : ''}
   </div>
   
   <hr class='sep'>
@@ -835,7 +1200,7 @@ const CajaApp = {
   },
 
   // ─── Registrar Venta (reemplaza controller/ventas.php) ───────────────────
-  async registrarVenta() {
+  async registrarVenta(isPendiente = false, isMixto = false) {
     if (!this.vendedorSeleccionado) {
       this.showAlert('Sin vendedor', 'Debes elegir quién registra esta venta.', 'warning');
       return;
@@ -898,11 +1263,26 @@ const CajaApp = {
       }
       // --- FIN BLOQUEO DE SEGURIDAD ---
 
-      const nombreCliente = document.getElementById('clienteNombreInput')?.value.trim() || '';
-      const pagoCliente = this.metodoPago === 'efectivo'
+      // Datos tipo de orden
+      const tipoOrden = this.tipoOrden;
+      const sensorNum = (document.getElementById('sensorInput')?.value || '').trim();
+      const calle = document.getElementById('domCalleInput')?.value.trim() || '';
+      const numDir = document.getElementById('domNumInput')?.value.trim() || '';
+      const colonia = document.getElementById('domColoniaInput')?.value.trim() || '';
+      const direccion = tipoOrden === 'domicilio'
+        ? [calle, numDir, colonia].filter(Boolean).join(', ')
+        : null;
+      const costoEnvio = tipoOrden === 'domicilio' ? (this.costoEnvio || 0) : 0;
+
+      const metodoPagoFinal = isPendiente ? null : (isMixto ? 'mixto' : this.metodoPago);
+      const estatusFinal = isPendiente ? 'pendiente' : 'completado';
+      const pagoCliente = (!isPendiente && this.metodoPago === 'efectivo')
         ? (this.pagoEfectivoAmount || this.totalCarrito)
         : this.totalCarrito;
-      const cambioCliente = this.metodoPago === 'efectivo' ? this.cambio : 0;
+      const cambioCliente = (!isPendiente && this.metodoPago === 'efectivo') ? this.cambio : 0;
+      const montoEfectivo = isMixto ? (this.montosMixtos.efectivo || 0) : (this.metodoPago === 'efectivo' ? this.totalCarrito : 0);
+      const montoTarjeta = isMixto ? (this.montosMixtos.tarjeta || 0) : (this.metodoPago === 'tarjeta' ? this.totalCarrito : 0);
+      const montoTransferencia = isMixto ? (this.montosMixtos.transferencia || 0) : (this.metodoPago === 'transferencia' ? this.totalCarrito : 0);
 
       // Obtener el nombre del vendedor (ya sea desde DB o del elemento DOM activo)
       let vendedorNombre = 'Vendedor';
@@ -916,7 +1296,11 @@ const CajaApp = {
         `SELECT COALESCE(MAX(ticket), 0) + 1 AS next_ticket FROM rv_ventas`, []
       );
       const ticket = ticketRow.next_ticket;
-      const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+      
+      // Ajustar la fecha a la zona horaria local en lugar de usar UTC
+      const offsetMs = new Date().getTimezoneOffset() * 60000;
+      const localDate = new Date(Date.now() - offsetMs);
+      const now = localDate.toISOString().replace('T', ' ').substring(0, 19);
 
       // Insertar cada ítem del carrito
       for (const item of this.carrito) {
@@ -927,15 +1311,25 @@ const CajaApp = {
         await dbExecute(
           `INSERT INTO rv_ventas
       (ticket, fecha, cantidad, id_producto, producto, vendedor,
-        metodo_pago, total, total_ticket, cliente, estatus, plataforma_origen)
-    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'completado', 'desktop')`,
+        metodo_pago, total, total_ticket, cliente, estatus, plataforma_origen,
+        tipo_orden, sensor_num, direccion, costo_envio,
+        monto_efectivo, monto_tarjeta, monto_transferencia)
+    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'desktop', $12, $13, $14, $15, $16, $17, $18)`,
           [
             ticket, now, item.cantidad, item.id, item.nombre,
             this.vendedorSeleccionado,
-            this.metodoPago,
+            metodoPagoFinal,
             (item.precio * item.cantidad),
             this.totalCarrito,
-            nombreCliente || null,
+            null,
+            estatusFinal,
+            tipoOrden,
+            sensorNum || null,
+            direccion,
+            costoEnvio,
+            montoEfectivo,
+            montoTarjeta,
+            montoTransferencia,
           ]
         );
 
@@ -992,11 +1386,21 @@ const CajaApp = {
 
       hideLoading();
 
+      if (isPendiente) {
+        this.showAlert('Orden guardada', `Mesa en espera – Ticket #${ticket}. Aparecerá en Órdenes Pendientes.`, 'success');
+        this.limpiarCarrito();
+        this.actualizarEstadoCaja();
+        this.actualizarBadgePendientes();
+        return;
+      }
+
       // Mensaje de éxito
-      if (this.metodoPago === 'efectivo') {
+      if (isMixto) {
+        this.showAlert('Pago mixto exitoso', `$${this.totalCarrito.toFixed(2)} – Ticket #${ticket}`, 'success');
+      } else if (this.metodoPago === 'efectivo') {
         this.showAlert(
           `Cambio: $${this.cambio.toFixed(2)} `,
-          `Pago realizado con éxito.Ticket #${ticket} `,
+          `Pago realizado con éxito. Ticket #${ticket} `,
           'success'
         );
       } else {
@@ -1012,8 +1416,12 @@ const CajaApp = {
         ticket_id: ticket,
         fecha: new Date().toLocaleString('es-MX'),
         vendedor_nombre: vendedorNombre,
-        cliente: nombreCliente || 'Público General',
-        tipo_pago: this.metodoPago.toUpperCase(),
+        tipo_pago: isMixto ? 'mixto' : this.metodoPago.toUpperCase(),
+        montos_mixtos: isMixto ? { ...this.montosMixtos } : null,
+        tipo_orden: tipoOrden,
+        sensor_num: sensorNum || null,
+        direccion: direccion || null,
+        costo_envio: costoEnvio,
         total: this.totalCarrito,
         pago: pagoCliente,
         cambio: cambioCliente,
@@ -1089,13 +1497,24 @@ const CajaApp = {
     this.carrito = [];
     this.metodoPago = '';
     this.cambio = 0;
+    this.costoEnvio = 0;
+    // Reset pago mixto
+    if (this.pagoMixtoActivo) this.cambiarPagoMixto();
+    this.montosMixtos = { efectivo: 0, tarjeta: 0, transferencia: 0 };
     document.querySelectorAll('.tile-pago').forEach(t => t.classList.remove('active'));
-    const cNombre = document.getElementById('clienteNombreInput');
-    if (cNombre) cNombre.value = '';
     const inputPago = document.getElementById('inputPago');
     if (inputPago) inputPago.value = '';
     closeModal('modal-pago');
     closeModal('modal-transferencia');
+    // Resetear tipo de orden a "llevar"
+    this.cambiarTipoOrden('llevar');
+    const sensorInput = document.getElementById('sensorInput');
+    if (sensorInput) sensorInput.value = '';
+    ['domCalleInput', 'domNumInput', 'domColoniaInput', 'costoEnvioInput'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.querySelectorAll('.btn-envio-preset').forEach(b => b.classList.remove('active'));
     this.actualizarCarrito();
   },
 
@@ -1118,17 +1537,23 @@ const CajaApp = {
       );
       const cortes = await dbSelect(
         `SELECT COALESCE(SUM(precio_unitario), 0) AS tc FROM rv_gastos
-         WHERE tipo_gasto = 'Corte Preventivo' AND fecha >= $1`, [caja.fecha_apertura]
+         WHERE (tipo_gasto = 'Corte Preventivo' OR (tipo_gasto = 'Salida de Efectivo' AND LOWER(metodo_pago) = 'efectivo'))
+         AND fecha >= $1`, [caja.fecha_apertura]
       );
       const efectivo = (parseFloat(caja.monto_apertura) || 0)
         + (parseFloat(totEfectivo.ve) || 0)
         - (parseFloat(cortes[0]?.tc) || 0);
 
+      const fondo = parseFloat(caja.monto_apertura) || 0;
+
+      // Guardar en estado para validación en el modal de corte
+      this._cajaEfectivo = efectivo;
+      this._cajaFondo = fondo;
+
       const pill = document.getElementById('cajaCompactPill');
       const btn = document.getElementById('btnCortePreventivo');
       setText('cajaEfectivoStatus', '$' + Math.round(efectivo));
-      const META = 1500;
-      if (efectivo >= META) {
+      if (efectivo > fondo) {
         pill?.classList.add('danger');
         if (btn) btn.classList.add('visible');
       } else {
@@ -1138,30 +1563,261 @@ const CajaApp = {
     } catch (e) { console.warn('No se pudo actualizar estado caja:', e); }
   },
 
+  // ─── Badge de pendientes ─────────────────────────────────────────────────
+  async actualizarBadgePendientes() {
+    try {
+      const rows = await dbSelect(
+        `SELECT COUNT(DISTINCT ticket) AS cnt FROM rv_ventas WHERE estatus = 'pendiente'`
+      );
+      const cnt = rows[0]?.cnt || 0;
+      const badge = document.getElementById('badgePendientes');
+      if (badge) badge.textContent = cnt > 0 ? `(${cnt})` : '';
+    } catch (_) {}
+  },
+
+  // ─── Órdenes Pendientes ──────────────────────────────────────────────────
+  async abrirOrdenesPendientes() {
+    openModal('modal-pendientes');
+    const lista = document.getElementById('pendientes-lista');
+    if (lista) lista.innerHTML = '<p style="text-align:center;color:#6c757d;">Cargando...</p>';
+
+    try {
+      // Obtener tickets pendientes agrupados
+      const tickets = await dbSelect(
+        `SELECT ticket, fecha, total_ticket, tipo_orden, sensor_num, direccion, costo_envio
+         FROM rv_ventas WHERE estatus = 'pendiente'
+         GROUP BY ticket ORDER BY fecha ASC`
+      );
+
+      if (!tickets.length) {
+        lista.innerHTML = '<p style="text-align:center;color:#6c757d;padding:20px;">No hay órdenes pendientes.</p>';
+        return;
+      }
+
+      let html = '';
+      for (const t of tickets) {
+        const items = await dbSelect(
+          `SELECT cantidad, producto FROM rv_ventas WHERE ticket = $1 AND estatus = 'pendiente'`,
+          [t.ticket]
+        );
+        const resumen = items.map(i => `${i.cantidad}x ${i.producto}`).join('<br>');
+        const hora = new Date(t.fecha.replace(' ', 'T')).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+        let infoExtra = '';
+        if (t.tipo_orden === 'llevar' && t.sensor_num) infoExtra = `<span style="color:#007aff; font-weight:700;">Sensor #${t.sensor_num}</span> — `;
+        if (t.tipo_orden === 'domicilio' && t.direccion) infoExtra = `<span style="color:#fd7e14;">🛵 ${t.direccion}</span> — `;
+
+        html += `<div class="pendiente-card">
+          <div class="pendiente-card-header">
+            <span class="pendiente-ticket-num">Ticket #${t.ticket}</span>
+            <span class="pendiente-hora">${infoExtra}${hora}</span>
+          </div>
+          <div class="pendiente-items">${resumen}</div>
+          <div class="pendiente-total">Total: $${Number(t.total_ticket).toFixed(2)}</div>
+          <button class="btn-cobrar-pendiente"
+            data-ticket="${t.ticket}"
+            data-total="${t.total_ticket}"
+            data-tipo-orden="${t.tipo_orden || 'llevar'}"
+            data-sensor="${t.sensor_num || ''}"
+            data-dir="${t.direccion || ''}"
+            data-envio="${t.costo_envio || 0}">
+            💳 Cobrar
+          </button>
+        </div>`;
+      }
+      lista.innerHTML = html;
+
+      lista.querySelectorAll('.btn-cobrar-pendiente').forEach(btn => {
+        btn.addEventListener('click', () => {
+          this.abrirCobrarPendiente({
+            ticket: btn.dataset.ticket,
+            total: parseFloat(btn.dataset.total),
+            tipoOrden: btn.dataset.tipoOrden,
+            sensor: btn.dataset.sensor,
+            dir: btn.dataset.dir,
+            envio: parseFloat(btn.dataset.envio) || 0,
+            items: lista.querySelector(`.btn-cobrar-pendiente[data-ticket="${btn.dataset.ticket}"]`)
+              .closest('.pendiente-card').querySelector('.pendiente-items').innerHTML,
+          });
+        });
+      });
+    } catch (err) {
+      if (lista) lista.innerHTML = `<p style="color:#dc3545;">Error: ${err.message}</p>`;
+    }
+  },
+
+  abrirCobrarPendiente({ ticket, total, tipoOrden, sensor, dir, envio, items }) {
+    this._cobrarTicket = ticket;
+    this._cobrarTotal = total;
+    this._cobrarMetodo = '';
+
+    setText('cobrar-pendiente-title', `Cobrar Ticket #${ticket}`);
+
+    const itemsEl = document.getElementById('cobrar-pendiente-items');
+    if (itemsEl) itemsEl.innerHTML = items;
+
+    const totalEl = document.getElementById('cobrar-pendiente-total');
+    if (totalEl) totalEl.textContent = `$${total.toFixed(2)}`;
+
+    // Reset selección de método
+    document.querySelectorAll('#cobrar-pago-methods .tile-pago').forEach(t => t.classList.remove('active'));
+    const efectivoRow = document.getElementById('cobrar-efectivo-row');
+    if (efectivoRow) efectivoRow.style.display = 'none';
+    const cobrarInput = document.getElementById('cobrar-efectivo-input');
+    if (cobrarInput) cobrarInput.value = '';
+    document.getElementById('cobrar-pendiente-confirmar').disabled = true;
+
+    openModal('modal-cobrar-pendiente');
+  },
+
+  async confirmarCobroPendiente() {
+    if (!this._cobrarTicket || !this._cobrarMetodo) return;
+
+    let pagoEfectivo = null;
+    let cambio = 0;
+
+    if (this._cobrarMetodo === 'efectivo') {
+      pagoEfectivo = parseFloat(document.getElementById('cobrar-efectivo-input')?.value) || 0;
+      if (pagoEfectivo < this._cobrarTotal) {
+        this.showAlert('Monto insuficiente', 'El monto recibido es menor al total.', 'error');
+        return;
+      }
+      cambio = pagoEfectivo - this._cobrarTotal;
+    }
+
+    showLoading('Procesando Cobro...');
+    try {
+      const offsetMs = new Date().getTimezoneOffset() * 60000;
+      const now = new Date(Date.now() - offsetMs).toISOString().replace('T', ' ').substring(0, 19);
+
+      await dbExecute(
+        `UPDATE rv_ventas SET estatus = 'completado', metodo_pago = $1, fecha = $2
+         WHERE ticket = $3 AND estatus = 'pendiente'`,
+        [this._cobrarMetodo, now, this._cobrarTicket]
+      );
+
+      // Re-firmar licencia
+      try {
+        const { invoke } = window.__TAURI__?.core || await import('@tauri-apps/api/core');
+        const [licencia] = await dbSelect(`SELECT * FROM rv_licencia_local WHERE id = 1`);
+        if (licencia) {
+          const nuevasVentas = (licencia.ventas_desde_sync || 0) + 1;
+          const nuevaFirma = await invoke('generar_firma_licencia', {
+            fechaUltimoSync: licencia.fecha_ultimo_sync,
+            fechaExpiracion: licencia.fecha_expiracion,
+            ventasDesdeSync: nuevasVentas
+          });
+          await dbExecute(
+            `UPDATE rv_licencia_local SET ventas_desde_sync = $1, firma_digital = $2 WHERE id = 1`,
+            [nuevasVentas, nuevaFirma]
+          );
+        }
+      } catch (_) {}
+
+      hideLoading();
+
+      // Obtener datos para el ticket
+      const rows = await dbSelect(
+        `SELECT * FROM rv_ventas WHERE ticket = $1 LIMIT 1`, [this._cobrarTicket]
+      );
+      const items = await dbSelect(
+        `SELECT cantidad, producto, total FROM rv_ventas WHERE ticket = $1`, [this._cobrarTicket]
+      );
+      const r = rows[0] || {};
+
+      let vendedorNombre = 'Vendedor';
+      try {
+        const vData = await dbSelect('SELECT emp_nombre FROM tm_empleado WHERE emp_id = $1', [r.vendedor]);
+        if (vData?.length) vendedorNombre = vData[0].emp_nombre;
+      } catch (_) {}
+
+      const datosTicket = {
+        ticket_id: this._cobrarTicket,
+        fecha: new Date().toLocaleString('es-MX'),
+        vendedor_nombre: vendedorNombre,
+        tipo_pago: this._cobrarMetodo.toUpperCase(),
+        tipo_orden: r.tipo_orden || 'comer_aqui',
+        sensor_num: r.sensor_num || null,
+        direccion: r.direccion || null,
+        costo_envio: parseFloat(r.costo_envio) || 0,
+        total: this._cobrarTotal,
+        pago: pagoEfectivo || this._cobrarTotal,
+        cambio,
+        productos: items.map(i => ({ nombre: i.producto, cantidad: i.cantidad, precio: i.total / i.cantidad }))
+      };
+
+      const htmlTicket = this.generarHTMLTicket(datosTicket);
+      if (window.imprimirTicket) window.imprimirTicket(htmlTicket);
+
+      if (this._cobrarMetodo === 'efectivo') {
+        this.showAlert(`Cambio: $${cambio.toFixed(2)}`, `Cobro exitoso. Ticket #${this._cobrarTicket}`, 'success');
+      } else {
+        this.showAlert('Cobro exitoso', `Ticket #${this._cobrarTicket} – $${this._cobrarTotal.toFixed(2)}`, 'success');
+      }
+
+      closeModal('modal-cobrar-pendiente');
+      closeModal('modal-pendientes');
+      this.actualizarEstadoCaja();
+      this.actualizarBadgePendientes();
+
+    } catch (err) {
+      hideLoading();
+      this.showAlert('Error', 'No se pudo procesar el cobro: ' + (err.message || ''), 'error');
+    }
+  },
+
   // ─── Corte Preventivo ─────────────────────────────────────────────────────
-  async realizarCortePreventivo() {
+  abrirModalCorte() {
     const activo = document.querySelector('.vendedor-selector.is_active');
     if (!activo) {
       this.showAlert('Selecciona un cajero', 'Debes seleccionar quién realizará el corte.', 'warning');
       return;
     }
+    const efectivo = this._cajaEfectivo || 0;
+    const fondo = this._cajaFondo || 0;
+    const disponible = efectivo - fondo;
+    const info = document.getElementById('corte-info-caja');
+    if (info) info.textContent = `Efectivo en caja: $${efectivo.toLocaleString('es-MX', {minimumFractionDigits:2})} · Fondo: $${fondo.toLocaleString('es-MX', {minimumFractionDigits:2})} · Disponible: $${disponible.toLocaleString('es-MX', {minimumFractionDigits:2})}`;
+    const input = document.getElementById('corteMontoInput');
+    if (input) input.value = '';
+    openModal('modal-corte');
+    setTimeout(() => input?.focus(), 100);
+  },
+
+  async confirmarCorte() {
+    const activo = document.querySelector('.vendedor-selector.is_active');
+    if (!activo) { closeModal('modal-corte'); return; }
+
+    const monto = parseFloat(document.getElementById('corteMontoInput')?.value) || 0;
+    if (monto <= 0) {
+      this.showAlert('Monto inválido', 'Ingresa un monto mayor a $0.', 'warning');
+      return;
+    }
+    const disponible = (this._cajaEfectivo || 0) - (this._cajaFondo || 0);
+    if (monto > disponible + 0.01) {
+      this.showAlert('Monto excede disponible', `Solo puedes retirar hasta $${disponible.toLocaleString('es-MX', {minimumFractionDigits:2})}.`, 'warning');
+      return;
+    }
+
+    closeModal('modal-corte');
     const empNombre = activo.textContent.trim();
+    const retiroFmt = '$' + monto.toLocaleString('es-MX', {minimumFractionDigits:2});
+
     this.showConfirm(
-      '¿Realizar Corte Preventivo?',
-      `${empNombre} retirará $1, 500.00 de la caja para resguardo.`,
+      '¿Confirmar Retiro?',
+      `${empNombre} retirará ${retiroFmt} de la caja.`,
       'warning',
       async () => {
         try {
           showLoading('Procesando Retiro...');
           await dbExecute(
             `INSERT INTO rv_gastos(tipo_gasto, descripcion, fecha, comentario, precio_unitario, tipo, metodo_pago, usu_id)
-    VALUES('Corte Preventivo', 'Retiro de efectivo preventivo', datetime('now', 'localtime'),
-      $1, 1500, 'operativo', 'efectivo', $2)`,
-            ['Realizado por: ' + empNombre, this.vendedorSeleccionado || 1]
+             VALUES('Corte Preventivo', 'Retiro de efectivo preventivo', datetime('now', 'localtime'),
+               $1, $2, 'operativo', 'efectivo', $3)`,
+            ['Realizado por: ' + empNombre, monto, this.vendedorSeleccionado || 1]
           );
           hideLoading();
           this.actualizarEstadoCaja();
-          this.showAlert('Corte Realizado', `${empNombre} registró el retiro de $1, 500.00 correctamente.`, 'success');
+          this.showAlert('Retiro Realizado', `${empNombre} registró el retiro de ${retiroFmt} correctamente.`, 'success');
         } catch (err) {
           hideLoading();
           this.showAlert('Error', 'No se pudo registrar el retiro: ' + (err.message || ''), 'error');

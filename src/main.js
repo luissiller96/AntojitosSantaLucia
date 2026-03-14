@@ -14,6 +14,7 @@ import { renderDevoluciones } from './pages/devoluciones.js';
 import { renderToken } from './pages/token.js';
 import { renderEmpleados } from './pages/empleados.js';
 import { renderSincronizacion } from './pages/sincronizacion.js';
+import { renderSalidasEfectivo } from './pages/salidas_efectivo.js';
 
 const app = document.getElementById('app');
 
@@ -29,6 +30,7 @@ const routes = {
   '/token': () => renderToken(app),
   '/empleados': () => renderEmpleados(app),
   '/sincronizacion': () => renderSincronizacion(app),
+  '/salidas_efectivo': () => renderSalidasEfectivo(app),
   // próximos módulos se agregan aquí
 };
 

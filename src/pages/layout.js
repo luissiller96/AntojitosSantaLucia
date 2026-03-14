@@ -89,6 +89,10 @@ export function renderLayout(container, currentPage, pageContent) {
           <div class="drawer-card route-link" style="cursor:pointer;" data-path="/devoluciones">
             <div class="drawer-card-icon icon-devoluciones"><i class="fas fa-undo"></i></div>
             <span>Devoluciones</span>
+          </div>
+          <div class="drawer-card route-link" style="cursor:pointer;" data-path="/salidas_efectivo">
+            <div class="drawer-card-icon icon-salidas"><i class="fas fa-hand-holding-usd"></i></div>
+            <span>Salidas</span>
           </div>` : ''}
           ${isAdmin ? `
           <div class="drawer-card route-link" style="cursor:pointer;" data-path="/token">

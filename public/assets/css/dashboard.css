@@ -188,6 +188,8 @@ body {
 .kpi-card.utilidad::before { background: var(--blue); }
 .kpi-card.purple::before { background: var(--purple); }
 .kpi-card.caja::before { background: var(--blue); }
+.kpi-card.salidas::before { background: #e17055; }
+.kpi-card.salidas-mes::before { background: #d63031; }
 
 
 .kpi-content {
@@ -234,6 +236,8 @@ body {
 .kpi-icon.cyan { background: linear-gradient(135deg, #06b6d4, #0891b2); }
 .kpi-icon.caja { background: linear-gradient(135deg, #3b76e2, #2563eb); }
 .kpi-icon.danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.kpi-icon.salidas { background: linear-gradient(135deg, #e17055, #d63031); }
+.kpi-icon.salidas-mes { background: linear-gradient(135deg, #c0392b, #96281b); }
 
 .kpi-info {
     flex: 1;

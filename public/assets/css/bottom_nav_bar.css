@@ -202,6 +202,10 @@
   background: linear-gradient(45deg, #0984e3, #74b9ff);
 }
 
+.icon-salidas {
+  background: linear-gradient(45deg, #e17055, #d63031);
+}
+
 /* Íconos de gastos */
 .icon-gastos-fijos {
   background: linear-gradient(45deg, #6c5ce7, #a29bfe);

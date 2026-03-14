@@ -457,5 +457,19 @@ export async function initDB() {
   await conn.execute(`INSERT OR IGNORE INTO token_global (id, token) VALUES (1,'6376')`);
 
 
+  // Migraciones: agregar columnas nuevas a rv_ventas si no existen
+  const migraciones = [
+    `ALTER TABLE rv_ventas ADD COLUMN tipo_orden TEXT DEFAULT 'llevar'`,
+    `ALTER TABLE rv_ventas ADD COLUMN sensor_num TEXT`,
+    `ALTER TABLE rv_ventas ADD COLUMN direccion TEXT`,
+    `ALTER TABLE rv_ventas ADD COLUMN costo_envio REAL DEFAULT 0`,
+    `ALTER TABLE rv_ventas ADD COLUMN monto_efectivo REAL DEFAULT 0`,
+    `ALTER TABLE rv_ventas ADD COLUMN monto_tarjeta REAL DEFAULT 0`,
+    `ALTER TABLE rv_ventas ADD COLUMN monto_transferencia REAL DEFAULT 0`,
+  ];
+  for (const sql of migraciones) {
+    try { await conn.execute(sql); } catch (_) { /* columna ya existe */ }
+  }
+
   console.log('[DB] Base de datos inicializada correctamente.');
 }

@@ -860,6 +860,370 @@
   }
 }
 
+/* =========== TIPO DE ORDEN =========== */
+.tipo-orden-bar {
+  display: flex;
+  gap: 5px;
+  flex: 1;
+}
+
+.btn-tipo-orden {
+  flex: 1;
+  padding: 7px 6px;
+  border: 2px solid #dee2e6;
+  border-radius: 10px;
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 700;
+  font-size: clamp(10px, 0.85vw, 13px);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+
+.btn-tipo-orden:hover:not(.active) {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.btn-tipo-orden.active[data-tipo="llevar"] {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+}
+
+.btn-tipo-orden.active[data-tipo="comer_aqui"] {
+  background: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+.btn-tipo-orden.active[data-tipo="domicilio"] {
+  background: #fd7e14;
+  color: #fff;
+  border-color: #fd7e14;
+}
+
+/* Panel contextual debajo del top bar */
+#panel-tipo-orden {
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+.orden-panel {
+  animation: cj-slideUp .18s ease;
+}
+
+/* Panel Para Llevar */
+.sensor-input {
+  width: 100%;
+  padding: 7px 12px;
+  border: 2px solid #007aff;
+  border-radius: 10px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: center;
+  color: #007aff;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.sensor-input::placeholder {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #90c2ff;
+}
+
+/* Panel Domicilio */
+.domicilio-fields {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+
+.domicilio-fields input {
+  flex: 1;
+  padding: 7px 9px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 12px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color .2s;
+}
+
+.domicilio-fields input:focus {
+  border-color: #fd7e14;
+}
+
+.envio-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.envio-row > span {
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+}
+
+.btn-envio-preset {
+  padding: 5px 9px;
+  border: 1px solid #fd7e14;
+  border-radius: 8px;
+  background: #fff3e0;
+  color: #fd7e14;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+
+.btn-envio-preset.active,
+.btn-envio-preset:hover {
+  background: #fd7e14;
+  color: #fff;
+}
+
+#costoEnvioInput {
+  width: 65px;
+  padding: 5px 7px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Ocultar métodos de pago en Comer Aquí */
+.payment-methods.oculto {
+  display: none;
+}
+
+/* Botón Órdenes Pendientes */
+.btn-pendientes {
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+
+.btn-pendientes:hover {
+  background: #1e7e34;
+}
+
+/* Badge de sensor en carrito */
+.sensor-carrito-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #e8f0fe;
+  border: 2px dashed #007aff;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin-bottom: 6px;
+  font-weight: 800;
+  color: #007aff;
+  font-size: 1.1rem;
+}
+
+.sensor-carrito-badge span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6c757d;
+}
+
+/* Badge de domicilio en carrito */
+.domicilio-carrito-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: #fff3e0;
+  border: 2px dashed #fd7e14;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.domicilio-carrito-badge strong {
+  color: #fd7e14;
+  font-size: 0.85rem;
+}
+
+/* Tarjeta de orden pendiente */
+.pendiente-card {
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  background: #f8f9fa;
+}
+
+.pendiente-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pendiente-ticket-num {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #28a745;
+}
+
+.pendiente-hora {
+  font-size: 0.78rem;
+  color: #6c757d;
+}
+
+.pendiente-items {
+  font-size: 0.83rem;
+  color: #444;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.pendiente-total {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.btn-cobrar-pendiente {
+  width: 100%;
+  padding: 8px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.btn-cobrar-pendiente:hover {
+  background: #1e7e34;
+}
+
+/* Sub-panel de pago dentro del modal pendientes */
+.cobrar-pago-panel {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 10px;
+  border: 1px solid #dee2e6;
+}
+
+.cobrar-pago-panel .payment-methods {
+  margin: 10px 0 6px;
+}
+
+.cobrar-efectivo-row {
+  margin-top: 8px;
+}
+
+.cobrar-efectivo-row label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.cobrar-efectivo-row input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* ─── Pago Mixto ──────────────────────────────────────────────────────────── */
+.btn-pago-mixto {
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px 12px;
+  background: #f8f9fa;
+  border: 1.5px dashed #adb5bd;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+}
+.btn-pago-mixto.active,
+.btn-pago-mixto:hover {
+  background: #e8f4fd;
+  border-color: #007aff;
+  color: #007aff;
+}
+.panel-pago-mixto {
+  background: #f0f4ff;
+  border: 1px solid #c7d9ff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.mixto-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.mixto-row span {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #343a40;
+}
+.mixto-row input {
+  width: 90px;
+  padding: 5px 8px;
+  border: 1.5px solid #ced4da;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: right;
+  outline: none;
+  transition: border-color .15s;
+}
+.mixto-row input:focus {
+  border-color: #007aff;
+}
+.mixto-status {
+  text-align: right;
+  font-size: 13px;
+  color: #495057;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid #c7d9ff;
+}
+.mixto-status strong {
+  font-size: 15px;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .caja-row {

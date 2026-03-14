@@ -366,7 +366,8 @@ const ReportesApp = {
       SELECT ticket, fecha, vendedor, metodo_pago,
              GROUP_CONCAT(cantidad||'x '||producto, ' | ') AS articulos,
              SUM(cantidad) AS total_prod,
-             MAX(total_ticket) AS total_ticket
+             MAX(total_ticket) AS total_ticket,
+             MAX(tipo_orden) AS tipo_orden
       FROM rv_ventas
       WHERE DATE(fecha) BETWEEN $1 AND $2
         AND estatus='completado'`;
@@ -382,23 +383,38 @@ const ReportesApp = {
 
     const pagoBadge = p => {
       const cls = { efectivo: 'badge-ef', tarjeta: 'badge-tj', transferencia: 'badge-tr' }[p] || '';
-      return `<span class="rep-badge-pago ${cls}">${p}</span>`;
+      return `<span class="rep-badge-pago ${cls}">${p || '—'}</span>`;
+    };
+
+    const tipoBadge = t => {
+      const map = { llevar: ['badge-llevar', 'Llevar'], comer_aqui: ['badge-aqui', 'Aquí'], domicilio: ['badge-domicilio', 'Domicilio'] };
+      const [cls, label] = map[t] || ['', t || '—'];
+      return `<span class="rep-badge-tipo ${cls}">${label}</span>`;
     };
 
     cont.innerHTML = `
     <table class="rep-table">
-      <thead><tr><th>Ticket</th><th>Fecha</th><th>Artículos</th><th>Forma Pago</th><th>Total</th></tr></thead>
+      <thead><tr><th>Ticket</th><th>Fecha</th><th>Artículos</th><th>Tipo</th><th>Forma Pago</th><th>Total</th><th></th></tr></thead>
       <tbody>
         ${rows.map(r => `
         <tr>
           <td style="color:#6c757d;">#${r.ticket}</td>
           <td style="white-space:nowrap;">${fmtDt(r.fecha)}</td>
           <td style="font-size:.85rem; color:#555;">${(r.articulos || '').replace(/\|/g, '<br>')}</td>
+          <td>${tipoBadge(r.tipo_orden)}</td>
           <td>${pagoBadge(r.metodo_pago)}</td>
           <td style="font-weight:700; color:#28a745;">${fmt(r.total_ticket)}</td>
+          <td><button class="rep-btn-reimprimir" data-ticket="${r.ticket}" title="Reimprimir"><i class="fa fa-print"></i></button></td>
         </tr>`).join('')}
       </tbody>
     </table>`;
+
+    // Delegación para reimprimir
+    cont.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.rep-btn-reimprimir');
+      if (!btn) return;
+      await reimprimirTicket(btn.dataset.ticket);
+    }, { once: true });
   },
 
   // ── Exportación a Excel ───────────────────────────────────────────────────
@@ -591,6 +607,87 @@ const ReportesApp = {
     </table>`;
   },
 };
+
+// ─── Reimpresión de ticket ────────────────────────────────────────────────────
+async function reimprimirTicket(ticketId) {
+  try {
+    const rows = await dbSelect(
+      `SELECT v.*, e.emp_nombre FROM rv_ventas v
+       LEFT JOIN tm_empleado e ON e.emp_id = v.vendedor
+       WHERE v.ticket = $1`,
+      [ticketId]
+    );
+    if (!rows.length) { alert('No se encontró el ticket #' + ticketId); return; }
+
+    const r = rows[0];
+    const vendedorNombre = r.emp_nombre || 'Vendedor';
+    const total = parseFloat(r.total_ticket) || 0;
+    const tipoPago = r.metodo_pago || '';
+    const montosMixtos = { efectivo: parseFloat(r.monto_efectivo) || 0, tarjeta: parseFloat(r.monto_tarjeta) || 0, transferencia: parseFloat(r.monto_transferencia) || 0 };
+
+    let filas = '';
+    for (const item of rows) {
+      filas += `<tr>
+        <td style='vertical-align:top;width:15%;'>${item.cantidad}x</td>
+        <td style='vertical-align:top;width:55%;word-break:break-word;'>${item.producto}</td>
+        <td style='vertical-align:top;text-align:right;width:30%;'>$${(parseFloat(item.total) || 0).toFixed(2)}</td>
+      </tr>`;
+    }
+
+    if (parseFloat(r.costo_envio) > 0) {
+      filas += `<tr>
+        <td></td>
+        <td style='vertical-align:top;font-style:italic;'>Envío a domicilio</td>
+        <td style='vertical-align:top;text-align:right;'>$${parseFloat(r.costo_envio).toFixed(2)}</td>
+      </tr>`;
+    }
+
+    let filasTotales = '';
+    if (tipoPago.toLowerCase() === 'mixto') {
+      if (montosMixtos.efectivo > 0) filasTotales += `<p>Efectivo: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.efectivo.toFixed(2)}</span></p>`;
+      if (montosMixtos.tarjeta > 0)  filasTotales += `<p>Tarjeta: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.tarjeta.toFixed(2)}</span></p>`;
+      if (montosMixtos.transferencia > 0) filasTotales += `<p>Transf: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.transferencia.toFixed(2)}</span></p>`;
+    } else {
+      filasTotales = `<p>Recibo: <span style='display:inline-block;width:70px;text-align:right;'>$${total.toFixed(2)}</span></p>`;
+    }
+
+    const tipoLabel = r.tipo_orden === 'llevar' ? 'Para llevar' : r.tipo_orden === 'comer_aqui' ? 'Comer aquí' : 'Domicilio';
+    const fecha = new Date(r.fecha.replace(' ', 'T')).toLocaleString('es-MX');
+
+    const html = `<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'>
+<title>Ticket #${ticketId}</title><style>
+@page{margin:0;size:58mm auto;}*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Courier New',monospace;font-size:13px;font-weight:bold;width:58mm;max-width:58mm;padding:5px;color:#000;line-height:1.2;}
+.center{text-align:center;}.sep{border:none;border-top:1px dashed #000;margin:6px 0;}
+.info p{margin-bottom:2px;}table{width:100%;border-collapse:collapse;}
+td{font-size:13px;padding:3px 0;vertical-align:top;}
+.totales-container{margin-top:6px;font-size:14px;text-align:right;}.totales-container p{margin-bottom:3px;}
+.total-final{font-size:20px;font-weight:bold;margin-top:10px;margin-bottom:10px;text-align:center;}
+</style></head><body>
+<div class="center"><h1 style="font-size:18px;">Ticket #${ticketId}</h1><h2 style="font-size:15px;margin-bottom:8px;">Antojitos Santa Lucía</h2><p style="font-size:11px;">[REIMPRESIÓN]</p></div>
+${r.sensor_num ? `<div style='text-align:center;border:2px solid #000;border-radius:6px;padding:6px 4px;margin:6px 0;'><div style='font-size:11px;font-weight:bold;'>SENSOR</div><div style='font-size:48px;font-weight:900;line-height:1;'>#${r.sensor_num}</div></div>` : ''}
+<div class='info'>
+  <p>Fecha: ${fecha}</p>
+  <p>Vendedor: ${vendedorNombre}</p>
+  <p>Tipo: ${tipoLabel}</p>
+  <p>Metodo Pago: ${tipoPago ? tipoPago.toUpperCase() : 'N/A'}</p>
+  ${r.direccion ? `<p>Dirección: ${r.direccion}</p>` : ''}
+</div>
+<hr class='sep'>
+<table><thead><tr><th style='text-align:left;'>Cant</th><th style='text-align:left;'>Producto</th><th style='text-align:right;'>Total</th></tr></thead>
+<tbody>${filas}</tbody></table>
+<hr class='sep'>
+<div class='totales-container'>${filasTotales}</div>
+<div class='total-final'>TOTAL: $${total.toFixed(2)}</div>
+<div class="center" style="font-size:15px;margin-top:10px;"><p>¡Gracias por su preferencia!</p></div>
+</body></html>`;
+
+    if (window.imprimirTicket) window.imprimirTicket(html);
+    else alert('Función de impresión no disponible.');
+  } catch (err) {
+    alert('Error al reimprimir: ' + (err.message || err));
+  }
+}
 
 // ─── Micro helpers ────────────────────────────────────────────────────────────
 function val(id) { return document.getElementById(id)?.value || ''; }
