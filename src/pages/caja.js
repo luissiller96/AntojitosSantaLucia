@@ -1199,6 +1199,92 @@ const CajaApp = {
 </html>`;
   },
 
+  // ─── Comanda Interna (pre-ticket para cocina, sin precios) ──────────────
+  generarHTMLComandaInterna({ ticket_id, fecha, productos }) {
+    let filas = '';
+    const gruposRenderizados = [];
+
+    for (const item of productos) {
+      if (item.grupo_mixta) {
+        if (gruposRenderizados.includes(item.grupo_mixta)) continue;
+        gruposRenderizados.push(item.grupo_mixta);
+
+        const groupLabel = item.parent_nombre || 'Orden Mixta';
+        filas += `<tr><td colspan='2' style='padding-top:6px;padding-bottom:2px;font-weight:bold;text-decoration:underline;'>${groupLabel}</td></tr>`;
+
+        for (const subItem of productos) {
+          if (subItem.grupo_mixta !== item.grupo_mixta) continue;
+          const suffixMatch = (subItem.nombre || '').match(/\((.*?)\)$/);
+          const subNombre = suffixMatch ? subItem.nombre.replace(` (${suffixMatch[1]})`, '') : subItem.nombre;
+          filas += `<tr><td style='width:18%;vertical-align:top;'>${parseInt(subItem.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${subNombre}</td></tr>`;
+          if (subItem.opciones && subItem.opciones.length > 0) {
+            const op = Array.isArray(subItem.opciones) ? subItem.opciones.join(', ') : subItem.opciones;
+            if (op.trim()) filas += `<tr><td></td><td style='font-size:14px;'>  *** SIN: ${op}</td></tr>`;
+          }
+          if (subItem.observaciones) {
+            filas += `<tr><td></td><td style='font-size:14px;'>  Obs: ${subItem.observaciones}</td></tr>`;
+          }
+        }
+      } else {
+        filas += `<tr><td style='width:18%;vertical-align:top;'>${parseInt(item.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${item.nombre}</td></tr>`;
+        if (item.opciones && item.opciones.length > 0) {
+          const op = Array.isArray(item.opciones) ? item.opciones.join(', ') : item.opciones;
+          if (op.trim()) filas += `<tr><td></td><td style='font-size:14px;'>  *** SIN: ${op}</td></tr>`;
+        }
+        if (item.observaciones) {
+          filas += `<tr><td></td><td style='font-size:14px;'>  Obs: ${item.observaciones}</td></tr>`;
+        }
+      }
+    }
+
+    return `
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Comanda #${ticket_id}</title>
+  <style>
+    @page { margin: 0; size: 58mm auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      font-weight: bold;
+      width: 58mm;
+      max-width: 58mm;
+      padding: 5px;
+      color: #000;
+      line-height: 1.3;
+    }
+    .center { text-align: center; }
+    .sep { border: none; border-top: 2px dashed #000; margin: 6px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 3px 0; vertical-align: top; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div style='font-size:11px;letter-spacing:2px;'>— COMANDA INTERNA —</div>
+    <div style='font-size:36px;font-weight:900;line-height:1.1;margin:4px 0;'>#${ticket_id}</div>
+    <div style='font-size:11px;'>${fecha}</div>
+    <div style='font-size:12px;margin-top:2px;'>■ COMER AQUÍ ■</div>
+  </div>
+
+  <hr class='sep'>
+
+  <table>
+    <tbody>${filas}</tbody>
+  </table>
+
+  <hr class='sep'>
+
+  <div class='center' style='font-size:11px;margin-top:4px;'>
+    — uso interno —
+  </div>
+</body>
+</html>`;
+  },
+
   // ─── Registrar Venta (reemplaza controller/ventas.php) ───────────────────
   async registrarVenta(isPendiente = false, isMixto = false) {
     if (!this.vendedorSeleccionado) {
@@ -1387,6 +1473,16 @@ const CajaApp = {
       hideLoading();
 
       if (isPendiente) {
+        // Imprimir comanda interna para cocina (sin precios)
+        if (window.imprimirTicket) {
+          const htmlComanda = this.generarHTMLComandaInterna({
+            ticket_id: ticket,
+            fecha: new Date().toLocaleString('es-MX', { hour12: false }),
+            productos: this.carrito
+          });
+          window.imprimirTicket(htmlComanda);
+        }
+
         this.showAlert('Orden guardada', `Mesa en espera – Ticket #${ticket}. Aparecerá en Órdenes Pendientes.`, 'success');
         this.limpiarCarrito();
         this.actualizarEstadoCaja();

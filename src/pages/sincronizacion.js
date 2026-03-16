@@ -322,6 +322,28 @@ async function contarRegistros() {
     }
 }
 
+// Obtiene todos los datos locales para el backup completo
+async function obtenerTodasLasTablas() {
+    const tablas = {};
+    const tablasARespaldar = [
+        'rv_sucursales', 'rv_categorias', 'rv_ingredientes', 'rv_gastos_fijos_plantilla',
+        'tm_usuario', 'tm_empleado',
+        'rv_insumos', 'rv_productos', 'rv_producto_componentes', 'rv_producto_insumos',
+        'rv_apertura_caja', 'rv_ventas', 'rv_comanda', 'rv_devoluciones',
+        'rv_gastos', 'rv_gastos_fijos', 'rv_movimientos_insumos'
+    ];
+
+    for (const tabla of tablasARespaldar) {
+        try {
+            tablas[tabla] = await dbSelect(`SELECT * FROM ${tabla}`, []);
+        } catch (e) {
+            // Si la tabla no existe localmente, no bloquea la sincronización
+            tablas[tabla] = [];
+        }
+    }
+    return tablas;
+}
+
 async function ejecutarSync() {
     const btnSync = document.getElementById('btn-sync');
     const resultDiv = document.getElementById('sync-result');
@@ -336,17 +358,13 @@ async function ejecutarSync() {
     });
 
     try {
-        // Obtener datos locales
-        const ventas = await dbSelect('SELECT * FROM rv_ventas', []);
-        const caja = await dbSelect('SELECT * FROM rv_apertura_caja', []);
-        const gastos = await dbSelect('SELECT * FROM rv_gastos', []);
+        // Obtener todos los datos locales (backup completo)
+        const todasLasTablas = await obtenerTodasLasTablas();
 
         const payload = {
             empresa: 'Antojitos Santa Lucia',
             token: SYNC_TOKEN,
-            rv_ventas: ventas,
-            rv_apertura_caja: caja,
-            rv_gastos: gastos
+            ...todasLasTablas
         };
 
         const controller = new AbortController();
@@ -370,13 +388,19 @@ async function ejecutarSync() {
         const resultado = await response.json();
 
         if (resultado.success) {
-            // Mostrar resultados por tabla
+            // Mostrar resultados en las 3 tarjetas visibles
+            const mapaUI = {
+                rv_ventas: 'ventas',
+                rv_apertura_caja: 'caja',
+                rv_gastos: 'gastos'
+            };
             Object.entries(resultado.tablas ?? {}).forEach(([tabla, info]) => {
-                const key = tabla === 'rv_ventas' ? 'ventas' : tabla === 'rv_apertura_caja' ? 'caja' : 'gastos';
+                const key = mapaUI[tabla];
+                if (!key) return;
                 const el = document.getElementById(`status-${key}`);
                 const countEl = document.getElementById(`count-${key}`);
                 if (el) { el.innerHTML = '<i class="fas fa-check-circle"></i>'; el.className = 'sync-table-status ok'; }
-                if (countEl) countEl.textContent = `✓ ${info.insertados} nuevos de ${info.recibidos} enviados`;
+                if (countEl) countEl.textContent = `✓ ${info.upsertados} sincronizados de ${info.recibidos} enviados`;
             });
 
             // --- RENOVAR LICENCIA LOCAL AL SINCRONIZAR CON ÉXITO ---
@@ -417,10 +441,11 @@ async function ejecutarSync() {
             }
             // --- FIN RENOVAR LICENCIA ---
 
-            const totalInsertados = Object.values(resultado.tablas ?? {}).reduce((s, t) => s + (t.insertados ?? 0), 0);
+            const totalUpsertados = Object.values(resultado.tablas ?? {}).reduce((s, t) => s + (t.upsertados ?? 0), 0);
+            const totalTablas = Object.keys(resultado.tablas ?? {}).length;
             resultDiv.className = 'sync-result success';
             resultDiv.innerHTML = `<strong><i class="fas fa-check-circle"></i> Sincronización exitosa</strong><br>
-                Se enviaron los datos al servidor. ${totalInsertados} registros nuevos guardados en la nube.<br>
+                Backup completo enviado (${totalTablas} tablas). ${totalUpsertados} registros sincronizados en la nube.<br>
                 <strong><i class="fas fa-lock"></i> Licencia extendida por 7 días más.</strong>`;
             resultDiv.style.display = 'block';
         } else {
