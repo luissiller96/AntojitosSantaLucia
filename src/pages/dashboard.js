@@ -455,8 +455,9 @@ async function getKpisCompletos() {
 
   // Ventas del día
   const [r1] = await dbSelect(
-    `SELECT COALESCE(SUM(total), 0) as total FROM rv_ventas
-     WHERE DATE(fecha) = $1 AND estatus = 'completado'`,
+    `SELECT COALESCE(SUM(sub.total_ticket), 0) as total
+     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket FROM rv_ventas
+           WHERE DATE(fecha) = $1 AND estatus = 'completado' GROUP BY ticket) sub`,
     [hoy]
   );
   const ventas_dia = parseFloat(r1.total);
@@ -471,9 +472,10 @@ async function getKpisCompletos() {
 
   // Ventas del mes
   const [r3] = await dbSelect(
-    `SELECT COALESCE(SUM(total), 0) as total FROM rv_ventas
-     WHERE strftime('%m', fecha) = $1 AND strftime('%Y', fecha) = $2
-     AND estatus = 'completado'`,
+    `SELECT COALESCE(SUM(sub.total_ticket), 0) as total
+     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket FROM rv_ventas
+           WHERE strftime('%m', fecha) = $1 AND strftime('%Y', fecha) = $2
+           AND estatus = 'completado' GROUP BY ticket) sub`,
     [String(mes).padStart(2, '0'), String(anio)]
   );
   const ventas_mes = parseFloat(r3.total);

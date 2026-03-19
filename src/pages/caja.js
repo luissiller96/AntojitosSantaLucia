@@ -1049,8 +1049,8 @@ const CajaApp = {
 
           filas += `
                 <tr>
-                    <td style='vertical-align:top;width:15%;padding-left:8px;'>${subCantidad}x</td>
-                    <td style='vertical-align:top;width:55%;word-break:break-word;'>${subNombre}</td>
+                    <td style='vertical-align:top;width:10%;padding-left:8px;'>${subCantidad}x</td>
+                    <td style='vertical-align:top;width:60%;word-break:break-word;'>${subNombre}</td>
                     <td style='vertical-align:top;text-align:right;width:30%;'>$${subPrecio}</td>
                 </tr>`;
 
@@ -1069,8 +1069,8 @@ const CajaApp = {
 
         filas += `
             <tr>
-                <td style='vertical-align:top;width:15%;'>${cantidad}x</td>
-                <td style='vertical-align:top;width:55%;word-break:break-word;'>${nombre}</td>
+                <td style='vertical-align:top;width:10%;'>${cantidad}x</td>
+                <td style='vertical-align:top;width:60%;word-break:break-word;'>${nombre}</td>
                 <td style='vertical-align:top;text-align:right;width:30%;'>$${precio}</td>
             </tr>`;
 
@@ -1088,8 +1088,8 @@ const CajaApp = {
     if (Number(costo_envio) > 0) {
       filas += `
             <tr>
-                <td style='vertical-align:top;width:15%;'></td>
-                <td style='vertical-align:top;width:55%;word-break:break-word;font-style:italic;'>🛵 Envío a domicilio</td>
+                <td style='vertical-align:top;width:10%;'></td>
+                <td style='vertical-align:top;width:60%;word-break:break-word;font-style:italic;'>🛵 Envío a domicilio</td>
                 <td style='vertical-align:top;text-align:right;width:30%;'>$${Number(costo_envio).toFixed(2)}</td>
             </tr>`;
     }
@@ -1139,8 +1139,8 @@ const CajaApp = {
     table { width: 100%; border-collapse: collapse; margin: 0; table-layout: fixed; }
     th { font-size: 13px; font-weight: bold; padding: 3px 0; }
     td { font-size: 13px; padding: 3px 0; vertical-align: top; }
-    td:nth-child(1) { width: 15%; }
-    td:nth-child(2) { width: 55%; word-break: break-word; }
+    td:nth-child(1) { width: 10%; }
+    td:nth-child(2) { width: 60%; word-break: break-word; }
     td:nth-child(3) { width: 30%; text-align: right; }
     .totales-container { margin-top: 6px; font-size: 14px; text-align: right; }
     .totales-container p { margin-bottom: 3px; }
@@ -1490,23 +1490,6 @@ const CajaApp = {
         return;
       }
 
-      // Mensaje de éxito
-      if (isMixto) {
-        this.showAlert('Pago mixto exitoso', `$${this.totalCarrito.toFixed(2)} – Ticket #${ticket}`, 'success');
-      } else if (this.metodoPago === 'efectivo') {
-        this.showAlert(
-          `Cambio: $${this.cambio.toFixed(2)} `,
-          `Pago realizado con éxito. Ticket #${ticket} `,
-          'success'
-        );
-      } else {
-        this.showAlert(
-          this.metodoPago === 'tarjeta' ? 'Pago con tarjeta exitoso' : 'Pago con transferencia exitoso',
-          `$${this.totalCarrito.toFixed(2)} – Ticket #${ticket} `,
-          'success'
-        );
-      }
-
       // Armar datos para el ticket
       const datosTicket = {
         ticket_id: ticket,
@@ -1528,6 +1511,36 @@ const CajaApp = {
       const htmlTicket = this.generarHTMLTicket(datosTicket);
       if (window.imprimirTicket) {
         window.imprimirTicket(htmlTicket);
+      }
+
+      // Mensaje de éxito
+      if (isMixto) {
+        this.showAlert('Pago mixto exitoso', `$${this.totalCarrito.toFixed(2)} – Ticket #${ticket}`, 'success');
+      } else if (this.metodoPago === 'efectivo') {
+        this.showAlert(
+          `Cambio: $${this.cambio.toFixed(2)} `,
+          `Pago realizado con éxito. Ticket #${ticket} `,
+          'success'
+        );
+      } else {
+        this.showAlert(
+          this.metodoPago === 'tarjeta' ? 'Pago con tarjeta exitoso' : 'Pago con transferencia exitoso',
+          `$${this.totalCarrito.toFixed(2)} – Ticket #${ticket} `,
+          'success'
+        );
+      }
+
+      // Domicilio: agregar botón de copia en la alerta
+      if (tipoOrden === 'domicilio') {
+        const footer = document.querySelector('.cj-alert-footer');
+        if (footer && !footer.querySelector('#btn-copia-ticket')) {
+          const btnCopia = document.createElement('button');
+          btnCopia.id = 'btn-copia-ticket';
+          btnCopia.className = 'cj-btn-secondary';
+          btnCopia.textContent = '🖨 Copia';
+          btnCopia.onclick = () => { if (window.imprimirTicket) window.imprimirTicket(htmlTicket); };
+          footer.insertBefore(btnCopia, footer.firstChild);
+        }
       }
 
       this.limpiarCarrito();
@@ -1940,6 +1953,7 @@ const CajaApp = {
     if (bodyEl) bodyEl.textContent = msg;
     if (cancel) { cancel.style.display = 'none'; cancel.onclick = null; }
     if (confirm) { confirm.textContent = 'Aceptar'; confirm.onclick = () => { closeAlert(); if (onClose) onClose(); }; }
+    document.getElementById('btn-copia-ticket')?.remove();
     openModal('cj-alert-overlay');
   },
 

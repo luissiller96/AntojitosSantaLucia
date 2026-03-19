@@ -424,11 +424,15 @@ const ReportesApp = {
     const hoy = today();
     const rows = await dbSelect(
       `SELECT
-         IFNULL(SUM(total_ticket),0) AS ventas,
-         COUNT(DISTINCT ticket)      AS tickets,
-         SUM(cantidad)               AS productos
-       FROM rv_ventas
-       WHERE DATE(fecha)=$1 AND estatus='completado'`,
+         IFNULL(SUM(sub.total_ticket), 0) AS ventas,
+         COUNT(*)                          AS tickets,
+         SUM(sub.productos)                AS productos
+       FROM (
+         SELECT ticket, MAX(total_ticket) AS total_ticket, SUM(cantidad) AS productos
+         FROM rv_ventas
+         WHERE DATE(fecha)=$1 AND estatus='completado'
+         GROUP BY ticket
+       ) sub`,
       [hoy]
     );
     const r = rows[0] || {};
