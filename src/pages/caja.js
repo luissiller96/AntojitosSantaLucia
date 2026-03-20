@@ -1038,7 +1038,7 @@ const CajaApp = {
         gruposRenderizados.push(item.grupo_mixta);
 
         const groupLabel = item.parent_nombre || 'Mixta';
-        filas += `<tr><td colspan='3' style='padding-top:6px;padding-bottom:2px;font-weight:bold;'>${groupLabel}</td></tr>`;
+        filas += `<tr class='group-header'><td colspan='3'>${groupLabel}</td></tr>`;
 
         for (const subItem of productos) {
           if (subItem.grupo_mixta !== item.grupo_mixta) continue;
@@ -1047,19 +1047,18 @@ const CajaApp = {
           const subCantidad = parseInt(subItem.cantidad);
           const subPrecio = (subItem.precio * subCantidad).toFixed(2);
 
-          filas += `
-                <tr>
-                    <td style='vertical-align:top;width:10%;padding-left:8px;'>${subCantidad}x</td>
-                    <td style='vertical-align:top;width:60%;word-break:break-word;'>${subNombre}</td>
-                    <td style='vertical-align:top;text-align:right;width:30%;'>$${subPrecio}</td>
-                </tr>`;
+          filas += `<tr>
+            <td class='col-qty'>${subCantidad}x</td>
+            <td class='col-name'>${subNombre}</td>
+            <td class='col-price'>$${subPrecio}</td>
+          </tr>`;
 
           if (subItem.observaciones) {
-            filas += `<tr><td></td><td colspan='2' style='font-size:14px;'>  Obs: ${subItem.observaciones}</td></tr>`;
+            filas += `<tr class='note'><td></td><td colspan='2'>*** Obs: ${subItem.observaciones}</td></tr>`;
           }
           if (subItem.opciones && subItem.opciones.length > 0) {
             const op = Array.isArray(subItem.opciones) ? subItem.opciones.join(', ') : subItem.opciones;
-            if (op.trim()) filas += `<tr><td></td><td colspan='2' style='font-size:14px;'>  Sin: ${op}</td></tr>`;
+            if (op.trim()) filas += `<tr class='note'><td></td><td colspan='2'>*** Sin: ${op}</td></tr>`;
           }
         }
       } else {
@@ -1067,47 +1066,46 @@ const CajaApp = {
         const cantidad = parseInt(item.cantidad);
         const precio = (item.precio * cantidad).toFixed(2);
 
-        filas += `
-            <tr>
-                <td style='vertical-align:top;width:10%;'>${cantidad}x</td>
-                <td style='vertical-align:top;width:60%;word-break:break-word;'>${nombre}</td>
-                <td style='vertical-align:top;text-align:right;width:30%;'>$${precio}</td>
-            </tr>`;
+        filas += `<tr>
+          <td class='col-qty'>${cantidad}x</td>
+          <td class='col-name'>${nombre}</td>
+          <td class='col-price'>$${precio}</td>
+        </tr>`;
 
         if (item.observaciones) {
-          filas += `<tr><td></td><td colspan='2' style='font-size:14px;'>  Obs: ${item.observaciones}</td></tr>`;
+          filas += `<tr class='note'><td></td><td colspan='2'>*** Obs: ${item.observaciones}</td></tr>`;
         }
         if (item.opciones && item.opciones.length > 0) {
           const op = Array.isArray(item.opciones) ? item.opciones.join(', ') : item.opciones;
-          if (op.trim()) filas += `<tr><td></td><td colspan='2' style='font-size:14px;'>  Sin: ${op}</td></tr>`;
+          if (op.trim()) filas += `<tr class='note'><td></td><td colspan='2'>*** Sin: ${op}</td></tr>`;
         }
       }
     }
 
     // Fila de envío en tabla si aplica
     if (Number(costo_envio) > 0) {
-      filas += `
-            <tr>
-                <td style='vertical-align:top;width:10%;'></td>
-                <td style='vertical-align:top;width:60%;word-break:break-word;font-style:italic;'>🛵 Envío a domicilio</td>
-                <td style='vertical-align:top;text-align:right;width:30%;'>$${Number(costo_envio).toFixed(2)}</td>
-            </tr>`;
+      filas += `<tr>
+        <td class='col-qty'></td>
+        <td class='col-name' style='font-style:italic;'>Envio a domicilio</td>
+        <td class='col-price'>$${Number(costo_envio).toFixed(2)}</td>
+      </tr>`;
     }
 
+    const fmtMonto = (v) => `$${Number(v).toFixed(2)}`;
     let filasTotales = '';
     if (tipo_pago && tipo_pago.toLowerCase() === 'mixto' && montos_mixtos) {
       const partes = [
-        montos_mixtos.efectivo > 0 ? `<p>Efectivo: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.efectivo).toFixed(2)}</span></p>` : '',
-        montos_mixtos.tarjeta > 0 ? `<p>Tarjeta: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.tarjeta).toFixed(2)}</span></p>` : '',
-        montos_mixtos.transferencia > 0 ? `<p>Transf: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(montos_mixtos.transferencia).toFixed(2)}</span></p>` : '',
+        montos_mixtos.efectivo > 0 ? `<p><span>Efectivo:</span><span>${fmtMonto(montos_mixtos.efectivo)}</span></p>` : '',
+        montos_mixtos.tarjeta > 0 ? `<p><span>Tarjeta:</span><span>${fmtMonto(montos_mixtos.tarjeta)}</span></p>` : '',
+        montos_mixtos.transferencia > 0 ? `<p><span>Transferencia:</span><span>${fmtMonto(montos_mixtos.transferencia)}</span></p>` : '',
       ].filter(Boolean).join('');
       filasTotales = partes;
     } else if (tipo_pago && tipo_pago.toLowerCase() === 'efectivo') {
       filasTotales = `
-            <p>Recibo: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(pago).toFixed(2)}</span></p>
-            <p>Cambio: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(cambio).toFixed(2)}</span></p>`;
+        <p><span>Recibo:</span><span>${fmtMonto(pago)}</span></p>
+        <p><span>Cambio:</span><span>${fmtMonto(cambio)}</span></p>`;
     } else {
-      filasTotales = `<p>Recibo: <span style='display:inline-block;width:70px;text-align:right;'>$${Number(total).toFixed(2)}</span></p>`;
+      filasTotales = `<p><span>Recibo:</span><span>${fmtMonto(total)}</span></p>`;
     }
 
     return `
@@ -1121,30 +1119,36 @@ const CajaApp = {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: bold;
       width: 58mm;
       max-width: 58mm;
-      padding: 5px;
+      padding: 4px 5px;
       color: #000;
-      line-height: 1.2;
+      line-height: 1.35;
     }
     .center { text-align: center; }
-    .right { text-align: right; }
-    .left { text-align: left; }
-    h1 { font-size: 18px; margin-bottom: 2px; }
-    h2 { font-size: 15px; margin-bottom: 8px; }
-    .sep { border: none; border-top: 1px dashed #000; margin: 6px 0; }
-    .info p { margin-bottom: 2px; }
-    table { width: 100%; border-collapse: collapse; margin: 0; table-layout: fixed; }
-    th { font-size: 13px; font-weight: bold; padding: 3px 0; }
-    td { font-size: 13px; padding: 3px 0; vertical-align: top; }
-    td:nth-child(1) { width: 10%; }
-    td:nth-child(2) { width: 60%; word-break: break-word; }
-    td:nth-child(3) { width: 30%; text-align: right; }
-    .totales-container { margin-top: 6px; font-size: 14px; text-align: right; }
-    .totales-container p { margin-bottom: 3px; }
-    .total-final { font-size: 20px; font-weight: bold; margin-top: 10px; margin-bottom: 10px; text-align: center; }
+    h1 { font-size: 17px; font-weight: 900; margin-bottom: 1px; }
+    h2 { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+    .sep { border: none; border-top: 1px dashed #000; margin: 5px 0; }
+    .info p { font-size: 12px; margin-bottom: 1px; }
+    /* Tabla de productos */
+    table { width: 100%; border-collapse: collapse; table-layout: auto; }
+    thead th { font-size: 11px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .3px; }
+    thead th:first-child { text-align: left; }
+    thead th:last-child { text-align: right; }
+    td { font-size: 12px; padding: 2px 0; vertical-align: top; }
+    .col-qty { width: 24px; white-space: nowrap; padding-right: 2px; }
+    .col-name { word-break: break-word; }
+    .col-price { width: 50px; text-align: right; white-space: nowrap; }
+    .note td { font-size: 11px; padding: 0 0 1px; font-weight: normal; }
+    .group-header td { font-size: 12px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
+    /* Totales */
+    .totales { margin-top: 5px; font-size: 12px; }
+    .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
+    .totales p span { font-variant-numeric: tabular-nums; }
+    .total-final { font-size: 19px; font-weight: 900; text-align: center; margin: 7px 0 6px; letter-spacing: .5px; }
+    .footer { font-size: 12px; text-align: center; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -1154,45 +1158,43 @@ const CajaApp = {
   </div>
 
   ${sensor_num ? `
-  <div style='text-align:center; border: 2px solid #000; border-radius:6px; padding:6px 4px; margin:6px 0;'>
-    <div style='font-size:11px; font-weight:bold; letter-spacing:1px;'>SENSOR</div>
-    <div style='font-size:48px; font-weight:900; line-height:1;'>#${sensor_num}</div>
+  <div style='text-align:center;border:2px solid #000;border-radius:5px;padding:5px 4px;margin:5px 0;'>
+    <div style='font-size:10px;font-weight:900;letter-spacing:1px;'>SENSOR</div>
+    <div style='font-size:46px;font-weight:900;line-height:1;'>#${sensor_num}</div>
   </div>` : ''}
 
   <div class='info'>
     <p>Fecha: ${fecha}</p>
     <p>Vendedor: ${vendedor_nombre}</p>
     <p>Tipo: ${tipo_orden === 'llevar' ? 'Para llevar' : tipo_orden === 'comer_aqui' ? 'Comer aquí' : 'Domicilio'}</p>
-    <p>Metodo Pago: ${tipo_pago ? tipo_pago.toUpperCase() : 'Pendiente'}</p>
+    <p>Método de pago: ${tipo_pago ? tipo_pago.toUpperCase() : 'Pendiente'}</p>
     ${direccion ? `<p>Dirección: ${direccion}</p>` : ''}
   </div>
-  
+
   <hr class='sep'>
-  
+
   <table>
     <thead>
       <tr>
-        <th style='text-align:left;'>Cant</th>
-        <th style='text-align:left;'>Producto</th>
-        <th style='text-align:right;'>Total</th>
+        <th class='col-qty'>Cant</th>
+        <th class='col-name'>Producto</th>
+        <th class='col-price'>Total</th>
       </tr>
     </thead>
     <tbody>
       ${filas}
     </tbody>
   </table>
-  
+
   <hr class='sep'>
-  
-  <div class='totales-container'>
-      ${filasTotales}
+
+  <div class='totales'>
+    ${filasTotales}
   </div>
-  
-  <div class='total-final'>
-    TOTAL: $${Number(total).toFixed(2)}
-  </div>
-  
-  <div class="center" style="font-size: 15px; margin-top: 10px;">
+
+  <div class='total-final'>TOTAL: $${Number(total).toFixed(2)}</div>
+
+  <div class='footer'>
     <p>¡Gracias por su preferencia!</p>
   </div>
 </body>
