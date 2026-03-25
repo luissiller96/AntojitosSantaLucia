@@ -368,7 +368,7 @@ async function ejecutarSync() {
         };
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        const timeoutId = setTimeout(() => controller.abort(new Error('Tiempo de espera agotado. Verifica tu conexión e intenta de nuevo.')), 120000);
 
         const response = await fetch(SYNC_URL, {
             method: 'POST',
@@ -486,8 +486,12 @@ async function ejecutarSync() {
             const el = document.getElementById(`status-${t}`);
             if (el) { el.innerHTML = '<i class="fas fa-times-circle"></i>'; el.className = 'sync-table-status err'; }
         });
+        const esTimeout = err.message?.includes('aborted') || err.message?.includes('Tiempo de espera') || err.name === 'AbortError';
+        const mensajeError = esTimeout
+            ? 'Tiempo de espera agotado (2 min). La conexión es lenta o el servidor no respondió. Intenta de nuevo con mejor señal.'
+            : err.message;
         resultDiv.className = 'sync-result error';
-        resultDiv.innerHTML = `<strong><i class="fas fa-times-circle"></i> Error de sincronización</strong><br>${err.message}`;
+        resultDiv.innerHTML = `<strong><i class="fas fa-times-circle"></i> Error de sincronización</strong><br>${mensajeError}`;
         resultDiv.style.display = 'block';
     } finally {
         btnSync.disabled = false;
