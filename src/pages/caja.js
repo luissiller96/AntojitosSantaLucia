@@ -1144,10 +1144,10 @@ const CajaApp = {
     .note td { font-size: 11px; padding: 0 0 1px; font-weight: normal; }
     .group-header td { font-size: 12px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
     /* Totales */
-    .totales { margin-top: 5px; font-size: 12px; }
+    .totales { margin-top: 5px; font-size: 14px; }
     .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
     .totales p span { font-variant-numeric: tabular-nums; }
-    .total-final { font-size: 19px; font-weight: 900; text-align: center; margin: 7px 0 6px; letter-spacing: .5px; }
+    .total-final { font-size: 19px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .5px; }
     .footer { font-size: 12px; text-align: center; margin-top: 5px; }
   </style>
 </head>
@@ -1168,7 +1168,7 @@ const CajaApp = {
     <p>Vendedor: ${vendedor_nombre}</p>
     <p>Tipo: ${tipo_orden === 'llevar' ? 'Para llevar' : tipo_orden === 'comer_aqui' ? 'Comer aquí' : 'Domicilio'}</p>
     <p>Método de pago: ${tipo_pago ? tipo_pago.toUpperCase() : 'Pendiente'}</p>
-    ${direccion ? `<p>Dirección: ${direccion}</p>` : ''}
+    ${direccion ? `<p>Dirección:</p><p>${direccion}</p>` : ''}
   </div>
 
   <hr class='sep'>
@@ -1188,11 +1188,11 @@ const CajaApp = {
 
   <hr class='sep'>
 
+  <div class='total-final'>TOTAL: $${Number(total).toFixed(2)}</div>
+
   <div class='totales'>
     ${filasTotales}
   </div>
-
-  <div class='total-final'>TOTAL: $${Number(total).toFixed(2)}</div>
 
   <div class='footer'>
     <p>¡Gracias por su preferencia!</p>
