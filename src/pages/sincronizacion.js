@@ -322,6 +322,40 @@ async function contarRegistros() {
     }
 }
 
+// Divide un array en chunks de tamaño máximo
+function chunkArray(arr, size) {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += size) chunks.push(arr.slice(i, i + size));
+    return chunks;
+}
+
+// Envía un lote de datos al servidor y retorna el resultado
+async function postLote(datos) {
+    const payload = { empresa: 'Antojitos Santa Lucia', token: SYNC_TOKEN, ...datos };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+        () => controller.abort(new Error('Tiempo de espera agotado. Verifica tu conexión e intenta de nuevo.')),
+        120000
+    );
+    try {
+        const response = await fetch(SYNC_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SYNC_TOKEN}`
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!response.ok) throw new Error(`Error del servidor: ${response.status}`);
+        return await response.json();
+    } catch (e) {
+        clearTimeout(timeoutId);
+        throw e;
+    }
+}
+
 // Obtiene todos los datos locales para el backup completo
 async function obtenerTodasLasTablas() {
     const tablas = {};
@@ -337,7 +371,6 @@ async function obtenerTodasLasTablas() {
         try {
             tablas[tabla] = await dbSelect(`SELECT * FROM ${tabla}`, []);
         } catch (e) {
-            // Si la tabla no existe localmente, no bloquea la sincronización
             tablas[tabla] = [];
         }
     }
@@ -351,136 +384,119 @@ async function ejecutarSync() {
     btnSync.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sincronizando...';
     resultDiv.style.display = 'none';
 
-    // Marcar como sincronizando
     ['ventas', 'caja', 'gastos'].forEach(t => {
         const el = document.getElementById(`status-${t}`);
         if (el) { el.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; el.className = 'sync-table-status syncing'; }
     });
 
     try {
-        // Obtener todos los datos locales (backup completo)
         const todasLasTablas = await obtenerTodasLasTablas();
 
-        const payload = {
-            empresa: 'Antojitos Santa Lucia',
-            token: SYNC_TOKEN,
-            ...todasLasTablas
-        };
+        // --- Lote 1: tablas de catálogo (pequeñas) ---
+        const lotes = [];
+        const catalogoTablas = [
+            'rv_sucursales', 'rv_categorias', 'rv_ingredientes', 'rv_gastos_fijos_plantilla',
+            'tm_usuario', 'tm_empleado',
+            'rv_insumos', 'rv_productos', 'rv_producto_componentes', 'rv_producto_insumos'
+        ];
+        const lote1 = {};
+        for (const t of catalogoTablas) lote1[t] = todasLasTablas[t] ?? [];
+        lotes.push(lote1);
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(new Error('Tiempo de espera agotado. Verifica tu conexión e intenta de nuevo.')), 120000);
-
-        const response = await fetch(SYNC_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${SYNC_TOKEN}`
-            },
-            body: JSON.stringify(payload),
-            signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            throw new Error(`Error del servidor: ${response.status}`);
+        // --- Lotes adicionales: tablas transaccionales en chunks de 300 ---
+        const transaccionalTablas = [
+            'rv_apertura_caja', 'rv_ventas', 'rv_comanda', 'rv_devoluciones',
+            'rv_gastos', 'rv_gastos_fijos', 'rv_movimientos_insumos'
+        ];
+        for (const t of transaccionalTablas) {
+            const datos = todasLasTablas[t] ?? [];
+            const chunks = chunkArray(datos, 300);
+            // Si la tabla está vacía igual mandamos un lote vacío para que el servidor la procese
+            if (chunks.length === 0) {
+                lotes.push({ [t]: [] });
+            } else {
+                for (const ch of chunks) lotes.push({ [t]: ch });
+            }
         }
 
-        const resultado = await response.json();
+        // --- Enviar todos los lotes y acumular resultados ---
+        const tablasMerge = {};
+        let errorLicencia = null;
 
-        if (resultado.success) {
-            // Mostrar resultados en las 3 tarjetas visibles
-            const mapaUI = {
-                rv_ventas: 'ventas',
-                rv_apertura_caja: 'caja',
-                rv_gastos: 'gastos'
-            };
-            Object.entries(resultado.tablas ?? {}).forEach(([tabla, info]) => {
-                const key = mapaUI[tabla];
-                if (!key) return;
-                const el = document.getElementById(`status-${key}`);
-                const countEl = document.getElementById(`count-${key}`);
-                if (el) { el.innerHTML = '<i class="fas fa-check-circle"></i>'; el.className = 'sync-table-status ok'; }
-                if (countEl) countEl.textContent = `✓ ${info.upsertados} sincronizados de ${info.recibidos} enviados`;
-            });
+        for (let i = 0; i < lotes.length; i++) {
+            btnSync.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Enviando lote ${i + 1} de ${lotes.length}...`;
+            const res = await postLote(lotes[i]);
 
-            // --- RENOVAR LICENCIA LOCAL AL SINCRONIZAR CON ÉXITO ---
-            try {
-                const { invoke } = window.__TAURI__?.core || await import('@tauri-apps/api/core');
-
-                // Configurar nuevas fechas
-                const hoy = new Date();
-                const exp = new Date(hoy.getTime() + (7 * 24 * 60 * 60 * 1000)); // +7 días
-
-                // Formatear a 'YYYY-MM-DD HH:mm:ss' para ser consistentes con SQLite
-                const fecha_ultimo_sync = hoy.toISOString().replace('T', ' ').substring(0, 19);
-                const fecha_expiracion = exp.toISOString().replace('T', ' ').substring(0, 19);
-                const ventas_desde_sync = 0; // Reiniciar contador
-
-                // Generar firma firme con los nuevos datos ganadores
-                const nuevaFirma = await invoke('generar_firma_licencia', {
-                    fechaUltimoSync: fecha_ultimo_sync,
-                    fechaExpiracion: fecha_expiracion,
-                    ventasDesdeSync: ventas_desde_sync
-                });
-
-                // Guardar en SQLite
-                await dbExecute(
-                    `UPDATE rv_licencia_local 
-                     SET fecha_ultimo_sync = $1, 
-                         fecha_expiracion = $2, 
-                         ventas_desde_sync = $3, 
-                         firma_digital = $4 
-                     WHERE id = 1`,
-                    [fecha_ultimo_sync, fecha_expiracion, ventas_desde_sync, nuevaFirma]
-                );
-
-                console.log("[Licencia] Renovada exitosamente hasta: ", fecha_expiracion);
-            } catch (errLic) {
-                console.error("No se pudo renovar la licencia local tras la sincronización.", errLic);
-                throw new Error("Sincronización de datos exitosa, pero falló la renovación local de la licencia. Contacte a soporte.");
-            }
-            // --- FIN RENOVAR LICENCIA ---
-
-            const totalUpsertados = Object.values(resultado.tablas ?? {}).reduce((s, t) => s + (t.upsertados ?? 0), 0);
-            const totalTablas = Object.keys(resultado.tablas ?? {}).length;
-            resultDiv.className = 'sync-result success';
-            resultDiv.innerHTML = `<strong><i class="fas fa-check-circle"></i> Sincronización exitosa</strong><br>
-                Backup completo enviado (${totalTablas} tablas). ${totalUpsertados} registros sincronizados en la nube.<br>
-                <strong><i class="fas fa-lock"></i> Licencia extendida por 7 días más.</strong>`;
-            resultDiv.style.display = 'block';
-        } else {
-            // --- REVOCAR LICENCIA LOCAL SI EL SERVIDOR NOS DETECTA MOROSOS ---
-            if (resultado.error && (resultado.error.includes('SUSPENDIDA') || resultado.error.includes('caducado') || resultado.error.includes('Error de Licencia'))) {
-                try {
-                    const { invoke } = window.__TAURI__?.core || await import('@tauri-apps/api/core');
-                    const hoyString = new Date().toISOString().replace('T', ' ').substring(0, 19);
-                    const fecha_expiracion_revocada = '2000-01-01 00:00:00'; // Castigo: pasado eterno
-                    const ventas_desde_sync = 9999;
-
-                    const nuevaFirmaRevocada = await invoke('generar_firma_licencia', {
-                        fechaUltimoSync: hoyString,
-                        fechaExpiracion: fecha_expiracion_revocada,
-                        ventasDesdeSync: ventas_desde_sync
-                    });
-
-                    await dbExecute(
-                        `UPDATE rv_licencia_local 
-                         SET fecha_ultimo_sync = $1, 
-                             fecha_expiracion = $2, 
-                             ventas_desde_sync = $3, 
-                             firma_digital = $4 
-                         WHERE id = 1`,
-                        [hoyString, fecha_expiracion_revocada, ventas_desde_sync, nuevaFirmaRevocada]
-                    );
-                    console.log("[Licencia] Licencia revocada localmente por instrucción del servidor central.");
-                } catch (e) {
-                    console.error("Error al revocar la licencia local:", e);
+            if (!res.success) {
+                // Manejar revocación de licencia si aplica
+                if (res.error && (res.error.includes('SUSPENDIDA') || res.error.includes('caducado') || res.error.includes('Error de Licencia'))) {
+                    try {
+                        const { invoke } = window.__TAURI__?.core || await import('@tauri-apps/api/core');
+                        const hoyString = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                        const nuevaFirmaRevocada = await invoke('generar_firma_licencia', {
+                            fechaUltimoSync: hoyString,
+                            fechaExpiracion: '2000-01-01 00:00:00',
+                            ventasDesdeSync: 9999
+                        });
+                        await dbExecute(
+                            `UPDATE rv_licencia_local SET fecha_ultimo_sync=$1, fecha_expiracion=$2, ventas_desde_sync=$3, firma_digital=$4 WHERE id=1`,
+                            [hoyString, '2000-01-01 00:00:00', 9999, nuevaFirmaRevocada]
+                        );
+                    } catch (e) { console.error("Error al revocar licencia:", e); }
                 }
+                throw new Error(res.error || 'Error desconocido del servidor');
             }
-            // --- FIN REVOCACIÓN ---
 
-            throw new Error(resultado.error || 'Error desconocido del servidor');
+            // Acumular resultados por tabla
+            Object.entries(res.tablas ?? {}).forEach(([tabla, info]) => {
+                if (!tablasMerge[tabla]) tablasMerge[tabla] = { recibidos: 0, upsertados: 0 };
+                tablasMerge[tabla].recibidos += info.recibidos ?? 0;
+                tablasMerge[tabla].upsertados += info.upsertados ?? 0;
+            });
         }
+
+        // --- Actualizar UI con resultados acumulados ---
+        const mapaUI = { rv_ventas: 'ventas', rv_apertura_caja: 'caja', rv_gastos: 'gastos' };
+        Object.entries(tablasMerge).forEach(([tabla, info]) => {
+            const key = mapaUI[tabla];
+            if (!key) return;
+            const el = document.getElementById(`status-${key}`);
+            const countEl = document.getElementById(`count-${key}`);
+            if (el) { el.innerHTML = '<i class="fas fa-check-circle"></i>'; el.className = 'sync-table-status ok'; }
+            if (countEl) countEl.textContent = `✓ ${info.upsertados} sincronizados de ${info.recibidos} enviados`;
+        });
+
+        // --- RENOVAR LICENCIA LOCAL ---
+        try {
+            const { invoke } = window.__TAURI__?.core || await import('@tauri-apps/api/core');
+            const hoy = new Date();
+            const exp = new Date(hoy.getTime() + (7 * 24 * 60 * 60 * 1000));
+            const fecha_ultimo_sync = hoy.toISOString().replace('T', ' ').substring(0, 19);
+            const fecha_expiracion = exp.toISOString().replace('T', ' ').substring(0, 19);
+            const nuevaFirma = await invoke('generar_firma_licencia', {
+                fechaUltimoSync: fecha_ultimo_sync,
+                fechaExpiracion: fecha_expiracion,
+                ventasDesdeSync: 0
+            });
+            await dbExecute(
+                `UPDATE rv_licencia_local SET fecha_ultimo_sync=$1, fecha_expiracion=$2, ventas_desde_sync=$3, firma_digital=$4 WHERE id=1`,
+                [fecha_ultimo_sync, fecha_expiracion, 0, nuevaFirma]
+            );
+            console.log("[Licencia] Renovada hasta:", fecha_expiracion);
+        } catch (errLic) {
+            console.error("No se pudo renovar la licencia:", errLic);
+            throw new Error("Sincronización exitosa, pero falló la renovación de licencia. Contacte a soporte.");
+        }
+        // --- FIN RENOVAR LICENCIA ---
+
+        const totalUpsertados = Object.values(tablasMerge).reduce((s, t) => s + (t.upsertados ?? 0), 0);
+        const totalTablas = Object.keys(tablasMerge).length;
+        resultDiv.className = 'sync-result success';
+        resultDiv.innerHTML = `<strong><i class="fas fa-check-circle"></i> Sincronización exitosa</strong><br>
+            Backup completo enviado (${totalTablas} tablas, ${lotes.length} lotes). ${totalUpsertados} registros sincronizados en la nube.<br>
+            <strong><i class="fas fa-lock"></i> Licencia extendida por 7 días más.</strong>`;
+        resultDiv.style.display = 'block';
+
     } catch (err) {
         ['ventas', 'caja', 'gastos'].forEach(t => {
             const el = document.getElementById(`status-${t}`);
