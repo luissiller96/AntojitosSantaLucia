@@ -1040,59 +1040,124 @@ async function reimprimirTicket(ticketId) {
     let filas = '';
     for (const item of rows) {
       filas += `<tr>
-        <td style='vertical-align:top;width:15%;'>${item.cantidad}x</td>
-        <td style='vertical-align:top;width:55%;word-break:break-word;'>${item.producto}</td>
-        <td style='vertical-align:top;text-align:right;width:30%;'>$${(parseFloat(item.total) || 0).toFixed(2)}</td>
+        <td class='col-qty'>${parseInt(item.cantidad)}x</td>
+        <td class='col-name'>${item.producto}</td>
+        <td class='col-price'>$${(parseFloat(item.total) || 0).toFixed(2)}</td>
       </tr>`;
     }
 
     if (parseFloat(r.costo_envio) > 0) {
       filas += `<tr>
-        <td></td>
-        <td style='vertical-align:top;font-style:italic;'>Envío a domicilio</td>
-        <td style='vertical-align:top;text-align:right;'>$${parseFloat(r.costo_envio).toFixed(2)}</td>
+        <td class='col-qty'></td>
+        <td class='col-name' style='font-style:italic;'>Envío a domicilio</td>
+        <td class='col-price'>$${parseFloat(r.costo_envio).toFixed(2)}</td>
       </tr>`;
     }
 
     let filasTotales = '';
     if (tipoPago.toLowerCase() === 'mixto') {
-      if (montosMixtos.efectivo > 0) filasTotales += `<p>Efectivo: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.efectivo.toFixed(2)}</span></p>`;
-      if (montosMixtos.tarjeta > 0)  filasTotales += `<p>Tarjeta: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.tarjeta.toFixed(2)}</span></p>`;
-      if (montosMixtos.transferencia > 0) filasTotales += `<p>Transf: <span style='display:inline-block;width:70px;text-align:right;'>$${montosMixtos.transferencia.toFixed(2)}</span></p>`;
+      if (montosMixtos.efectivo > 0) filasTotales += `<p><span>Efectivo:</span><span>$${montosMixtos.efectivo.toFixed(2)}</span></p>`;
+      if (montosMixtos.tarjeta > 0)  filasTotales += `<p><span>Tarjeta:</span><span>$${montosMixtos.tarjeta.toFixed(2)}</span></p>`;
+      if (montosMixtos.transferencia > 0) filasTotales += `<p><span>Transf:</span><span>$${montosMixtos.transferencia.toFixed(2)}</span></p>`;
     } else {
-      filasTotales = `<p>Recibo: <span style='display:inline-block;width:70px;text-align:right;'>$${total.toFixed(2)}</span></p>`;
+      filasTotales = `<p><span>Recibo:</span><span>$${total.toFixed(2)}</span></p>`;
     }
 
     const tipoLabel = r.tipo_orden === 'llevar' ? 'Para llevar' : r.tipo_orden === 'comer_aqui' ? 'Comer aquí' : 'Domicilio';
     const fecha = new Date(r.fecha.replace(' ', 'T')).toLocaleString('es-MX');
 
-    const html = `<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'>
-<title>Ticket #${ticketId}</title><style>
-@page{margin:0;size:58mm auto;}*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Courier New',monospace;font-size:13px;font-weight:bold;width:58mm;max-width:58mm;padding:5px;color:#000;line-height:1.2;}
-.center{text-align:center;}.sep{border:none;border-top:1px dashed #000;margin:6px 0;}
-.info p{margin-bottom:2px;}table{width:100%;border-collapse:collapse;}
-td{font-size:13px;padding:3px 0;vertical-align:top;}
-.totales-container{margin-top:6px;font-size:14px;text-align:right;}.totales-container p{margin-bottom:3px;}
-.total-final{font-size:20px;font-weight:bold;margin-top:10px;margin-bottom:10px;text-align:center;}
-</style></head><body>
-<div class="center"><h1 style="font-size:18px;">Ticket #${ticketId}</h1><h2 style="font-size:15px;margin-bottom:8px;">Antojitos Santa Lucía</h2><p style="font-size:11px;">[REIMPRESIÓN]</p></div>
-${r.sensor_num ? `<div style='text-align:center;border:2px solid #000;border-radius:6px;padding:6px 4px;margin:6px 0;'><div style='font-size:11px;font-weight:bold;'>SENSOR</div><div style='font-size:48px;font-weight:900;line-height:1;'>#${r.sensor_num}</div></div>` : ''}
-<div class='info'>
-  <p>Fecha: ${fecha}</p>
-  <p>Vendedor: ${vendedorNombre}</p>
-  <p>Tipo: ${tipoLabel}</p>
-  <p>Metodo Pago: ${tipoPago ? tipoPago.toUpperCase() : 'N/A'}</p>
-  ${r.direccion ? `<p>Dirección: ${r.direccion}</p>` : ''}
-</div>
-<hr class='sep'>
-<table><thead><tr><th style='text-align:left;'>Cant</th><th style='text-align:left;'>Producto</th><th style='text-align:right;'>Total</th></tr></thead>
-<tbody>${filas}</tbody></table>
-<hr class='sep'>
-<div class='totales-container'>${filasTotales}</div>
-<div class='total-final'>TOTAL: $${total.toFixed(2)}</div>
-<div class="center" style="font-size:15px;margin-top:10px;"><p>¡Gracias por su preferencia!</p></div>
-</body></html>`;
+    const html = `
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Ticket #${ticketId}</title>
+  <style>
+    @page { margin: 0; size: 58mm auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      font-weight: bold;
+      width: 58mm;
+      max-width: 58mm;
+      padding: 2px 4px;
+      color: #000;
+      line-height: 1.25;
+    }
+    .center { text-align: center; }
+    h1 { font-size: 20px; font-weight: 900; margin-bottom: 1px; }
+    h2 { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+    .sep { border: none; border-top: 1px dashed #000; margin: 5px 0; }
+    .info p { font-size: 14px; margin-bottom: 1px; }
+    /* Tabla de productos */
+    table { width: 100%; border-collapse: collapse; table-layout: auto; }
+    thead th { font-size: 13px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
+    thead th:first-child { text-align: left; }
+    thead th:last-child { text-align: right; }
+    td { font-size: 14px; padding: 2px 0; vertical-align: top; }
+    .col-qty { width: 28px; white-space: nowrap; padding-right: 2px; }
+    .col-name { word-break: break-word; }
+    .col-price { width: 55px; text-align: right; white-space: nowrap; }
+    .note td { font-size: 13px; padding: 0 0 1px; font-weight: normal; }
+    .group-header td { font-size: 14px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
+    /* Totales */
+    .totales { margin-top: 5px; font-size: 16px; }
+    .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
+    .totales p span { font-variant-numeric: tabular-nums; }
+    .total-final { font-size: 22px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
+    .footer { font-size: 14px; text-align: center; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <h1>Ticket #${ticketId}</h1>
+    <h2>Antojitos Santa Lucía</h2>
+    <p style="font-size:12px;margin-bottom:4px;">[REIMPRESIÓN]</p>
+  </div>
+
+  ${r.sensor_num ? `
+  <div style='text-align:center;border:2px solid #000;border-radius:5px;padding:5px 4px;margin:5px 0;'>
+    <div style='font-size:10px;font-weight:900;letter-spacing:1px;'>SENSOR</div>
+    <div style='font-size:46px;font-weight:900;line-height:1;'>#${r.sensor_num}</div>
+  </div>` : ''}
+
+  <div class='info'>
+    <p>Fecha: ${fecha}</p>
+    <p>Vendedor: ${vendedorNombre}</p>
+    <p>Tipo: ${tipoLabel}</p>
+    <p>Método de pago: ${tipoPago ? tipoPago.toUpperCase() : 'N/A'}</p>
+    ${r.direccion ? `<p>Dirección:</p><p>${r.direccion}</p>` : ''}
+  </div>
+
+  <hr class='sep'>
+
+  <table>
+    <thead>
+      <tr>
+        <th class='col-qty'>Cant</th>
+        <th class='col-name'>Producto</th>
+        <th class='col-price'>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${filas}
+    </tbody>
+  </table>
+
+  <hr class='sep'>
+
+  <div class='total-final'>TOTAL: $${total.toFixed(2)}</div>
+
+  <div class='totales'>
+    ${filasTotales}
+  </div>
+
+  <div class='footer'>
+    <p>¡Gracias por su preferencia!</p>
+  </div>
+</body>
+</html>`;
 
     if (window.imprimirTicket) window.imprimirTicket(html);
     else alert('Función de impresión no disponible.');
