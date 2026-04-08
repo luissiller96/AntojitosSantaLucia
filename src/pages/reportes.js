@@ -1077,36 +1077,36 @@ async function reimprimirTicket(ticketId) {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
-      width: 58mm;
-      max-width: 58mm;
-      padding: 2px 4px;
+      width: 48mm;
+      margin: 0 auto;
+      padding: 2px 0;
       color: #000;
       line-height: 1.25;
     }
     .center { text-align: center; }
-    h1 { font-size: 20px; font-weight: 900; margin-bottom: 1px; }
-    h2 { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+    h1 { font-size: 18px; font-weight: 900; margin-bottom: 1px; }
+    h2 { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
     .sep { border: none; border-top: 1px dashed #000; margin: 5px 0; }
-    .info p { font-size: 14px; margin-bottom: 1px; }
+    .info p { font-size: 13px; margin-bottom: 1px; }
     /* Tabla de productos */
     table { width: 100%; border-collapse: collapse; table-layout: auto; }
-    thead th { font-size: 13px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
+    thead th { font-size: 12px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
     thead th:first-child { text-align: left; }
     thead th:last-child { text-align: right; }
-    td { font-size: 14px; padding: 2px 0; vertical-align: top; }
-    .col-qty { width: 28px; white-space: nowrap; padding-right: 2px; }
+    td { font-size: 13px; padding: 2px 0; vertical-align: top; }
+    .col-qty { width: 24px; white-space: nowrap; padding-right: 2px; }
     .col-name { word-break: break-word; }
-    .col-price { width: 55px; text-align: right; white-space: nowrap; }
-    .note td { font-size: 13px; padding: 0 0 1px; font-weight: normal; }
-    .group-header td { font-size: 14px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
+    .col-price { width: 50px; text-align: right; white-space: nowrap; }
+    .note td { font-size: 12px; padding: 0 0 1px; font-weight: normal; }
+    .group-header td { font-size: 13px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
     /* Totales */
-    .totales { margin-top: 5px; font-size: 16px; }
+    .totales { margin-top: 5px; font-size: 14px; }
     .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
     .totales p span { font-variant-numeric: tabular-nums; }
-    .total-final { font-size: 22px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
-    .footer { font-size: 14px; text-align: center; margin-top: 5px; }
+    .total-final { font-size: 18px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
+    .footer { font-size: 13px; text-align: center; margin-top: 5px; }
   </style>
 </head>
 <body>

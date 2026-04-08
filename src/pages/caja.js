@@ -1119,36 +1119,36 @@ const CajaApp = {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
-      width: 58mm;
-      max-width: 58mm;
-      padding: 2px 4px; /* Reduced to leave more horizontal space */
+      width: 48mm;
+      margin: 0 auto;
+      padding: 2px 0;
       color: #000;
-      line-height: 1.25; /* Tighter line height prevents too much vertical stretch */
+      line-height: 1.25;
     }
     .center { text-align: center; }
-    h1 { font-size: 20px; font-weight: 900; margin-bottom: 1px; }
-    h2 { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+    h1 { font-size: 18px; font-weight: 900; margin-bottom: 1px; }
+    h2 { font-size: 13px; font-weight: bold; margin-bottom: 5px; }
     .sep { border: none; border-top: 1px dashed #000; margin: 5px 0; }
-    .info p { font-size: 14px; margin-bottom: 1px; }
+    .info p { font-size: 13px; margin-bottom: 1px; }
     /* Tabla de productos */
     table { width: 100%; border-collapse: collapse; table-layout: auto; }
-    thead th { font-size: 13px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
+    thead th { font-size: 12px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
     thead th:first-child { text-align: left; }
     thead th:last-child { text-align: right; }
-    td { font-size: 14px; padding: 2px 0; vertical-align: top; }
-    .col-qty { width: 28px; white-space: nowrap; padding-right: 2px; }
+    td { font-size: 13px; padding: 2px 0; vertical-align: top; }
+    .col-qty { width: 24px; white-space: nowrap; padding-right: 2px; }
     .col-name { word-break: break-word; }
-    .col-price { width: 55px; text-align: right; white-space: nowrap; }
-    .note td { font-size: 13px; padding: 0 0 1px; font-weight: normal; }
-    .group-header td { font-size: 14px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
+    .col-price { width: 50px; text-align: right; white-space: nowrap; }
+    .note td { font-size: 12px; padding: 0 0 1px; font-weight: normal; }
+    .group-header td { font-size: 13px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
     /* Totales */
-    .totales { margin-top: 5px; font-size: 16px; }
+    .totales { margin-top: 5px; font-size: 14px; }
     .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
     .totales p span { font-variant-numeric: tabular-nums; }
-    .total-final { font-size: 22px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
-    .footer { font-size: 14px; text-align: center; margin-top: 5px; }
+    .total-final { font-size: 18px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
+    .footer { font-size: 13px; text-align: center; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -1250,26 +1250,26 @@ const CajaApp = {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
-      width: 58mm;
-      max-width: 58mm;
-      padding: 2px 4px;
+      width: 48mm;
+      margin: 0 auto;
+      padding: 2px 0;
       color: #000;
       line-height: 1.25; /* tight line-height */
     }
     .center { text-align: center; }
     .sep { border: none; border-top: 2px dashed #000; margin: 5px 0; }
     table { width: 100%; border-collapse: collapse; }
-    td { padding: 2px 0; vertical-align: top; }
+    td { padding: 2px 0; vertical-align: top; font-size: 14px; }
   </style>
 </head>
 <body>
   <div class="center">
     <div style='font-size:12px;letter-spacing:1px;'>— COMANDA INTERNA —</div>
-    <div style='font-size:40px;font-weight:900;line-height:1.1;margin:4px 0;'>#${ticket_id}</div>
-    <div style='font-size:13px;'>${fecha}</div>
-    <div style='font-size:14px;margin-top:2px;'>■ COMER AQUÍ ■</div>
+    <div style='font-size:36px;font-weight:900;line-height:1.1;margin:4px 0;'>#${ticket_id}</div>
+    <div style='font-size:12px;'>${fecha}</div>
+    <div style='font-size:13px;margin-top:2px;'>■ COMER AQUÍ ■</div>
   </div>
 
   <hr class='sep'>
@@ -1302,20 +1302,20 @@ const CajaApp = {
       font-family: 'Courier New', Courier, monospace;
       font-size: 14px;
       font-weight: bold;
-      width: 58mm;
-      max-width: 58mm;
-      padding: 4px;
+      width: 48mm;
+      margin: 0 auto;
+      padding: 2px 0;
       color: #000;
       line-height: 1.3;
     }
     .center { text-align: center; }
     .sep { border: none; border-top: 2px dashed #000; margin: 6px 0; }
-    .monto { font-size: 24px; font-weight: 900; text-align: center; margin: 10px 0; }
+    .monto { font-size: 20px; font-weight: 900; text-align: center; margin: 10px 0; }
   </style>
 </head>
 <body>
   <div class="center">
-    <div style='font-size:16px;font-weight:900;'>COMPROBANTE RETIRO</div>
+    <div style='font-size:15px;font-weight:900;'>COMPROBANTE RETIRO</div>
     <div style='font-size:12px;margin-top:2px;'>CORTE PREVENTIVO</div>
   </div>
   
