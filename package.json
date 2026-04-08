@@ -1,6 +1,6 @@
 {
   "name": "antojitos-desktop",
-  "version": "0.3.5",
+  "version": "0.3.7",
   "description": "Antojitos Santa Lucía - POS Desktop",
   "scripts": {
     "dev": "vite",

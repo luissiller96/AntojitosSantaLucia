@@ -1119,36 +1119,36 @@ const CajaApp = {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
       width: 58mm;
       max-width: 58mm;
-      padding: 4px 5px;
+      padding: 2px 4px; /* Reduced to leave more horizontal space */
       color: #000;
-      line-height: 1.35;
+      line-height: 1.25; /* Tighter line height prevents too much vertical stretch */
     }
     .center { text-align: center; }
-    h1 { font-size: 17px; font-weight: 900; margin-bottom: 1px; }
-    h2 { font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+    h1 { font-size: 20px; font-weight: 900; margin-bottom: 1px; }
+    h2 { font-size: 14px; font-weight: bold; margin-bottom: 5px; }
     .sep { border: none; border-top: 1px dashed #000; margin: 5px 0; }
-    .info p { font-size: 12px; margin-bottom: 1px; }
+    .info p { font-size: 14px; margin-bottom: 1px; }
     /* Tabla de productos */
     table { width: 100%; border-collapse: collapse; table-layout: auto; }
-    thead th { font-size: 11px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .3px; }
+    thead th { font-size: 13px; font-weight: 900; padding: 2px 0; text-transform: uppercase; letter-spacing: .1px; }
     thead th:first-child { text-align: left; }
     thead th:last-child { text-align: right; }
-    td { font-size: 12px; padding: 2px 0; vertical-align: top; }
-    .col-qty { width: 24px; white-space: nowrap; padding-right: 2px; }
+    td { font-size: 14px; padding: 2px 0; vertical-align: top; }
+    .col-qty { width: 28px; white-space: nowrap; padding-right: 2px; }
     .col-name { word-break: break-word; }
-    .col-price { width: 50px; text-align: right; white-space: nowrap; }
-    .note td { font-size: 11px; padding: 0 0 1px; font-weight: normal; }
-    .group-header td { font-size: 12px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
+    .col-price { width: 55px; text-align: right; white-space: nowrap; }
+    .note td { font-size: 13px; padding: 0 0 1px; font-weight: normal; }
+    .group-header td { font-size: 14px; font-weight: 900; padding-top: 5px; padding-bottom: 1px; }
     /* Totales */
-    .totales { margin-top: 5px; font-size: 14px; }
+    .totales { margin-top: 5px; font-size: 16px; }
     .totales p { display: flex; justify-content: space-between; margin-bottom: 2px; }
     .totales p span { font-variant-numeric: tabular-nums; }
-    .total-final { font-size: 19px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .5px; }
-    .footer { font-size: 12px; text-align: center; margin-top: 5px; }
+    .total-final { font-size: 22px; font-weight: 900; text-align: center; margin: 7px 0 4px; letter-spacing: .3px; }
+    .footer { font-size: 14px; text-align: center; margin-top: 5px; }
   </style>
 </head>
 <body>
@@ -1218,23 +1218,23 @@ const CajaApp = {
           if (subItem.grupo_mixta !== item.grupo_mixta) continue;
           const suffixMatch = (subItem.nombre || '').match(/\((.*?)\)$/);
           const subNombre = suffixMatch ? subItem.nombre.replace(` (${suffixMatch[1]})`, '') : subItem.nombre;
-          filas += `<tr><td style='width:18%;vertical-align:top;'>${parseInt(subItem.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${subNombre}</td></tr>`;
+          filas += `<tr><td style='width:22%;vertical-align:top;'>${parseInt(subItem.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${subNombre}</td></tr>`;
           if (subItem.opciones && subItem.opciones.length > 0) {
             const op = Array.isArray(subItem.opciones) ? subItem.opciones.join(', ') : subItem.opciones;
-            if (op.trim()) filas += `<tr><td></td><td style='font-size:14px;'>  *** SIN: ${op}</td></tr>`;
+            if (op.trim()) filas += `<tr><td></td><td style='font-size:16px;'>  *** SIN: ${op}</td></tr>`;
           }
           if (subItem.observaciones) {
-            filas += `<tr><td></td><td style='font-size:14px;'>  Obs: ${subItem.observaciones}</td></tr>`;
+            filas += `<tr><td></td><td style='font-size:16px;'>  Obs: ${subItem.observaciones}</td></tr>`;
           }
         }
       } else {
-        filas += `<tr><td style='width:18%;vertical-align:top;'>${parseInt(item.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${item.nombre}</td></tr>`;
+        filas += `<tr><td style='width:22%;vertical-align:top;'>${parseInt(item.cantidad)}x</td><td style='vertical-align:top;word-break:break-word;'>${item.nombre}</td></tr>`;
         if (item.opciones && item.opciones.length > 0) {
           const op = Array.isArray(item.opciones) ? item.opciones.join(', ') : item.opciones;
-          if (op.trim()) filas += `<tr><td></td><td style='font-size:14px;'>  *** SIN: ${op}</td></tr>`;
+          if (op.trim()) filas += `<tr><td></td><td style='font-size:16px;'>  *** SIN: ${op}</td></tr>`;
         }
         if (item.observaciones) {
-          filas += `<tr><td></td><td style='font-size:14px;'>  Obs: ${item.observaciones}</td></tr>`;
+          filas += `<tr><td></td><td style='font-size:16px;'>  Obs: ${item.observaciones}</td></tr>`;
         }
       }
     }
@@ -1250,26 +1250,26 @@ const CajaApp = {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Courier New', Courier, monospace;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: bold;
       width: 58mm;
       max-width: 58mm;
-      padding: 5px;
+      padding: 2px 4px;
       color: #000;
-      line-height: 1.3;
+      line-height: 1.25; /* tight line-height */
     }
     .center { text-align: center; }
-    .sep { border: none; border-top: 2px dashed #000; margin: 6px 0; }
+    .sep { border: none; border-top: 2px dashed #000; margin: 5px 0; }
     table { width: 100%; border-collapse: collapse; }
-    td { padding: 3px 0; vertical-align: top; }
+    td { padding: 2px 0; vertical-align: top; }
   </style>
 </head>
 <body>
   <div class="center">
-    <div style='font-size:11px;letter-spacing:2px;'>— COMANDA INTERNA —</div>
-    <div style='font-size:36px;font-weight:900;line-height:1.1;margin:4px 0;'>#${ticket_id}</div>
-    <div style='font-size:11px;'>${fecha}</div>
-    <div style='font-size:12px;margin-top:2px;'>■ COMER AQUÍ ■</div>
+    <div style='font-size:12px;letter-spacing:1px;'>— COMANDA INTERNA —</div>
+    <div style='font-size:40px;font-weight:900;line-height:1.1;margin:4px 0;'>#${ticket_id}</div>
+    <div style='font-size:13px;'>${fecha}</div>
+    <div style='font-size:14px;margin-top:2px;'>■ COMER AQUÍ ■</div>
   </div>
 
   <hr class='sep'>
@@ -1282,6 +1282,67 @@ const CajaApp = {
 
   <div class='center' style='font-size:11px;margin-top:4px;'>
     — uso interno —
+  </div>
+</body>
+</html>`;
+  },
+
+  // ─── Ticket Corte Preventivo ─────────────────────────────────────────────
+  generarHTMLTicketCorte({ fecha, hora, empNombre, monto, fondo, caja_antes }) {
+    return `
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Corte Preventivo</title>
+  <style>
+    @page { margin: 0; size: 58mm auto; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      font-weight: bold;
+      width: 58mm;
+      max-width: 58mm;
+      padding: 4px;
+      color: #000;
+      line-height: 1.3;
+    }
+    .center { text-align: center; }
+    .sep { border: none; border-top: 2px dashed #000; margin: 6px 0; }
+    .monto { font-size: 24px; font-weight: 900; text-align: center; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div style='font-size:16px;font-weight:900;'>COMPROBANTE RETIRO</div>
+    <div style='font-size:12px;margin-top:2px;'>CORTE PREVENTIVO</div>
+  </div>
+  
+  <hr class='sep'>
+  
+  <div>
+    <p>Fecha: ${fecha}</p>
+    <p>Hora: ${hora}</p>
+    <p>Cajero: ${empNombre}</p>
+  </div>
+  
+  <hr class='sep'>
+  
+  <div class="monto">
+    RETIRO: $${Number(monto).toFixed(2)}
+  </div>
+  
+  <hr class='sep'>
+  
+  <div style="font-size:12px; margin-top:5px;">
+    <p>Fondo de caja: $${Number(fondo).toFixed(2)}</p>
+    <p>Efectivo (antes): $${Number(caja_antes).toFixed(2)}</p>
+  </div>
+  
+  <div class="center" style="margin-top:20px;">
+    <p>_______________________</p>
+    <p style="font-size:11px; margin-top:2px;">Firma / Recibido</p>
   </div>
 </body>
 </html>`;
@@ -1920,14 +1981,39 @@ const CajaApp = {
       async () => {
         try {
           showLoading('Procesando Retiro...');
+          
+          // Guardar estado actual de la caja para el ticket antes de registrar el retiro
+          const cajaAntes = this._cajaEfectivo || 0;
+          const fondo = this._cajaFondo || 0;
+
           await dbExecute(
             `INSERT INTO rv_gastos(tipo_gasto, descripcion, fecha, comentario, precio_unitario, tipo, metodo_pago, usu_id)
              VALUES('Corte Preventivo', 'Retiro de efectivo preventivo', datetime('now', 'localtime'),
                $1, $2, 'operativo', 'efectivo', $3)`,
             ['Realizado por: ' + empNombre, monto, this.vendedorSeleccionado || 1]
           );
+          
           hideLoading();
           this.actualizarEstadoCaja();
+
+          // Generar e imprimir ticket
+          const now = new Date();
+          const pFecha = now.toLocaleDateString('es-MX');
+          const pHora = now.toLocaleTimeString('es-MX', { hour12: true });
+          
+          const htmlTicketCorte = this.generarHTMLTicketCorte({
+            fecha: pFecha,
+            hora: pHora,
+            empNombre,
+            monto,
+            fondo,
+            caja_antes: cajaAntes
+          });
+          
+          if (window.imprimirTicket) {
+            window.imprimirTicket(htmlTicketCorte);
+          }
+
           this.showAlert('Retiro Realizado', `${empNombre} registró el retiro de ${retiroFmt} correctamente.`, 'success');
         } catch (err) {
           hideLoading();
