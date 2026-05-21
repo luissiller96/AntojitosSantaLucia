@@ -424,11 +424,11 @@ const ReportesApp = {
     const hoy = today();
     const rows = await dbSelect(
       `SELECT
-         IFNULL(SUM(sub.total_ticket), 0) AS ventas,
+         IFNULL(SUM(sub.total_ticket - sub.costo_envio), 0) AS ventas,
          COUNT(*)                          AS tickets,
          SUM(sub.productos)                AS productos
        FROM (
-         SELECT ticket, MAX(total_ticket) AS total_ticket, SUM(cantidad) AS productos
+         SELECT ticket, MAX(total_ticket) AS total_ticket, COALESCE(MAX(costo_envio), 0) AS costo_envio, SUM(cantidad) AS productos
          FROM rv_ventas
          WHERE DATE(fecha)=$1 AND estatus='completado'
          GROUP BY ticket
@@ -450,12 +450,16 @@ const ReportesApp = {
     if (!fi || !ff) return;
 
     const rows = await dbSelect(
-      `SELECT DATE(fecha) AS dia, SUM(total_ticket) AS total
-       FROM rv_ventas
-       WHERE DATE(fecha) BETWEEN $1 AND $2
-         AND estatus='completado'
-       GROUP BY DATE(fecha)
-       ORDER BY DATE(fecha)`,
+      `SELECT dia, SUM(neto) AS total
+       FROM (
+         SELECT DATE(fecha) AS dia, (MAX(total_ticket) - COALESCE(MAX(costo_envio), 0)) AS neto
+         FROM rv_ventas
+         WHERE DATE(fecha) BETWEEN $1 AND $2
+           AND estatus='completado'
+         GROUP BY ticket
+       )
+       GROUP BY dia
+       ORDER BY dia`,
       [fi, ff]
     );
 
@@ -557,6 +561,7 @@ const ReportesApp = {
              GROUP_CONCAT(cantidad||'x '||producto, ' | ') AS articulos,
              SUM(cantidad) AS total_prod,
              MAX(total_ticket) AS total_ticket,
+             COALESCE(MAX(costo_envio), 0) AS costo_envio,
              MAX(tipo_orden) AS tipo_orden
       FROM rv_ventas
       WHERE DATE(fecha) BETWEEN $1 AND $2
@@ -566,15 +571,22 @@ const ReportesApp = {
     query += ` GROUP BY ticket ORDER BY fecha DESC`;
 
     const rows = await dbSelect(query, params);
-    const totalFiltrado = rows.reduce((s, r) => s + parseFloat(r.total_ticket || 0), 0);
-    const promedio = rows.length > 0 ? totalFiltrado / rows.length : 0;
+    
+    // Map rows to include net total excluding costo_envio
+    const rowsConNeto = rows.map(r => ({
+      ...r,
+      total_neto: parseFloat(r.total_ticket || 0) - parseFloat(r.costo_envio || 0)
+    }));
+
+    const totalFiltrado = rowsConNeto.reduce((s, r) => s + r.total_neto, 0);
+    const promedio = rowsConNeto.length > 0 ? totalFiltrado / rowsConNeto.length : 0;
 
     // Mini-KPIs animados
     animarContador('mv-total',   totalFiltrado, true);
-    animarContador('mv-tickets', rows.length,   false);
+    animarContador('mv-tickets', rowsConNeto.length,   false);
     animarContador('mv-promedio', promedio,     true);
 
-    if (!rows.length) {
+    if (!rowsConNeto.length) {
       if (cont) cont.innerHTML = '<p class="rep-empty">Sin ventas en el período.</p>';
       return;
     }
@@ -603,10 +615,10 @@ const ReportesApp = {
           searchVal: r => r.articulos || '' },
         { label: 'Tipo',      key: 'tipo_orden',   render: v => tipoBadge(v) },
         { label: 'Pago',      key: 'metodo_pago',  render: v => pagoBadge(v) },
-        { label: 'Total',     key: 'total_ticket', render: v => `<strong style="color:#28a745;">${fmt(v)}</strong>` },
+        { label: 'Total',     key: 'total_neto',   render: v => `<strong style="color:#28a745;">${fmt(v)}</strong>` },
         { label: '',          key: 'ticket',       render: v => `<button class="rep-btn-reimprimir" data-ticket="${v}" title="Reimprimir"><i class="fas fa-print"></i></button>` },
       ],
-      rows,
+      rows: rowsConNeto,
       perPage: 15,
     });
 
@@ -633,7 +645,8 @@ const ReportesApp = {
     let query = `
           SELECT ticket, fecha, metodo_pago,
                  GROUP_CONCAT(cantidad||'x '||producto, ' | ') AS articulos,
-                 MAX(total_ticket) AS total_ticket
+                 MAX(total_ticket) AS total_ticket,
+                 COALESCE(MAX(costo_envio), 0) AS costo_envio
           FROM rv_ventas
           WHERE DATE(fecha) BETWEEN $1 AND $2
             AND estatus='completado'`;
@@ -653,7 +666,7 @@ const ReportesApp = {
       "Fecha": r.fecha,
       "Forma de Pago": r.metodo_pago ? r.metodo_pago.toUpperCase() : "ND",
       "Artículos Vendidos": r.articulos,
-      "Total Venta ($)": parseFloat(r.total_ticket || 0)
+      "Total Venta ($)": parseFloat(r.total_ticket || 0) - parseFloat(r.costo_envio || 0)
     }));
 
     try {
@@ -761,6 +774,7 @@ const ReportesApp = {
       `SELECT d.dev_id, d.ticket_id, d.motivo, d.fecha_devolucion,
               u.usu_nom AS usuario,
               MAX(v.total_ticket) AS total_ticket,
+              COALESCE(MAX(v.costo_envio), 0) AS costo_envio,
               GROUP_CONCAT(v.cantidad||'x '||v.producto, ' | ') AS articulos
        FROM rv_devoluciones d
        LEFT JOIN tm_usuario u ON u.usu_id = d.usu_id
@@ -779,7 +793,7 @@ const ReportesApp = {
       "Artículos":      (r.articulos || '—').replace(/\|/g, ' / '),
       "Motivo":         r.motivo || '—',
       "Usuario":        r.usuario || '—',
-      "Monto Ticket ($)": parseFloat(r.total_ticket || 0),
+      "Monto Ticket ($)": parseFloat(r.total_ticket || 0) - parseFloat(r.costo_envio || 0),
     }));
 
     try {
@@ -937,6 +951,7 @@ const ReportesApp = {
       `SELECT d.dev_id, d.ticket_id, d.motivo, d.fecha_devolucion,
               u.usu_nom AS usuario,
               MAX(v.total_ticket) AS total_ticket,
+              COALESCE(MAX(v.costo_envio), 0) AS costo_envio,
               GROUP_CONCAT(v.cantidad||'x '||v.producto, ' | ') AS articulos
        FROM rv_devoluciones d
        LEFT JOIN tm_usuario u ON u.usu_id = d.usu_id
@@ -947,11 +962,17 @@ const ReportesApp = {
       [fi, ff]
     );
 
-    const montoTotal = rows.reduce((s, r) => s + parseFloat(r.total_ticket || 0), 0);
-    animarContador('d-count', rows.length,  false);
+    // Map rows to include net total excluding costo_envio
+    const rowsConNeto = rows.map(r => ({
+      ...r,
+      total_neto: parseFloat(r.total_ticket || 0) - parseFloat(r.costo_envio || 0)
+    }));
+
+    const montoTotal = rowsConNeto.reduce((s, r) => s + r.total_neto, 0);
+    animarContador('d-count', rowsConNeto.length,  false);
     animarContador('d-monto', montoTotal,   true);
 
-    if (!rows.length) { cont.innerHTML = '<p class="rep-empty">Sin devoluciones en el período.</p>'; return; }
+    if (!rowsConNeto.length) { cont.innerHTML = '<p class="rep-empty">Sin devoluciones en el período.</p>'; return; }
 
     renderDataTable('tabla-devoluciones', {
       cols: [
@@ -962,9 +983,9 @@ const ReportesApp = {
           searchVal: r => r.articulos || '' },
         { label: 'Motivo',       key: 'motivo',          render: v => `<span style="font-size:.84rem;">${v || '—'}</span>` },
         { label: 'Usuario',      key: 'usuario',         render: v => `<span style="font-size:.84rem;">${v || '—'}</span>` },
-        { label: 'Monto ticket', key: 'total_ticket',    render: v => `<strong style="color:#dc3545;">${fmt(v)}</strong>` },
+        { label: 'Monto ticket', key: 'total_neto',       render: v => `<strong style="color:#dc3545;">${fmt(v)}</strong>` },
       ],
-      rows,
+      rows: rowsConNeto,
       perPage: 15,
     });
   },

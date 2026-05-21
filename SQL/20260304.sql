@@ -708,3 +708,15 @@ SET character_set_client = @saved_cs_client;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-03-04 22:57:23
+
+--
+-- Added to match local new columns on rv_ventas
+--
+ALTER TABLE `rv_ventas` 
+  ADD COLUMN `tipo_orden` varchar(50) DEFAULT 'llevar',
+  ADD COLUMN `sensor_num` varchar(50) DEFAULT NULL,
+  ADD COLUMN `direccion` text,
+  ADD COLUMN `costo_envio` decimal(10,2) DEFAULT '0.00',
+  ADD COLUMN `monto_efectivo` decimal(10,2) DEFAULT '0.00',
+  ADD COLUMN `monto_tarjeta` decimal(10,2) DEFAULT '0.00',
+  ADD COLUMN `monto_transferencia` decimal(10,2) DEFAULT '0.00';

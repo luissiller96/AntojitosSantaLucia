@@ -23,7 +23,8 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding-bottom: env(safe-area-inset-bottom, 0px); /* Añade padding para que los iconos no queden muy abajo */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Añade padding para que los iconos no queden muy abajo */
   border-top: 1px solid #ddd;
   z-index: 1000;
   transition: background-color var(--transition-speed);
@@ -83,8 +84,10 @@
 
 .drawer-overlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 1999;
   opacity: 0;
@@ -105,7 +108,12 @@
   border-bottom: 1px solid #ddd;
   flex-shrink: 0;
 }
-.drawer-header h3 { margin: 0; font-weight: 700; }
+
+.drawer-header h3 {
+  margin: 0;
+  font-weight: 700;
+}
+
 .close-drawer-button {
   background: none;
   border: none;
@@ -116,9 +124,12 @@
 
 /* Contenedor del contenido para activar el scroll */
 .drawer-content {
-  flex-grow: 1; /* Ocupa el espacio disponible */
-  overflow-y: auto; /* Activa el scroll vertical cuando es necesario */
-  -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+  flex-grow: 1;
+  /* Ocupa el espacio disponible */
+  overflow-y: auto;
+  /* Activa el scroll vertical cuando es necesario */
+  -webkit-overflow-scrolling: touch;
+  /* Scroll suave en iOS */
 }
 
 /* --- Tarjetas del drawer --- */
@@ -159,13 +170,41 @@
 
 
 /* Degradados existentes */
-.icon-comanda   { background: linear-gradient(45deg, #ff6b6b, #feca57); }
-.icon-productos { background: linear-gradient(45deg, #48dbfb, #1dd1a1); }
-.icon-clientes  { background: linear-gradient(45deg, #5f27cd, #9b59b6); }
-.icon-caja      { background: linear-gradient(45deg, #1e90ff, #00d2d3); }
-.icon-token     { background: linear-gradient(45deg, #fd79a8, #a29bfe); }
-.icon-empleados { background: linear-gradient(45deg, #00b85c, #55efc4); }
-.icon-devoluciones { background: linear-gradient(45deg, #ff7675, #d63031); }
+.icon-comanda {
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+}
+
+.icon-productos {
+  background: linear-gradient(45deg, #48dbfb, #1dd1a1);
+}
+
+.icon-clientes {
+  background: linear-gradient(45deg, #5f27cd, #9b59b6);
+}
+
+.icon-caja {
+  background: linear-gradient(45deg, #1e90ff, #00d2d3);
+}
+
+.icon-token {
+  background: linear-gradient(45deg, #fd79a8, #a29bfe);
+}
+
+.icon-empleados {
+  background: linear-gradient(45deg, #00b85c, #55efc4);
+}
+
+.icon-devoluciones {
+  background: linear-gradient(45deg, #ff7675, #d63031);
+}
+
+.icon-sync {
+  background: linear-gradient(45deg, #0984e3, #74b9ff);
+}
+
+.icon-salidas {
+  background: linear-gradient(45deg, #e17055, #d63031);
+}
 
 /* Íconos de gastos */
 .icon-gastos-fijos {
@@ -187,8 +226,17 @@
 }
 
 /* --- Lista de enlaces del drawer --- */
-.drawer-divider { border: 0; border-top: 1px solid #ddd; margin: 0 20px; }
-.drawer-list { list-style: none; padding: 10px 20px; margin: 0; }
+.drawer-divider {
+  border: 0;
+  border-top: 1px solid #ddd;
+  margin: 0 20px;
+}
+
+.drawer-list {
+  list-style: none;
+  padding: 10px 20px;
+  margin: 0;
+}
 
 .drawer-list li a {
   display: flex;
@@ -230,9 +278,23 @@
   align-items: center;
   border-top: 1px solid #ddd;
 }
-.user-avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; }
-.user-info .user-name { font-weight: 700; display: block; }
-.user-info .user-email { font-size: 0.85em; color: var(--drawer-secondary-text); }
+
+.user-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.user-info .user-name {
+  font-weight: 700;
+  display: block;
+}
+
+.user-info .user-email {
+  font-size: 0.85em;
+  color: var(--drawer-secondary-text);
+}
 
 /* --- Modo oscuro --- */
 body.dark-mode {
@@ -248,10 +310,12 @@ body.dark-mode {
 body.dark-mode .drawer-list li a:hover {
   background-color: #2a2a2a;
 }
+
 body.dark-mode .drawer-list .list-icon {
   background-color: #2a2a2a;
   color: #f0f0f0;
 }
+
 body.dark-mode .bottom-nav-bar .nav-item.active {
   color: var(--bottom-nav-active-color);
 }

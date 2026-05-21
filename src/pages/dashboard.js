@@ -455,8 +455,8 @@ async function getKpisCompletos() {
 
   // Ventas del día
   const [r1] = await dbSelect(
-    `SELECT COALESCE(SUM(sub.total_ticket), 0) as total
-     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket FROM rv_ventas
+    `SELECT COALESCE(SUM(sub.total_ticket - sub.costo_envio), 0) as total
+     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket, COALESCE(MAX(costo_envio), 0) AS costo_envio FROM rv_ventas
            WHERE DATE(fecha) = $1 AND estatus = 'completado' GROUP BY ticket) sub`,
     [hoy]
   );
@@ -472,8 +472,8 @@ async function getKpisCompletos() {
 
   // Ventas del mes
   const [r3] = await dbSelect(
-    `SELECT COALESCE(SUM(sub.total_ticket), 0) as total
-     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket FROM rv_ventas
+    `SELECT COALESCE(SUM(sub.total_ticket - sub.costo_envio), 0) as total
+     FROM (SELECT ticket, MAX(total_ticket) AS total_ticket, COALESCE(MAX(costo_envio), 0) AS costo_envio FROM rv_ventas
            WHERE strftime('%m', fecha) = $1 AND strftime('%Y', fecha) = $2
            AND estatus = 'completado' GROUP BY ticket) sub`,
     [String(mes).padStart(2, '0'), String(anio)]
@@ -557,7 +557,7 @@ async function getUltimasVentas() {
   const ventas = [];
   for (const t of tickets) {
     const [info] = await dbSelect(
-      `SELECT total_ticket, metodo_pago, time(fecha) as hora_venta, estatus
+      `SELECT total_ticket, COALESCE(costo_envio, 0) as costo_envio, metodo_pago, time(fecha) as hora_venta, estatus
        FROM rv_ventas WHERE ticket = $1 AND estatus = 'completado' LIMIT 1`,
       [t.ticket]
     );
@@ -569,7 +569,7 @@ async function getUltimasVentas() {
     if (info) {
       ventas.push({
         ticket: t.ticket,
-        total_ticket: parseFloat(info.total_ticket),
+        total_ticket: parseFloat(info.total_ticket) - parseFloat(info.costo_envio),
         metodo_pago: info.metodo_pago,
         hora_venta: info.hora_venta,
         estatus: info.estatus,

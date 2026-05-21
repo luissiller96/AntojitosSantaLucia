@@ -624,40 +624,60 @@ async function verificarEstadoYResumen() {
     const caja = cajas[0];
     const idCaja = caja.id;
 
-    // 2. KPIs de ventas desde que abrió la caja
-    // ventas_efectivo incluye pagos directos en efectivo + porción efectivo de pagos mixtos
-    const [totales] = await dbSelect(
+    // 2. KPIs de ventas desde que abrió la caja agrupados por ticket para evitar duplicados
+    const ticketsShift = await dbSelect(
         `SELECT
-       COALESCE(SUM(total_ticket), 0) AS total_ventas,
-       COALESCE(SUM(
-         CASE
-           WHEN LOWER(metodo_pago)='efectivo' THEN total
-           WHEN LOWER(metodo_pago)='mixto'    THEN monto_efectivo
-           ELSE 0
-         END
-       ), 0) AS ventas_efectivo,
-       COALESCE(SUM(
-         CASE
-           WHEN LOWER(metodo_pago)='tarjeta' THEN total
-           WHEN LOWER(metodo_pago)='mixto'   THEN monto_tarjeta
-           ELSE 0
-         END
-       ), 0) AS ventas_tarjeta,
-       COALESCE(SUM(
-         CASE
-           WHEN LOWER(metodo_pago)='transferencia' THEN total
-           WHEN LOWER(metodo_pago)='mixto'         THEN monto_transferencia
-           ELSE 0
-         END
-       ), 0) AS ventas_transferencia
-     FROM rv_ventas
-     WHERE estatus = 'completado'
-       AND fecha >= $1`,
+           ticket,
+           MAX(total_ticket) AS total_ticket,
+           COALESCE(MAX(costo_envio), 0) AS costo_envio,
+           LOWER(MAX(metodo_pago)) AS metodo_pago,
+           COALESCE(MAX(monto_efectivo), 0) AS monto_efectivo,
+           COALESCE(MAX(monto_tarjeta), 0) AS monto_tarjeta,
+           COALESCE(MAX(monto_transferencia), 0) AS monto_transferencia
+         FROM rv_ventas
+         WHERE estatus = 'completado' AND fecha >= $1
+         GROUP BY ticket`,
         [caja.fecha_apertura]
     );
 
+    let totalVentas = 0;
+    let ventasEfectivo = 0;
+    let ventasTarjeta = 0;
+    let ventasTransferencia = 0;
+    let totalEfectivoEntrado = 0; // Efectivo neto real que ingresa/sale de la caja física por ventas
+
+    for (const t of ticketsShift) {
+        const totalTicket = parseFloat(t.total_ticket) || 0;
+        const costoEnvio = parseFloat(t.costo_envio) || 0;
+        const neto = totalTicket - costoEnvio;
+
+        totalVentas += neto;
+
+        let efectivoPagadoCliente = 0;
+
+        if (t.metodo_pago === 'efectivo') {
+            ventasEfectivo += neto;
+            efectivoPagadoCliente = totalTicket;
+        } else if (t.metodo_pago === 'tarjeta') {
+            ventasTarjeta += neto;
+            efectivoPagadoCliente = 0;
+        } else if (t.metodo_pago === 'transferencia') {
+            ventasTransferencia += neto;
+            efectivoPagadoCliente = 0;
+        } else if (t.metodo_pago === 'mixto') {
+            const factor = totalTicket > 0 ? neto / totalTicket : 0;
+            const cashPaid = parseFloat(t.monto_efectivo) || 0;
+            ventasEfectivo += cashPaid * factor;
+            ventasTarjeta += (parseFloat(t.monto_tarjeta) || 0) * factor;
+            ventasTransferencia += (parseFloat(t.monto_transferencia) || 0) * factor;
+            efectivoPagadoCliente = cashPaid;
+        }
+
+        // El cliente pagó efectivoPagadoCliente en caja física y el repartidor cobró costoEnvio en efectivo desde la caja.
+        totalEfectivoEntrado += (efectivoPagadoCliente - costoEnvio);
+    }
+
     const mntoApertura = parseFloat(caja.monto_apertura) || 0;
-    const ventasEfectivo = parseFloat(totales.ventas_efectivo) || 0;
 
     // 3. Cortes preventivos
     const cortesRows = await dbSelect(
@@ -682,18 +702,18 @@ async function verificarEstadoYResumen() {
     );
     const totalSalidas = salidasRows.reduce((s, r) => s + (parseFloat(r.monto) || 0), 0);
 
-    // Efectivo esperado = apertura + ventas efectivo - cortes - salidas efectivo
-    const efectivoEsperado = mntoApertura + ventasEfectivo - totalCortes - totalSalidas;
+    // Efectivo esperado = apertura + efectivo real neto de ventas - cortes - salidas efectivo
+    const efectivoEsperado = mntoApertura + totalEfectivoEntrado - totalCortes - totalSalidas;
 
     return {
         caja_activa: true,
         id_caja: idCaja,
         fecha_apertura: caja.fecha_apertura,
         monto_apertura: mntoApertura,
-        total_ventas: parseFloat(totales.total_ventas) || 0,
+        total_ventas: totalVentas,
         ventas_efectivo: ventasEfectivo,
-        ventas_tarjeta: parseFloat(totales.ventas_tarjeta) || 0,
-        ventas_transferencia: parseFloat(totales.ventas_transferencia) || 0,
+        ventas_tarjeta: ventasTarjeta,
+        ventas_transferencia: ventasTransferencia,
         total_caja_esperado: efectivoEsperado,
         total_cortes: totalCortes,
         lista_cortes: cortesRows,

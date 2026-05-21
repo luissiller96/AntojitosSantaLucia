@@ -127,10 +127,7 @@ function getCajaHTML(productos, cajeros, isChildProduct) {
             </div>
             <div class="envio-row">
               <span>Envío:</span>
-              <button class="btn-envio-preset" data-monto="20">$20</button>
-              <button class="btn-envio-preset" data-monto="30">$30</button>
-              <button class="btn-envio-preset" data-monto="50">$50</button>
-              <input type="number" id="costoEnvioInput" placeholder="$0" min="0">
+              <input type="number" id="costoEnvioInput" placeholder="$0" min="0" style="flex: 1; text-align: left; padding: 6px 12px; font-size: 14px;">
             </div>
           </div>
         </div>
